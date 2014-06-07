@@ -662,7 +662,12 @@ integrate golden-ration with window-number
 
 ** magit
 #+begin_src emacs-lisp
-
+(add-hook 'magit-mode-hook
+          (lambda ()
+            (define-key magit-mode-map (kbd "C-c 1") 'delete-other-windows)
+            (define-key magit-mode-map (kbd "C-c 2") 'split-window-vertically)
+            (define-key magit-mode-map (kbd "C-c 3") 'split-window-horizontally)
+            (define-key magit-mode-map (kbd "C-c 4"))))
 #+end_src
 
 ** bm (visual bookmarks)
