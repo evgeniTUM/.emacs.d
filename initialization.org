@@ -650,25 +650,6 @@ integrate golden-ration with window-number
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 #+end_src
 
-** god-mode
-#+begin_src emacs-lisp
-(defun my-update-cursor ()
-  (setq cursor-type (if (or god-local-mode buffer-read-only)
-                        'box
-                      'bar)))
-
-(add-hook 'god-mode-enabled-hook 'my-update-cursor)
-(add-hook 'god-mode-disabled-hook 'my-update-cursor)
-#+end_src
-
-** dired
-#+begin_src emacs-lisp
-(require 'dired)
-(setq dired-dwim-target t)
-(define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file) ; was dired-advertised-find-file
-(define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file "..")))  ; was dired-up-directory
-#+end_src
-
 ** guide-key
 #+begin_src emacs-lisp
   (setq guide-key/guide-key-sequence '("C-x" "C-c" "M-s"
@@ -677,6 +658,36 @@ integrate golden-ration with window-number
   (setq guide-key/idle-delay 0.5)
   (setq guide-key/popup-window-position 'bottom)
   (setq guide-key/recursive-key-sequence-flag t)
+#+end_src
+
+** magit
+#+begin_src emacs-lisp
+
+#+end_src
+
+** bm (visual bookmarks)
+#+begin_src emacs-lisp
+  (setq-default bm-buffer-persistence nil)
+  
+  (setq bm-restore-repository-on-load t)
+  (require 'bm)
+  (add-hook' after-init-hook 'bm-repository-load)
+  (add-hook 'find-file-hooks 'bm-buffer-restore)
+  (add-hook 'kill-buffer-hook 'bm-buffer-save)
+  (add-hook 'kill-emacs-hook '(lambda nil
+                                (bm-buffer-save-all)
+                                (bm-repository-save)))
+  (add-hook 'after-save-hook 'bm-buffer-save)
+  (add-hook 'after-revert-hook 'bm-buffer-restore)
+  (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
+#+end_src
+
+** dired
+#+begin_src emacs-lisp
+(require 'dired)
+(setq dired-dwim-target t)
+(define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file) ; was dired-advertised-find-file
+(define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file "..")))  ; was dired-up-directory
 #+end_src
 
 ** recentf (recent files)
@@ -722,23 +733,6 @@ http://steckerhalter.co.vu/steckemacs.html#sec-2-11-8
   (setq projectile-mode-line-lighter " Ⓟ")
   (projectile-global-mode)
 
-#+end_src
-
-** bm (visual bookmarks)
-#+begin_src emacs-lisp
-  (setq-default bm-buffer-persistence nil)
-  
-  (setq bm-restore-repository-on-load t)
-  (require 'bm)
-  (add-hook' after-init-hook 'bm-repository-load)
-  (add-hook 'find-file-hooks 'bm-buffer-restore)
-  (add-hook 'kill-buffer-hook 'bm-buffer-save)
-  (add-hook 'kill-emacs-hook '(lambda nil
-                                (bm-buffer-save-all)
-                                (bm-repository-save)))
-  (add-hook 'after-save-hook 'bm-buffer-save)
-  (add-hook 'after-revert-hook 'bm-buffer-restore)
-  (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
 #+end_src
 
 ** uniquify
@@ -1235,4 +1229,15 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (add-hook 'scheme-mode-hook           #'enable-paredit-mode)
 (add-hook 'slime-repl-mode-hook       #'enable-paredit-mode)
    #+END_SRC
+
+** god-mode
+#+begin_src emacs-lisp
+(defun my-update-cursor ()
+  (setq cursor-type (if (or god-local-mode buffer-read-only)
+                        'box
+                      'bar)))
+
+(add-hook 'god-mode-enabled-hook 'my-update-cursor)
+(add-hook 'god-mode-disabled-hook 'my-update-cursor)
+#+end_src
 
