@@ -575,6 +575,11 @@ integrate golden-ration with window-number
 (require 'transpose-frame)
 #+end_src
 
+*** smart-window
+#+begin_src emacs-lisp
+(require 'smart-window)
+#+end_src
+
 ** Interface
 *** yascroll
 #+begin_src emacs-lisp
