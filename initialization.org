@@ -183,17 +183,12 @@ hack popup-isearch to do fuzzy search with the help of grizzl
 #+end_src
 
 * Scientific writing
-** Textlint - tips and tricks
-   #+BEGIN_SRC emacs-lisp
-     (defun my-textlint-run ()
-       (interactive)
-       (unless (fboundp 'textlint-run)
-           (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/textlint"))
-           (require 'textlint))
-       (command-execute 'textlint-run))
-   #+END_SRC
+** Textlint
+check scientific writing by rules
 
 ** Grammar check
+needs link-grammar installed 
+
    #+BEGIN_SRC emacs-lisp
      (defun my-grammar-mode ()
        (interactive)
@@ -207,6 +202,8 @@ hack popup-isearch to do fuzzy search with the help of grizzl
 
 ** Synonyms
    #+BEGIN_SRC emacs-lisp
+(require 'synonyms)
+
 (setq synonyms-file (expand-file-name "~/.emacs.d/lib/thesaurus/mthesaur.txt"))
 (setq synonyms-cache-file (expand-file-name "~/.emacs.d/lib/thesaurus/syn.cache"))
 (setq synonyms-match-more-flag nil)
@@ -661,7 +658,6 @@ integrate golden-ration with window-number
 #+end_src
 
 ** magit
-
 remap magit keys because of window-meta-mode
 #+begin_src emacs-lisp
 (add-hook 'magit-mode-hook
@@ -1075,7 +1071,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
  #+END_SRC
 
  #+RESULTS:
-
  
 ** Package Bindings
 *** my-swap-window bindings 

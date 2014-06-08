@@ -35,7 +35,7 @@
  '(org-src-window-setup (quote current-window))
  '(preview-gs-options (quote ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(projectile-completion-system (quote default))
- '(python-shell-interpreter "~/shared/bin/ipython.sh" t)
+ '(python-shell-interpreter "~/shared/bin/ipython.sh")
  '(shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell)))))
  '(sublimity-handle-scroll-criteria (quote ((eq sublimity--prev-buf (current-buffer)) (eq sublimity--prev-wnd (selected-window)) (or (not (boundp (quote cua--rectangle))) (not cua--rectangle)) (or (not (boundp (quote multiple-cursors-mode))) (not multiple-cursors-mode)) (not (eq major-mode (quote shell-mode))))))
  '(sublimity-map-criteria (quote ((not buffer-read-only) (not (window-minibuffer-p)) (<= (/ sublimity-map-size (window-total-width) 1.0) sublimity-map-max-fraction))))
@@ -46,7 +46,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ahs-face ((t (:background "dim gray" :foreground "GhostWhite"))))
+ '(ahs-face ((t (:background "dim gray" :foreground "GhostWhite"))) t)
+ '(grammar-error-face ((t (:underline (:color "red" :style wave)))))
  '(sp-show-pair-match-face ((t (:background "DeepSkyBlue4")))))
 
 ;;; ELPA
