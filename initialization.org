@@ -270,6 +270,13 @@ https://github.com/xiaohanyu/oh-my-emacs/blob/master/modules/ome-python.org
 (setq jedi:complete-on-dot t)  
 #+end_src
 
+*** jedi-direx
+#+begin_src emacs-lisp
+(eval-after-load "python"
+  '(define-key python-mode-map "\C-zx" 'jedi-direx:pop-to-buffer))
+(add-hook 'jedi-mode-hook 'jedi-direx:setup)
+#+end_src
+
 *** org-mode inferior python auto-complete fix
 #+begin_src emacs-lisp
 (add-hook 'inferior-python-mode-hook
@@ -575,11 +582,6 @@ integrate golden-ration with window-number
 (require 'transpose-frame)
 #+end_src
 
-*** smart-window
-#+begin_src emacs-lisp
-(require 'smart-window)
-#+end_src
-
 ** Interface
 *** yascroll
 #+begin_src emacs-lisp
@@ -696,6 +698,13 @@ remap magit keys because of window-meta-mode
 (setq dired-dwim-target t)
 (define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file) ; was dired-advertised-find-file
 (define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file "..")))  ; was dired-up-directory
+(add-hook 'dired-mode-hook (lambda () "DOCSTRING" (hl-line-mode 1)))
+#+end_src
+
+** direx
+#+begin_src emacs-lisp
+(push '(direx:direx-mode :position left :width 25 :dedicated t)
+      popwin:special-display-config)
 #+end_src
 
 ** recentf (recent files)
@@ -897,6 +906,57 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 	(my-set-key (kbd ,key)
 			',name)))
  #+end_src
+ 
+** Common Bindings
+ #+begin_src emacs-lisp
+(global-unset-key (kbd "C-z"))
+(my-set-key "C-z C-z" 'global-set-key)
+(my-set-key "C-z C-l" 'local-set-key)
+
+(my-set-key "<escape>" 'god-mode-all)
+
+(my-set-key "<s-SPC>" 'set-mark-command)
+
+(my-set-key "<C-M-tab>" 'auto-complete)
+(my-set-key "<C-tab>" 'my-ac-complete-with-helm)
+(my-set-key "<C-s-tab>" 'ac-fuzzy-complete)
+
+(define-key key-translation-map (kbd "<s-tab>") (kbd "M-TAB"))
+(my-set-key "<s-return>" 'open-line)
+
+(my-set-key "C-o" 'yas/expand)
+(my-set-key "M-/" 'hippie-expand) 
+
+(my-set-key "C-c e" 'eval-and-replace)
+
+(my-set-key "C-x k" 'kill-this-buffer)
+(my-set-key "C-x j" 'direx:jump-to-directory-other-window)
+
+
+(my-set-key "C-c o l" 'org-store-link)
+(my-set-key "C-c o c" 'org-capture)
+(my-set-key "C-c o a" 'org-agenda)
+(my-set-key "C-c o b" 'org-iswitchb)
+
+(my-set-key "C-c R" 
+            '(lambda () 
+               (interactive)
+               (load-file 
+                (expand-file-name "~/.emacs.d/init.el"))))
+
+(my-set-key "M-0" 'ace-jump-mode) 
+(my-set-key "C-0" 'iy-go-to-char)
+(my-set-key "C-=" 'er/expand-region)
+
+(my-set-key "C-c l" 'slime-selector)
+
+;; rosemacs
+(when (boundp 'ros-keymap)
+  (my-set-key "C-c r" ros-keymap))
+
+ #+END_SRC
+
+ #+RESULTS:
 
 ** Toggle bindings
 *** Common
@@ -1028,54 +1088,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
    (my-set-key "M-x" 'helm-M-x)
    (my-set-key "C-x C-f" 'helm-find-files)
  #+end_src
- 
-** Common Bindings
- #+begin_src emacs-lisp
-(global-unset-key (kbd "C-z"))
-(my-set-key "C-z C-z" 'global-set-key)
-(my-set-key "C-z C-l" 'local-set-key)
-
-(my-set-key "<escape>" 'god-mode-all)
-
-(my-set-key "<s-SPC>" 'set-mark-command)
-
-(my-set-key "<C-M-tab>" 'auto-complete)
-(my-set-key "<C-tab>" 'my-ac-complete-with-helm)
-(my-set-key "<C-s-tab>" 'ac-fuzzy-complete)
-
-(define-key key-translation-map (kbd "<s-tab>") (kbd "M-TAB"))
-(my-set-key "<s-return>" 'open-line)
-
-(my-set-key "C-o" 'yas/expand)
-(my-set-key "M-/" 'hippie-expand) 
-
-(my-set-key "C-c e" 'eval-and-replace)
-
-
-(my-set-key "C-c o l" 'org-store-link)
-(my-set-key "C-c o c" 'org-capture)
-(my-set-key "C-c o a" 'org-agenda)
-(my-set-key "C-c o b" 'org-iswitchb)
-
-(my-set-key "C-c R" 
-            '(lambda () 
-               (interactive)
-               (load-file 
-                (expand-file-name "~/.emacs.d/init.el"))))
-
-(my-set-key "C-0" 'ace-jump-mode) 
-(my-set-key "M-0" 'iy-go-to-char)
-(my-set-key "C-=" 'er/expand-region)
-
-(my-set-key "C-c l" 'slime-selector)
-
-;; rosemacs
-(when (boundp 'ros-keymap)
-  (my-set-key "C-c r" ros-keymap))
-
- #+END_SRC
-
- #+RESULTS:
  
 ** Package Bindings
 *** my-swap-window bindings 

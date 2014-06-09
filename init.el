@@ -33,6 +33,8 @@
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-src-preserve-indentation t)
  '(org-src-window-setup (quote current-window))
+ '(popwin-mode t)
+ '(popwin:special-display-config (quote ((direx:direx-mode :width 25 :position left :dedicated t) ("*Miniedit Help*" :noselect t) (help-mode) (completion-list-mode :noselect t) (compilation-mode :noselect t) (grep-mode :noselect t) (occur-mode :noselect t) ("*Pp Macroexpand Output*" :noselect t) ("*Shell Command Output*") ("*vc-diff*") ("*vc-change-log*") (" *undo-tree*" :width 60 :position right) ("^\\*anything.*\\*$" :regexp t) ("*slime-apropos*") ("*slime-macroexpansion*") ("*slime-description*") ("*slime-compilation*" :noselect t) ("*slime-xref*") (sldb-mode :stick t) (slime-repl-mode) (slime-connection-list-mode))))
  '(preview-gs-options (quote ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(projectile-completion-system (quote default))
  '(python-shell-interpreter "~/shared/bin/ipython.sh")
@@ -47,7 +49,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(ahs-face ((t (:background "dim gray" :foreground "GhostWhite"))) t)
- '(grammar-error-face ((t (:underline (:color "red" :style wave)))))
+ '(grammar-error-face ((t (:underline (:color "red" :style wave)))) t)
  '(sp-show-pair-match-face ((t (:background "DeepSkyBlue4")))))
 
 ;;; ELPA
