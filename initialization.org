@@ -50,6 +50,9 @@
                            ac-source-dictionary
                            ac-source-words-in-same-mode-buffers))
 
+(define-key ac-completing-map [return] nil)
+(define-key ac-completing-map "\r" nil)
+
 (define-key ac-menu-map (kbd "C-n") 'ac-next)
 (define-key ac-menu-map (kbd "C-p") 'ac-previous)    
 (define-key ac-menu-map (kbd "C-h") 'ac-quick-help)
@@ -263,11 +266,15 @@ https://github.com/xiaohanyu/oh-my-emacs/blob/master/modules/ome-python.org
 
 *** jedi
 #+begin_src emacs-lisp
-(add-hook 'python-mode-hook  
-	  '(lambda () 
-	     (jedi:setup)
-	     (define-key jedi-mode-map (kbd "<C-tab>") nil)))
-(setq jedi:complete-on-dot t)  
+
+(defun my-setup-jedi () 
+  (jedi:setup)
+  (define-key jedi-mode-map (kbd "<C-tab>") nil)
+  (setq jedi:complete-on-dot t))
+
+(add-hook 'python-mode-hook 'my-setup-jedi)
+(add-hook 'inferior-python-mode-hook 'my-setup-jedi)
+
 #+end_src
 
 *** jedi-direx
@@ -701,12 +708,6 @@ remap magit keys because of window-meta-mode
 (add-hook 'dired-mode-hook (lambda () "DOCSTRING" (hl-line-mode 1)))
 #+end_src
 
-** direx
-#+begin_src emacs-lisp
-(push '(direx:direx-mode :position left :width 25 :dedicated t)
-      popwin:special-display-config)
-#+end_src
-
 ** recentf (recent files)
 http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
    #+BEGIN_SRC emacs-lisp
@@ -913,8 +914,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (my-set-key "C-z C-z" 'global-set-key)
 (my-set-key "C-z C-l" 'local-set-key)
 
-(my-set-key "<escape>" 'god-mode-all)
-
 (my-set-key "<s-SPC>" 'set-mark-command)
 
 (my-set-key "<C-M-tab>" 'auto-complete)
@@ -955,8 +954,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
   (my-set-key "C-c r" ros-keymap))
 
  #+END_SRC
-
- #+RESULTS:
 
 ** Toggle bindings
 *** Common
@@ -1032,11 +1029,14 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 ** Mode bindings
 #+begin_src emacs-lisp
-  (my-add-binding "C-c m g" my-mode-magit
-                  (command-execute 'magit-status))
- 
+(my-add-binding "C-c m g" my-mode-magit
+                (command-execute 'magit-status))
+
 (my-add-binding "C-c m e" my-mode-ebib
-                  (command-execute 'ebib))
+                (command-execute 'ebib))
+
+(my-add-binding "C-c m s" my-mode-eshell
+                (command-execute 'eshell))
 #+end_src
 
 *** Helm bindings
