@@ -769,6 +769,12 @@ http://steckerhalter.co.vu/steckemacs.html#sec-2-11-8
 #+end_src
 
 * Customizations
+** Common
+#+begin_src emacs-lisp
+(defadvice list-packages (after my-list-packages-advice activate)
+  (hl-line-mode 1))
+#+end_src
+
 ** Functions
 *** Swap window buffer
 https://gist.github.com/mariusaeriksen/287633
@@ -871,7 +877,6 @@ https://gist.github.com/mariusaeriksen/287633
 
    #+END_SRC
 
-* Macros
 * Key bindings
 Use a minor mode for custom key bindings. This allows to override other minor mode
 key bindings and also allow to more easily lookup custom bindigs (describe mode ...).
