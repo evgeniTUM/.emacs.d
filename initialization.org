@@ -551,6 +551,11 @@ thing."
 #+end_src
 
 * Packages
+** save-packages
+#+begin_src emacs-lisp
+(add-hook 'kill-emacs-hook 'save-packages)
+#+end_src
+
 ** Window management
 *** spaces
 #+begin_src emacs-lisp

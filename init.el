@@ -38,13 +38,14 @@
  '(popwin:special-display-config (quote ((direx:direx-mode :width 25 :position left :dedicated t) ("*Miniedit Help*" :noselect t) (help-mode) (completion-list-mode :noselect t) ("*Pp Macroexpand Output*" :noselect t) ("*Shell Command Output*") ("*vc-diff*") ("*vc-change-log*") ("*slime-apropos*") ("*slime-macroexpansion*") ("*slime-description*") ("*slime-compilation*" :noselect t) ("*slime-xref*") (sldb-mode :stick t) (slime-repl-mode) (slime-connection-list-mode))))
  '(preview-gs-options (quote ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(projectile-completion-system (quote default))
- '(python-shell-interpreter "~/shared/bin/ipython.sh" t)
+ '(python-shell-interpreter "~/shared/bin/ipython.sh")
  '(shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell)))))
  '(sublimity-handle-scroll-criteria (quote ((eq sublimity--prev-buf (current-buffer)) (eq sublimity--prev-wnd (selected-window)) (or (not (boundp (quote cua--rectangle))) (not cua--rectangle)) (or (not (boundp (quote multiple-cursors-mode))) (not multiple-cursors-mode)) (not (eq major-mode (quote shell-mode))))))
  '(sublimity-map-criteria (quote ((not buffer-read-only) (not (window-minibuffer-p)) (<= (/ sublimity-map-size (window-total-width) 1.0) sublimity-map-max-fraction))))
  '(sublimity-map-text-scale -8)
  '(sublimity-mode nil)
- '(visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow))))
+ '(visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow)))
+ '(yas-fallback-behavior (quote return-nil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
