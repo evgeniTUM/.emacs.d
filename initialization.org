@@ -313,16 +313,6 @@ https://github.com/xiaohanyu/oh-my-emacs/blob/master/modules/ome-python.org
 #+end_src
 
 ** Web Development
-*** Moz REPL
-   #+BEGIN_SRC emacs-lisp
-(require 'moz)
-(autoload 'moz-minor-mode "moz" "Mozilla Minor and Inferior Mozilla Modes" t)
-
-(add-hook 'javascript-mode-hook 'javascript-custom-setup)
-(defun javascript-custom-setup ()
-  (moz-minor-mode 1))
-   #+END_SRC
-
 * LaTeX (auctex)
   #+BEGIN_SRC emacs-lisp
 (setq TeX-auto-save t)
@@ -913,7 +903,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 			',name)))
  #+end_src
  
-** Common Bindings
+** Common
  #+begin_src emacs-lisp
 (global-unset-key (kbd "C-z"))
 (my-set-key "C-z C-z" 'global-set-key)
@@ -960,7 +950,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
  #+END_SRC
 
-** Toggle bindings
+** Toggle
 *** Common
  #+begin_src emacs-lisp
   ( my-add-binding "C-c t t" my-toggle-terminal
@@ -1032,7 +1022,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
                         (command-execute 'ecb-activate)))
  #+end_src
 
-** Mode bindings
+** Major-modes
 #+begin_src emacs-lisp
 (my-add-binding "C-c m g" my-mode-magit
                 (command-execute 'magit-status))
@@ -1094,7 +1084,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
    (my-set-key "C-x C-f" 'helm-find-files)
  #+end_src
  
-** Package Bindings
+** Modes
 *** my-swap-window bindings 
  #+begin_src emacs-lisp
    (my-set-key "C-M-1" '(lambda () (interactive) (my-swap-window-buffer 1)))
@@ -1203,6 +1193,14 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (define-key sp-keymap (kbd "C-c s S") 'sp-split-sexp)
 
 (define-key sp-keymap (kbd "C-c s k") 'sp-kill-hybrid-sexp)
+#+end_src
+
+** Local
+*** org-mode
+#+begin_src emacs-lisp
+(add-hook 'org-mode-hook 
+          (lambda () "DOCSTRING"   
+            (local-set-key (kbd "C-z s") 'org-screenshot)))
 #+end_src
 
 * TODO Work to do

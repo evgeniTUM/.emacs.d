@@ -34,11 +34,12 @@
  '(org-format-latex-options (quote (:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-src-preserve-indentation t)
  '(org-src-window-setup (quote current-window))
+ '(paradox-github-token t)
  '(popwin-mode t)
  '(popwin:special-display-config (quote ((direx:direx-mode :width 25 :position left :dedicated t) ("*Miniedit Help*" :noselect t) (help-mode) (completion-list-mode :noselect t) ("*Pp Macroexpand Output*" :noselect t) ("*Shell Command Output*") ("*vc-diff*") ("*vc-change-log*") ("*slime-apropos*") ("*slime-macroexpansion*") ("*slime-description*") ("*slime-compilation*" :noselect t) ("*slime-xref*") (sldb-mode :stick t) (slime-repl-mode) (slime-connection-list-mode))))
  '(preview-gs-options (quote ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(projectile-completion-system (quote default))
- '(python-shell-interpreter "~/shared/bin/ipython.sh")
+ '(python-shell-interpreter "~/shared/bin/ipython.sh" t)
  '(shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell)))))
  '(sublimity-handle-scroll-criteria (quote ((eq sublimity--prev-buf (current-buffer)) (eq sublimity--prev-wnd (selected-window)) (or (not (boundp (quote cua--rectangle))) (not cua--rectangle)) (or (not (boundp (quote multiple-cursors-mode))) (not multiple-cursors-mode)) (not (eq major-mode (quote shell-mode))))))
  '(sublimity-map-criteria (quote ((not buffer-read-only) (not (window-minibuffer-p)) (<= (/ sublimity-map-size (window-total-width) 1.0) sublimity-map-max-fraction))))
@@ -51,6 +52,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:background nil))))
  '(ahs-face ((t (:background "dim gray" :foreground "GhostWhite"))) t)
  '(grammar-error-face ((t (:underline (:color "red" :style wave)))) t)
  '(sp-show-pair-match-face ((t (:background "DeepSkyBlue4")))))
@@ -64,7 +66,7 @@
 
 (unless (package-installed-p 'save-packages)
     (package-install 'save-packages))
-(install-saved-packages)
+; (install-saved-packages)
 
 ;;; load initializatoin.org file
 (setq dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
