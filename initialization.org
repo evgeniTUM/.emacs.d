@@ -770,6 +770,7 @@ http://steckerhalter.co.vu/steckemacs.html#sec-2-11-8
 
 * Customizations
 ** Common
+*** package mode
 #+begin_src emacs-lisp
 (defadvice list-packages (after my-list-packages-advice activate)
   (hl-line-mode 1))
@@ -1056,6 +1057,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
    (my-set-key "C-c h O" 'helm-multi-occur)
    (my-set-key "C-c h P" 'helm-browse-project)
    (my-set-key "C-c h R" 'helm-resume)
+   (my-set-key "C-c h S" 'math-symbols-helm)
    (my-set-key "C-c h T" 'helm-themes)
    (my-set-key "C-c h a" 'helm-ag)
    (my-set-key "C-c h b" 'helm-bm)
