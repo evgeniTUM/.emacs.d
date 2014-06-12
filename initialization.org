@@ -810,6 +810,28 @@ https://gist.github.com/mariusaeriksen/287633
            (insert (current-kill 0)))))
 #+end_src
 
+*** open-line (above/below)
+http://emacsredux.com/blog/2013/06/15/open-line-above/
+
+#+begin_src emacs-lisp
+(defun smart-open-line ()
+  "Insert an empty line after the current line.
+Position the cursor at its beginning, according to the current mode."
+  (interactive)
+  (move-end-of-line nil)
+  (newline-and-indent))
+
+(defun smart-open-line-above ()
+  "Insert an empty line above the current line.
+Position the cursor at it's beginning, according to the current mode."
+  (interactive)
+  (move-beginning-of-line nil)
+  (newline-and-indent)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+#+end_src
+
 ** Options
 #+begin_src emacs-lisp
   (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -932,6 +954,9 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (my-set-key "C-x k" 'kill-this-buffer)
 (my-set-key "C-x j" 'direx:jump-to-directory-other-window)
 
+
+(my-set-key "M-o" 'smart-open-line)
+(my-set-key "M-O" 'smart-open-line-above)
 
 (my-set-key "C-c o l" 'org-store-link)
 (my-set-key "C-c o c" 'org-capture)
