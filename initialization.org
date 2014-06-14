@@ -663,12 +663,17 @@ integrate golden-ration with window-number
   (keyfreq-autosave-mode 1)
 #+end_src
 
+** midnight
+#+begin_src emacs-lisp
+(require 'midnight)
+#+end_src
+
 ** guide-key
 #+begin_src emacs-lisp
   (setq guide-key/guide-key-sequence '("C-x" "C-c" "M-s" "C-h"
                                        (org-mode "C-c C-x")))
   (guide-key-mode 1) 
-  (setq guide-key/idle-delay 0.5)
+  (setq guide-key/idle-delay 1)
   (setq guide-key/popup-window-position 'bottom)
   (setq guide-key/recursive-key-sequence-flag t)
 #+end_src
@@ -854,6 +859,8 @@ Position the cursor at it's beginning, according to the current mode."
 (setq tab-width 4)
 
 (setq sentence-end-double-space nil)
+(setq scroll-preserve-screen-position t)
+(setq isearch-allow-scroll t)
 
 (cua-selection-mode t)
 
@@ -978,7 +985,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
                 (expand-file-name "~/.emacs.d/init.el"))))
 
 (my-set-key "M-0" 'ace-jump-mode) 
-(my-set-key "C-0" 'iy-go-to-char)
 (my-set-key "C-=" 'er/expand-region)
 
 (my-set-key "C-c l" 'slime-selector)
@@ -1145,7 +1151,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
    (my-set-key "C-M-7" '(lambda () (interactive) (my-swap-window-buffer 7)))
    (my-set-key "C-M-8" '(lambda () (interactive) (my-swap-window-buffer 8)))
    (my-set-key "C-M-9" '(lambda () (interactive) (my-swap-window-buffer 9)))
-   (my-set-key "C-M-0" '(lambda () (interactive) (my-swap-window-buffer 10)))
  #+end_src
 
 *** drag-stuff
