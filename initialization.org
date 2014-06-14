@@ -52,6 +52,7 @@
 
 (define-key ac-completing-map [return] nil)
 (define-key ac-completing-map "\r" nil)
+(define-key ac-completing-map (kbd "M-TAB") nil)
 
 (define-key ac-menu-map (kbd "C-n") 'ac-next)
 (define-key ac-menu-map (kbd "C-p") 'ac-previous)    
@@ -862,8 +863,6 @@ Position the cursor at it's beginning, according to the current mode."
 (setq scroll-preserve-screen-position t)
 (setq isearch-allow-scroll t)
 
-(cua-selection-mode t)
-
 (setq default-major-mode 'org-mode)
 
 (put 'upcase-region 'disabled nil)
@@ -949,6 +948,8 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 ** Common
  #+begin_src emacs-lisp
 (global-unset-key (kbd "C-z"))
+(global-unset-key (kbd "C-x C-c"))
+
 (my-set-key "C-z C-z" 'global-set-key)
 (my-set-key "C-z C-l" 'local-set-key)
 
@@ -956,10 +957,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 (my-set-key "<C-M-tab>" 'auto-complete)
 (my-set-key "<C-tab>" 'my-ac-complete-with-helm)
-(my-set-key "<C-s-tab>" 'ac-fuzzy-complete)
-
-(define-key key-translation-map (kbd "<s-tab>") (kbd "M-TAB"))
-(my-set-key "<s-return>" 'open-line)
 
 (my-set-key "C-o" 'yas/expand)
 (my-set-key "M-/" 'hippie-expand) 
@@ -1028,31 +1025,23 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
  
 *** Interface
  #+begin_src emacs-lisp
-      
-      ; interface 
-      (my-add-binding "C-c t i m" my-toggle-menu-bar
-                      (command-execute 'toggle-menu-bar-mode-from-frame))
-      
-      (my-add-binding "C-c t i b" my-toggle-tool-bar
-                      (command-execute 'toggle-tool-bar-mode-from-frame))
-      
-      (my-add-binding "C-c t i s" my-toggle-scroll-bar
-                      (command-execute 'toggle-scroll-bar))
-      
-      (my-add-binding "C-c t i g" my-toggle-golden-ration
-                      (command-execute 'golden-ratio-mode))
-      
-      (my-add-binding "C-c t i t" my-toggle-tabbar
-                      (command-execute 'tabbar-mode))
-      
-      (my-add-binding "C-c t i l" my-toggle-linum
-                      (command-execute 'linum-mode))
+(my-set-key "C-c t i b" 'toggle-tool-bar-mode-from-frame)
 
-      (my-add-binding "C-c t i w" my-toggle-truncate-lines
-                      (command-execute 'toggle-truncate-lines))
+(my-set-key "C-c t i f" 'auto-fill-mode)
 
-      (my-add-binding "C-c t i v" my-toggle-visual-line-mode
-                      (command-execute 'visual-line-mode))
+(my-set-key "C-c t i g" 'golden-ratio-mode)
+
+(my-set-key "C-c t i l" 'linum-mode)
+
+(my-set-key "C-c t i m" 'toggle-menu-bar-mode-from-frame)
+
+(my-set-key "C-c t i s" 'toggle-scroll-bar)
+
+(my-set-key "C-c t i t" 'tabbar-mode)
+
+(my-set-key "C-c t i v" 'visual-line-mode)
+
+(my-set-key "C-c t i w" 'toggle-truncate-lines)
  #+end_src
  
 *** ECB
@@ -1084,10 +1073,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 *** Helm bindings
  #+begin_src emacs-lisp
-   (my-set-key "C-c h TAB" 'ac-complete-with-helm) 
    (my-set-key "C-c h C-g" 'helm-google-suggest)
-   (my-set-key "C-c h C-o" 'helm-swoop)
-   (my-set-key "C-c h C-S-o" 'helm-multi-swoop)
    
    (my-set-key "C-c h A" 'helm-ag-r)
    (my-set-key "C-c h B" 'helm-bibtex)
