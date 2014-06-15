@@ -986,6 +986,8 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 (my-set-key "C-c l" 'slime-selector)
 
+(my-set-key "C-c f" 'transpose-frame)
+
 ;; rosemacs
 (when (boundp 'ros-keymap)
   (my-set-key "C-c r" ros-keymap))
