@@ -1128,15 +1128,15 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 *** my-swap-window bindings 
  #+begin_src emacs-lisp
-   (my-set-key "C-M-1" '(lambda () (interactive) (my-swap-window-buffer 1)))
-   (my-set-key "C-M-2" '(lambda () (interactive) (my-swap-window-buffer 2)))
-   (my-set-key "C-M-3" '(lambda () (interactive) (my-swap-window-buffer 3)))
-   (my-set-key "C-M-4" '(lambda () (interactive) (my-swap-window-buffer 4)))
-   (my-set-key "C-M-5" '(lambda () (interactive) (my-swap-window-buffer 5)))
-   (my-set-key "C-M-6" '(lambda () (interactive) (my-swap-window-buffer 6)))
-   (my-set-key "C-M-7" '(lambda () (interactive) (my-swap-window-buffer 7)))
-   (my-set-key "C-M-8" '(lambda () (interactive) (my-swap-window-buffer 8)))
-   (my-set-key "C-M-9" '(lambda () (interactive) (my-swap-window-buffer 9)))
+   (my-set-key "C-M-1" '(lambda () "move buffer to window 1" (interactive) (my-swap-window-buffer 1)))
+   (my-set-key "C-M-2" '(lambda () "move buffer to window 2" (interactive) (my-swap-window-buffer 2)))
+   (my-set-key "C-M-3" '(lambda () "move buffer to window 3" (interactive) (my-swap-window-buffer 3)))
+   (my-set-key "C-M-4" '(lambda () "move buffer to window 4" (interactive) (my-swap-window-buffer 4)))
+   (my-set-key "C-M-5" '(lambda () "move buffer to window 5" (interactive) (my-swap-window-buffer 5)))
+   (my-set-key "C-M-6" '(lambda () "move buffer to window 6" (interactive) (my-swap-window-buffer 6)))
+   (my-set-key "C-M-7" '(lambda () "move buffer to window 7" (interactive) (my-swap-window-buffer 7)))
+   (my-set-key "C-M-8" '(lambda () "move buffer to window 8" (interactive) (my-swap-window-buffer 8)))
+   (my-set-key "C-M-9" '(lambda () "move buffer to window 9" (interactive) (my-swap-window-buffer 9)))
  #+end_src
 
 *** drag-stuff
