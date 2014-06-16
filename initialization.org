@@ -66,13 +66,13 @@
 ** fuzzy isearch
 hack popup-isearch to do fuzzy search with the help of grizzl
 #+begin_src emacs-lisp
-(defvar *my-isearch-cache* nil)
+;; (defvar *my-isearch-cache* nil)
 
-(defun popup-isearch-filter-list (pattern list)
-  (let*  ((index (grizzl-make-index list))
-          (pattern (replace-regexp-in-string " " "" pattern))
-          (result (grizzl-search pattern index *my-isearch-cache*)))
-    (grizzl-result-strings result index)))
+;; (defun popup-isearch-filter-list (pattern list)
+;;   (let*  ((index (grizzl-make-index list))
+;;           (pattern (replace-regexp-in-string " " "" pattern))
+;;           (result (grizzl-search pattern index *my-isearch-cache*)))
+;;     (grizzl-result-strings result index)))
 #+end_src
 
 ** Sources
@@ -472,13 +472,7 @@ https://github.com/xiaohanyu/oh-my-emacs/blob/master/modules/ome-python.org
  python-shell-interpreter "~/shared/bin/ipython.sh"
  python-shell-interpreter-args ""
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
- python-shell-completion-setup-code
- "from IPython.core.completerlib import module_completion"
- python-shell-completion-module-string-code
- "';'.join(module_completion('''%s'''))\n"
- python-shell-completion-string-code
- "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
 #+END_SRC
 
 *** jedi
@@ -499,15 +493,6 @@ https://github.com/xiaohanyu/oh-my-emacs/blob/master/modules/ome-python.org
 (eval-after-load "python"
   '(define-key python-mode-map "\C-zx" 'jedi-direx:pop-to-buffer))
 (add-hook 'jedi-mode-hook 'jedi-direx:setup)
-#+end_src
-
-*** org-mode inferior python auto-complete fix
-#+begin_src emacs-lisp
-(add-hook 'inferior-python-mode-hook
-  (lambda ()
-         (auto-complete-mode 1)
-         (jedi:setup)
-         (setq jedi:complete-on-dot t)))
 #+end_src
 
 ** Maxima
@@ -539,6 +524,7 @@ https://github.com/xiaohanyu/oh-my-emacs/blob/master/modules/ome-python.org
 #+begin_src emacs-lisp
 (add-hook 'css-mode 'turn-on-css-eldoc)
 #+end_src
+
 ** Other
 *** diff-hl
 http://steckerhalter.co.vu/steckemacs.html#sec-2-11-8
@@ -665,6 +651,7 @@ integrate golden-ration with window-number
 #+begin_src emacs-lisp
 (require 'transpose-frame)
 #+end_src
+
 ** save-packages
 #+begin_src emacs-lisp
 (add-hook 'kill-emacs-hook 'save-packages)
@@ -950,30 +937,39 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 			',name)))
  #+end_src
  
-** Common
- #+begin_src emacs-lisp
+** Redefinitions
+#+begin_src emacs-lisp
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-c"))
-
 (my-set-key "C-z C-z" 'global-set-key)
 (my-set-key "C-z C-l" 'local-set-key)
 
+(my-set-key "C-o" 'yas/expand)
+(my-set-key "M-/" 'hippie-expand)
+
+(my-set-key "M-o" 'smart-open-line)
+(my-set-key "M-O" 'smart-open-line-above)
+
+(my-set-key "M-0" 'ace-jump-mode) 
+(my-set-key "C-=" 'er/expand-region)
+
+(my-set-key "C-x k" 'kill-this-buffer)
+(my-set-key "C-x j" 'direx:jump-to-directory-other-window)
+
+(my-set-key "C-h a" 'helm-apropos)
+(my-set-key "C-x C-b" 'helm-buffers-list)
+(my-set-key "M-x" 'helm-M-x)
+(my-set-key "C-x C-f" 'helm-find-files)
+#+end_src
+
+** Common
+ #+begin_src emacs-lisp
 (my-set-key "<s-SPC>" 'set-mark-command)
 
 (my-set-key "<C-tab>" 'auto-complete)
 (my-set-key "<C-M-tab>" 'my-ac-complete-with-helm)
 
-(my-set-key "C-o" 'yas/expand)
-(my-set-key "M-/" 'hippie-expand) 
-
 (my-set-key "C-c e" 'eval-and-replace)
-
-(my-set-key "C-x k" 'kill-this-buffer)
-(my-set-key "C-x j" 'direx:jump-to-directory-other-window)
-
-
-(my-set-key "M-o" 'smart-open-line)
-(my-set-key "M-O" 'smart-open-line-above)
 
 (my-set-key "C-c o l" 'org-store-link)
 (my-set-key "C-c o c" 'org-capture)
@@ -986,12 +982,8 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
                (load-file 
                 (expand-file-name "~/.emacs.d/init.el"))))
 
-(my-set-key "M-0" 'ace-jump-mode) 
-(my-set-key "C-=" 'er/expand-region)
-
 (my-set-key "C-c l" 'slime-selector)
 
-(my-set-key "C-c T" 'transpose-frame)
 (my-set-key "C-c f" 'ffap)
 
 ;; rosemacs
@@ -1002,58 +994,34 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 ** Toggle
 *** Common
- #+begin_src emacs-lisp
-  ( my-add-binding "C-c t t" my-toggle-terminal
-                   (shell-pop nil))
-   
-   (my-add-binding "C-c t b" my-toggle-speedbar
-                   (command-execute 'sr-speedbar-toggle))
-   
-   (my-add-binding "C-c t l" my-toggle-scroll-lock
-                   (command-execute 'scroll-lock-mode))
-   
-   (my-add-binding "C-c t m" my-toggle-sublimity 
-                   (command-execute 'sublimity-mode))
-   
-   (my-add-binding "C-c t c" my-toggle-flycheck
-                   (command-execute 'flycheck-mode))
-   
-   (my-add-binding "C-c t h" my-toggle-hideshow-org
-                   (command-execute 'hs-org/minor-mode))
-   
-   (my-add-binding "C-c t s" my-toggle-flyspell
-                   (command-execute 'flyspell-mode))
-   
-   (my-add-binding "C-c t a" my-toggle-autorevert-mode
-                   (command-execute 'auto-revert-mode))
-   
-   (my-add-binding "C-c t v" my-toggle-view-mode
-                   (command-execute 'view-mode))
+#+begin_src emacs-lisp
+(my-add-binding "C-c t t" my-toggle-terminal (shell-pop nil))
+
+(my-set-key "C-c t a" 'auto-revert-mode)
+(my-set-key "C-c t b" 'sr-speedbar-toggle)
+(my-set-key "C-c t c" 'flycheck-mode)
+(my-set-key "C-c t h" 'hs-org/minor-mode)
+(my-set-key "C-c t l" 'scroll-lock-mode)
+(my-set-key "C-c t m" 'sublimity-mode)
+(my-set-key "C-c t s" 'flyspell-mode)
+(my-set-key "C-c t v" 'view-mode)
  #+end_src
  
 *** Interface
- #+begin_src emacs-lisp
-(my-set-key "C-c t i b" 'toggle-tool-bar-mode-from-frame)
-
-(my-set-key "C-c t i f" 'auto-fill-mode)
-
-(my-set-key "C-c t i g" 'golden-ratio-mode)
-
-(my-set-key "C-c t i l" 'linum-mode)
-
-(my-set-key "C-c t i m" 'toggle-menu-bar-mode-from-frame)
-
-(my-set-key "C-c t i s" 'toggle-scroll-bar)
-
-(my-set-key "C-c t i t" 'tabbar-mode)
-
-(my-set-key "C-c t i v" 'visual-line-mode)
-
-(my-set-key "C-c t i w" 'toggle-truncate-lines)
+#+begin_src emacs-lisp
+(my-set-key "C-c i b" 'toggle-tool-bar-mode-from-frame)
+(my-set-key "C-c i f" 'auto-fill-mode)
+(my-set-key "C-c i g" 'golden-ratio-mode)
+(my-set-key "C-c i l" 'linum-mode)
+(my-set-key "C-c i m" 'toggle-menu-bar-mode-from-frame)
+(my-set-key "C-c i s" 'toggle-scroll-bar)
+(my-set-key "C-c i t" 'tabbar-mode)
+(my-set-key "C-c i v" 'visual-line-mode)
+(my-set-key "C-c i w" 'toggle-truncate-lines)
  #+end_src
  
 *** ECB
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
       (setq my-ecb-active-p nil)
       (add-hook 'ecb-activate-hook #'(lambda () (setq my-ecb-active-p t)))
       (add-hook 'ecb-deactivate-hook #'(lambda () (setq my-ecb-active-p nil)))
@@ -1069,62 +1037,53 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (my-set-key "C-c m m" 'helm-enable-minor-mode)
 (my-set-key "C-c m M" 'helm-disable-minor-mode)
 
-(my-add-binding "C-c m g" my-mode-magit
-                (command-execute 'magit-status))
+(my-set-key "C-c m g" 'magit-status)
 
-(my-add-binding "C-c m e" my-mode-ebib
-                (command-execute 'ebib))
+(my-set-key "C-c m e" 'ebib)
 
-(my-add-binding "C-c m s" my-mode-eshell
-                (command-execute 'eshell))
+(my-set-key "C-c m s" 'eshell)
 #+end_src
 
-*** Helm bindings
+** Helm bindings
  #+begin_src emacs-lisp
-   (my-set-key "C-c h C-g" 'helm-google-suggest)
-   
-   (my-set-key "C-c h A" 'helm-ag-r)
-   (my-set-key "C-c h B" 'helm-bibtex)
-   (my-set-key "C-c h C" 'helm-colors)
-   (my-set-key "C-c h F" 'helm-find)
-   (my-set-key "C-c h G" 'helm-git-grep)
-   (my-set-key "C-c h L" 'helm-locate-library)
-   (my-set-key "C-c h M" 'helm-descbinds)
-   (my-set-key "C-c h O" 'helm-multi-occur)
-   (my-set-key "C-c h P" 'helm-browse-project)
-   (my-set-key "C-c h R" 'helm-resume)
-   (my-set-key "C-c h S" 'math-symbols-helm)
-   (my-set-key "C-c h T" 'helm-themes)
-   (my-set-key "C-c h a" 'helm-ag)
-   (my-set-key "C-c h b" 'helm-bm)
-   (my-set-key "C-c h c" 'helm-flycheck)
-   (my-set-key "C-c h d" 'helm-dash)
-   (my-set-key "C-c h f" 'helm-for-files) 
-   (my-set-key "C-c h g" 'helm-do-grep)
-   (my-set-key "C-c h h" 'helm-org-headlines)
-   (my-set-key "C-c h i" 'helm-imenu)
-   (my-set-key "C-c h k" 'helm-show-kill-ring)
-   (my-set-key "C-c h l" 'helm-locate)
-   (my-set-key "C-c h m" 'helm-all-mark-rings)
-   (my-set-key "C-c h o" 'helm-occur)
-   (my-set-key "C-c h p" 'helm-projectile)
-   (my-set-key "C-c h r" 'helm-register)
-   (my-set-key "C-c h s" 'helm-semantic)
-   (my-set-key "C-c h w" 'helm-spaces)
-   (my-set-key "C-c h x" 'helm-regexp)
-   (my-set-key "C-c h y" 'helm-yas-complete)
-   (my-set-key "C-c h 8" 'helm-ucs)
-   
-   ; info commands
-   (my-set-key "C-c h I e" 'helm-info-emacs)
-   (my-set-key "C-c h I o" 'helm-orgcard)
-   (my-set-key "C-c h I p" 'helm-pydoc)
-   
-   ; redefine common bindings
-   (my-set-key "C-h a" 'helm-apropos)
-   (my-set-key "C-x C-b" 'helm-buffers-list)
-   (my-set-key "M-x" 'helm-M-x)
-   (my-set-key "C-x C-f" 'helm-find-files)
+(my-set-key "C-c h C-g" 'helm-google-suggest)
+
+(my-set-key "C-c h A" 'helm-ag-r)
+(my-set-key "C-c h B" 'helm-bibtex)
+(my-set-key "C-c h C" 'helm-colors)
+(my-set-key "C-c h F" 'helm-find)
+(my-set-key "C-c h G" 'helm-git-grep)
+(my-set-key "C-c h L" 'helm-locate-library)
+(my-set-key "C-c h M" 'helm-descbinds)
+(my-set-key "C-c h O" 'helm-multi-occur)
+(my-set-key "C-c h P" 'helm-browse-project)
+(my-set-key "C-c h R" 'helm-resume)
+(my-set-key "C-c h S" 'math-symbols-helm)
+(my-set-key "C-c h T" 'helm-themes)
+(my-set-key "C-c h a" 'helm-ag)
+(my-set-key "C-c h b" 'helm-bm)
+(my-set-key "C-c h c" 'helm-flycheck)
+(my-set-key "C-c h d" 'helm-dash)
+(my-set-key "C-c h f" 'helm-for-files) 
+(my-set-key "C-c h g" 'helm-do-grep)
+(my-set-key "C-c h h" 'helm-org-headlines)
+(my-set-key "C-c h i" 'helm-imenu)
+(my-set-key "C-c h k" 'helm-show-kill-ring)
+(my-set-key "C-c h l" 'helm-locate)
+(my-set-key "C-c h m" 'helm-all-mark-rings)
+(my-set-key "C-c h o" 'helm-occur)
+(my-set-key "C-c h p" 'helm-projectile)
+(my-set-key "C-c h r" 'helm-register)
+(my-set-key "C-c h s" 'helm-semantic)
+(my-set-key "C-c h w" 'helm-spaces)
+(my-set-key "C-c h x" 'helm-regexp)
+(my-set-key "C-c h y" 'helm-yas-complete)
+(my-set-key "C-c h 8" 'helm-ucs)
+
+; info commands
+(my-set-key "C-c h I e" 'helm-info-emacs)
+(my-set-key "C-c h I o" 'helm-orgcard)
+(my-set-key "C-c h I p" 'helm-pydoc)
  #+end_src
  
 ** Modes
@@ -1178,10 +1137,11 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
   (define-key smartscan-map (kbd "M-s-n") 'smartscan-symbol-go-forward)
 #+end_src
 
-*** winner-mode
+*** winner-mode and transpose-frame
 #+begin_src emacs-lisp
-   (my-set-key "C-c w" 'winner-undo)
-   (my-set-key "C-c W" 'winner-redo)
+(my-set-key "C-c w w" 'winner-undo)
+(my-set-key "C-c w W" 'winner-redo)
+(my-set-key "C-c w t" 'transpose-frame)
 #+end_src
 
 *** multiple-cursors
