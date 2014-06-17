@@ -1,8 +1,9 @@
 * Initialization
 ** Inits
    #+BEGIN_SRC emacs-lisp
-     (add-to-list 'load-path "~/.emacs.d/lisp/")
-     (require 'cl)
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(require 'cl)
+(setq user-full-name "Evgeni Pavlidis")
    #+END_SRC
 
 ** Machine specific settings
@@ -613,12 +614,6 @@ needs link-grammar installed
 (sublimity-map-set-delay 'inf)
 #+end_src
 
-*** back-button
-#+begin_src emacs-lisp
-(require 'back-button)
-(back-button-mode 1)
-#+end_src
-
 ** Window management
 *** spaces
 #+begin_src emacs-lisp
@@ -647,6 +642,19 @@ integrate golden-ration with window-number
 *** dedicated
 #+begin_src emacs-lisp
 (require 'dedicated)
+#+end_src
+
+** Navigation
+*** zap-up-to-char
+#+begin_src emacs-lisp
+(autoload 'zap-up-to-char "misc"
+  "Kill up to, but not including ARGth occurrence of CHAR.")
+#+end_src
+
+*** back-button
+#+begin_src emacs-lisp
+(require 'back-button)
+(back-button-mode 1)
 #+end_src
 
 ** save-packages
@@ -811,7 +819,6 @@ http://steckerhalter.co.vu/
   (kill-ring-save (line-beginning-position)
                   (line-beginning-position (+ 1 arg))))
 #+end_src
-
  
 ** Options
 #+begin_src emacs-lisp
@@ -845,18 +852,21 @@ http://steckerhalter.co.vu/
 #+END_SRC
 
 ** Mode line
-*** mode line format
+*** format
 #+begin_src emacs-lisp
 (setq-default mode-line-format 
-              '("%e"
-                (:eval (propertize (number-to-string (window-number)) 'face 'helm-source-header))
+              '("%e "
+                (:eval (propertize (number-to-string (window-number))
+                                   'face 'helm-source-header))
 
-                "(" ;; '%02' to set to 2 chars at least; prevents flickering
-                (:eval (propertize "%02l" 'face 'font-lock-preprocessor-face)) ","
-                (:eval (propertize "%02c" 'face 'font-lock-preprocessor-face)) 
-                ") "
-                (:eval (propertize "%p" 'face 'font-lock-constant-face))
-                " ["
+                " "
+                (:eval (propertize "%02l"
+                                   'face 'font-lock-preprocessor-face)) ","
+                (:eval (propertize "%02c"
+                                   'face 'font-lock-preprocessor-face)) 
+                " "
+                (:eval (propertize "%p"))
+                " "
 
                 mode-line-mule-info
                 (:eval (when overwrite-mode 
@@ -875,22 +885,21 @@ http://steckerhalter.co.vu/
                                      'face 'font-lock-type-face
                                      'help-echo "Buffer is read-only")))  
 
-                (:eval (when (file-remote-p (buffer-file-name))
+                (:eval (when (and (buffer-file-name) (file-remote-p (buffer-file-name)))
                          (propertize "@"
                                      'face 'font-lock-type-face
                                      'help-echo "Buffer is read-only")))  
-                "] "
-                (:eval (propertize "%b " 
-                                   'face 'font-lock-keyword-face
-                                   'help-echo (buffer-file-name)))
-                (:eval (propertize smartrep-mode-line-string 'face 'font-lock-warning-face))
+                " "
+                (:eval (propertize "%b "
+                                   'face 'font-lock-keyword-face))
 
+                smartrep-mode-line-string
                 mode-line-modes 
                 mode-line-misc-info 
                 mode-line-end-spaces
 
-                (:eval (propertize vc-mode  
-                                   'face 'font-lock-string-face))))
+                (:eval (when vc-mode (propertize vc-mode  
+                                   'face 'font-lock-string-face)))))
 #+end_src
 
 *** diminish
@@ -931,6 +940,11 @@ http://steckerhalter.co.vu/
 (eval-after-load "back-button"
   '(diminish 'back-button-mode))
    #+END_SRC
+
+*** frame-title
+#+begin_src emacs-lisp
+(setq frame-title-format "%b")
+#+end_src
 
 ** dired
 #+begin_src emacs-lisp
@@ -1000,16 +1014,20 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 ** Macros
  #+BEGIN_SRC emacs-lisp 
-   (defmacro my-set-key (key &rest body)
-     `(define-key my-keys-minor-mode-map (kbd ,key) ,@body))
-   
-   (defmacro my-add-binding (key name &rest body)
-     `(progn
-	(defun ,name ()
-	  (interactive)
-	  ,@body)
-	(my-set-key (kbd ,key)
-			',name)))
+(defmacro my-set-key (key &rest body)
+  `(define-key my-keys-minor-mode-map (kbd ,key) ,@body))
+
+(defmacro my-add-binding (key name &rest body)
+  `(progn
+     (defun ,name ()
+       (interactive)
+       ,@body)
+     (my-set-key (kbd ,key)
+                 ',name)))
+
+(defmacro my-add-smartrep-bindings (prefix &rest body)
+  `(smartrep-define-key my-keys-minor-mode-map
+       (kbd ,prefix) '(,@body)))
  #+end_src
  
 ** Redefinitions
@@ -1047,7 +1065,11 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 (my-set-key "M-W" 'my-copy-line)
 
+(my-set-key "M-z" 'zap-up-to-char)
+(my-set-key "M-Z" 'zap-to-char)
+
 (my-set-key "C-c e" 'eval-and-replace)
+(my-set-key "C-c F" 'my-show-file-name)
 
 (my-set-key "C-c o l" 'org-store-link)
 (my-set-key "C-c o c" 'org-capture)
@@ -1168,11 +1190,20 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 ** Modes
 *** Window management
 #+begin_src emacs-lisp
-(my-set-key "C-c w w" 'winner-undo)
-(my-set-key "C-c w W" 'winner-redo)
+(my-add-smartrep-bindings "C-c w"
+                          ("w" . (winner-undo))
+                          ("W" . (winner-redo)))
 (my-set-key "C-c w t" 'transpose-frame)
 (my-set-key "C-c w m" 'my-switch-to-minibuffer-window)
 (my-set-key "C-c w d" 'dedicated-mode)
+
+(my-add-smartrep-bindings "C-c w c"
+                          ("i" . (command-execute 'enlarge-window))
+                          ("k" . (command-execute 'shrink-window))
+                          ("l" . (command-execute 'enlarge-window-horizontally))
+                          ("j" . (command-execute 'shrink-window-horizontally))
+                          ("o" . (command-execute 'other-window))
+                          ("O" . (command-execute 'other-window '-)))
 #+end_src
 
 *** goto-last-change
@@ -1210,10 +1241,13 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 *** bm (visual bookmarsk)
 #+begin_src emacs-lisp
-  (my-set-key "C-c b b" 'bm-toggle)
-  (my-set-key "C-c b n" 'bm-next)
-  (my-set-key "C-c b p" 'bm-previous)
-  (my-set-key "C-c b s" 'bm-toggle-buffer-persistence)
+(my-set-key "C-c b b" 'bm-toggle)
+(my-set-key "C-c b s" 'bm-toggle-buffer-persistence)
+
+(my-add-smartrep-bindings "C-c b"
+                          ("n" . (bm-next))
+                          ("p" . (bm-previous)))
+
 #+end_src
 
 *** smartscan 
