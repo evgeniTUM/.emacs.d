@@ -249,7 +249,6 @@ http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
           ("" "soul" t)
           ("xetex" "hyperref" nil)
           ))
-
 #+end_src
 
 *** RefTex integration
@@ -614,6 +613,12 @@ needs link-grammar installed
 (sublimity-map-set-delay 'inf)
 #+end_src
 
+*** back-button
+#+begin_src emacs-lisp
+(require 'back-button)
+(back-button-mode 1)
+#+end_src
+
 ** Window management
 *** spaces
 #+begin_src emacs-lisp
@@ -623,20 +628,7 @@ needs link-grammar installed
 *** window-number
 #+begin_src emacs-lisp
   (require 'window-number)
-
-
-  (define-minor-mode window-number-meta-mode
-    "A global minor mode that enables selection of windows
-according to numbers with the C-x C-j prefix.  Another mode,
-`window-number-meta-mode' enables the use of the M- prefix."
-    :global t
-    :init-value nil
-    :lighter (:eval (window-number-string))
-    (window-number-set-inactive-color)
-    )
-
   (window-number-meta-mode)
-
 #+end_src
 
 
@@ -650,6 +642,11 @@ integrate golden-ration with window-number
 *** transpose-frame
 #+begin_src emacs-lisp
 (require 'transpose-frame)
+#+end_src
+
+*** dedicated
+#+begin_src emacs-lisp
+(require 'dedicated)
 #+end_src
 
 ** save-packages
@@ -786,6 +783,36 @@ Position the cursor at it's beginning, according to the current mode."
 
 #+end_src
 
+*** my-show-filename
+http://steckerhalter.co.vu/
+#+begin_src emacs-lisp
+(defun my-show-file-name ()
+  "Show the full path file name in the minibuffer."
+  (interactive)
+  (message (buffer-file-name))
+  (kill-new (file-truename buffer-file-name)))
+#+end_src
+
+*** my-switch-to-minibuffer-window
+http://steckerhalter.co.vu/
+#+begin_src emacs-lisp
+(defun my-switch-to-minibuffer-window ()
+  "Switch to minibuffer window (if active)."
+  (interactive)
+  (when (active-minibuffer-window)
+    (select-window (active-minibuffer-window))))
+#+end_src
+
+*** copy-line 
+#+begin_src emacs-lisp
+(defun my-copy-line (arg)
+  "Copy lines (as many as prefix argument) in the kill ring"
+  (interactive "p")
+  (kill-ring-save (line-beginning-position)
+                  (line-beginning-position (+ 1 arg))))
+#+end_src
+
+ 
 ** Options
 #+begin_src emacs-lisp
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -802,6 +829,8 @@ Position the cursor at it's beginning, according to the current mode."
 (setq scroll-preserve-screen-position t)
 (setq isearch-allow-scroll t)
 
+(delete-selection-mode 1)
+
 (setq default-major-mode 'org-mode)
 
 (put 'upcase-region 'disabled nil)
@@ -816,6 +845,54 @@ Position the cursor at it's beginning, according to the current mode."
 #+END_SRC
 
 ** Mode line
+*** mode line format
+#+begin_src emacs-lisp
+(setq-default mode-line-format 
+              '("%e"
+                (:eval (propertize (number-to-string (window-number)) 'face 'helm-source-header))
+
+                "(" ;; '%02' to set to 2 chars at least; prevents flickering
+                (:eval (propertize "%02l" 'face 'font-lock-preprocessor-face)) ","
+                (:eval (propertize "%02c" 'face 'font-lock-preprocessor-face)) 
+                ") "
+                (:eval (propertize "%p" 'face 'font-lock-constant-face))
+                " ["
+
+                mode-line-mule-info
+                (:eval (when overwrite-mode 
+                         (propertize "O" 
+                             'face 'font-lock-preprocessor-face
+                             'help-echo (concat "Buffer is in "
+                                                (if overwrite-mode "overwrite" "insert") " mode"))))
+
+                (:eval (when (buffer-modified-p)
+                         (propertize "X"
+                                     'face 'font-lock-warning-face
+                                     'help-echo "Buffer has been modified")))
+
+                (:eval (when buffer-read-only
+                         (propertize "R"
+                                     'face 'font-lock-type-face
+                                     'help-echo "Buffer is read-only")))  
+
+                (:eval (when (file-remote-p (buffer-file-name))
+                         (propertize "@"
+                                     'face 'font-lock-type-face
+                                     'help-echo "Buffer is read-only")))  
+                "] "
+                (:eval (propertize "%b " 
+                                   'face 'font-lock-keyword-face
+                                   'help-echo (buffer-file-name)))
+                (:eval (propertize smartrep-mode-line-string 'face 'font-lock-warning-face))
+
+                mode-line-modes 
+                mode-line-misc-info 
+                mode-line-end-spaces
+
+                (:eval (propertize vc-mode  
+                                   'face 'font-lock-string-face))))
+#+end_src
+
 *** diminish
    #+begin_src emacs-lisp
 (eval-after-load "auto-complete"
@@ -851,6 +928,8 @@ Position the cursor at it's beginning, according to the current mode."
 (eval-after-load "guide-key" 
   '(diminish 'guide-key-mode))   
 
+(eval-after-load "back-button"
+  '(diminish 'back-button-mode))
    #+END_SRC
 
 ** dired
@@ -897,10 +976,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
     (winner-mode)
     (global-hi-lock-mode 1)
     
-    (column-number-mode t)
-    
-    (powerline-default-theme)
-    
     (global-undo-tree-mode)
     
     (global-smartscan-mode 1)
@@ -944,6 +1019,9 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (my-set-key "C-z C-z" 'global-set-key)
 (my-set-key "C-z C-l" 'local-set-key)
 
+(my-set-key "<s-SPC>" 'just-one-space)
+(my-set-key "<M-SPC>" 'set-mark-command)
+
 (my-set-key "C-o" 'yas/expand)
 (my-set-key "M-/" 'hippie-expand)
 
@@ -964,10 +1042,10 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 ** Common
  #+begin_src emacs-lisp
-(my-set-key "<s-SPC>" 'set-mark-command)
-
 (my-set-key "<C-tab>" 'auto-complete)
 (my-set-key "<C-M-tab>" 'my-ac-complete-with-helm)
+
+(my-set-key "M-W" 'my-copy-line)
 
 (my-set-key "C-c e" 'eval-and-replace)
 
@@ -1046,7 +1124,8 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 ** Helm bindings
  #+begin_src emacs-lisp
-(my-set-key "C-c h C-g" 'helm-google-suggest)
+(my-set-key "C-c G" 'helm-google-suggest)
+(my-set-key "C-c g" 'helm-google)
 
 (my-set-key "C-c h A" 'helm-ag-r)
 (my-set-key "C-c h B" 'helm-bibtex)
@@ -1087,6 +1166,15 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
  #+end_src
  
 ** Modes
+*** Window management
+#+begin_src emacs-lisp
+(my-set-key "C-c w w" 'winner-undo)
+(my-set-key "C-c w W" 'winner-redo)
+(my-set-key "C-c w t" 'transpose-frame)
+(my-set-key "C-c w m" 'my-switch-to-minibuffer-window)
+(my-set-key "C-c w d" 'dedicated-mode)
+#+end_src
+
 *** goto-last-change
 #+begin_src emacs-lisp
 (my-set-key "s-/" 'goto-last-change)
@@ -1135,13 +1223,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
   
   (define-key smartscan-map (kbd "M-s-p") 'smartscan-symbol-go-backward)
   (define-key smartscan-map (kbd "M-s-n") 'smartscan-symbol-go-forward)
-#+end_src
-
-*** winner-mode and transpose-frame
-#+begin_src emacs-lisp
-(my-set-key "C-c w w" 'winner-undo)
-(my-set-key "C-c w W" 'winner-redo)
-(my-set-key "C-c w t" 'transpose-frame)
 #+end_src
 
 *** multiple-cursors
@@ -1203,6 +1284,12 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (define-key sp-keymap (kbd "C-c s k") 'sp-kill-hybrid-sexp)
 #+end_src
 
+*** howdoi
+#+begin_src emacs-lisp
+(my-set-key "C-c q" (lambda () (interactive) (command-execute 'howdoi-query)))
+(my-set-key "C-c Q" (lambda () (interactive) (command-execute 'howdoi-query-line-at-point)))
+#+end_src
+
 ** Local
 *** org-mode
 #+begin_src emacs-lisp
@@ -1212,6 +1299,9 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 #+end_src
 
 * TODO Work to do
+
+** webjump
+
 * Inactive
 :PROPERTIES:
 :tangle: no
