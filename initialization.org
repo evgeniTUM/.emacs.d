@@ -380,6 +380,41 @@ specified in `helm-bibtex-pdf-open-function',"
 (setq helm-dash-docsets-path (expand-file-name "~/.emacs.d/.docsets"))
 #+end_src
 
+*** Macros
+#+begin_src emacs-lisp
+(defun my-dash-docset-installed-p (docset)
+  (file-exists-p (concat helm-dash-docsets-path "/" docset ".docset")))
+
+(defun my-dash-install-docsets (docsets)
+  (mapcar (lambda (docset) 
+            "install docsets if not already installed"
+            (unless (my-dash-docset-installed-p docset)
+              (helm-dash-install-docset (replace-regexp-in-string " " "_" docset))))
+          docsets))
+
+(defmacro my-dash-define-docsets-for-mode (hook docsets)
+  `(progn
+     (my-dash-install-docsets ,docsets)
+     (add-hook ,hook '(lambda () 
+                        "load dashsets for this mode"
+                        (setq-local helm-dash-docsets ,docsets)))))
+#+end_src
+
+*** Python
+#+begin_src emacs-lisp
+(my-dash-define-docsets-for-mode 'python-mode-hook '("Python_2" "NumPy" "SciPy"))
+#+end_src
+
+*** Bash
+#+begin_src emacs-lisp
+(my-dash-define-docsets-for-mode 'shell-script-mode-hook '("Bash"))
+#+end_src
+
+*** Emacs lisp
+#+begin_src emacs-lisp
+(my-dash-define-docsets-for-mode 'emacs-lisp-mode-hook '("Emacs Lisp"))
+#+end_src
+
 * Development
 ** Common
 *** smartparens
@@ -427,7 +462,6 @@ specified in `helm-bibtex-pdf-open-function',"
 *** eldoc
 #+begin_src emacs-lisp
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
 #+end_src
 
@@ -727,7 +761,7 @@ remap magit keys because of window-meta-mode
 
 #+end_src
 
-* Customizations
+* Customization
 ** Common
 *** package mode
 #+begin_src emacs-lisp
