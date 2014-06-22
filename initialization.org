@@ -55,6 +55,13 @@
 (define-key ac-completing-map "\r" nil)
 (define-key ac-completing-map (kbd "M-TAB") nil)
 
+
+(defun my-ac-expand-common ()
+  (interactive)
+  (auto-complete)
+  (ac-stop)
+  (ac-start))
+
 (define-key ac-menu-map [return] 'ac-complete)
 (define-key ac-menu-map "\r" 'ac-complete)
 (define-key ac-menu-map (kbd "C-n") 'ac-next)
@@ -402,7 +409,7 @@ specified in `helm-bibtex-pdf-open-function',"
 
 *** Python
 #+begin_src emacs-lisp
-(my-dash-define-docsets-for-mode 'python-mode-hook '("Python_2" "NumPy" "SciPy"))
+(my-dash-define-docsets-for-mode 'python-mode-hook '("Python 2" "NumPy" "SciPy"))
 #+end_src
 
 *** Bash
@@ -413,6 +420,11 @@ specified in `helm-bibtex-pdf-open-function',"
 *** Emacs lisp
 #+begin_src emacs-lisp
 (my-dash-define-docsets-for-mode 'emacs-lisp-mode-hook '("Emacs Lisp"))
+#+end_src
+
+*** JavaScript
+#+begin_src emacs-lisp
+;(my-dash-define-docsets-for-mode 'javascript-mode-hook '("JavaScript"))
 #+end_src
 
 * Development
@@ -506,27 +518,33 @@ https://github.com/xiaohanyu/oh-my-emacs/blob/master/modules/ome-python.org
  python-shell-interpreter "~/shared/bin/ipython.sh"
  python-shell-interpreter-args ""
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
- python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: ")
+ python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+ python-shell-completion-setup-code
+ "from IPython.core.completerlib import module_completion"
+ python-shell-completion-module-string-code
+ "';'.join(module_completion('''%s'''))\n"
+ python-shell-completion-string-code
+ "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 #+END_SRC
 
 *** jedi
 #+begin_src emacs-lisp
 
 (defun my-setup-jedi () 
+  (interactive)
   (jedi:setup)
   (define-key jedi-mode-map (kbd "<C-tab>") nil)
   (setq jedi:complete-on-dot t))
 
 (add-hook 'python-mode-hook 'my-setup-jedi)
 (add-hook 'inferior-python-mode-hook 'my-setup-jedi)
-
 #+end_src
 
 *** jedi-direx
 #+begin_src emacs-lisp
 (eval-after-load "python"
   '(define-key python-mode-map "\C-zx" 'jedi-direx:pop-to-buffer))
-(add-hook 'jedi-mode-hook 'jedi-direx:setup)
+;(add-hook 'jedi-mode-hook 'jedi-direx:setup)
 #+end_src
 
 ** Maxima
@@ -627,12 +645,6 @@ needs link-grammar installed
 
 * Environment
 ** Interface
-*** yascroll
-#+begin_src emacs-lisp
-  (global-yascroll-bar-mode)
-  (setq yascroll:delay-to-hide nil)
-#+end_src
-
 *** highlight-parentheses
    #+BEGIN_SRC emacs-lisp
 (define-globalized-minor-mode global-highlight-parentheses-mode
@@ -646,6 +658,12 @@ needs link-grammar installed
 #+begin_src emacs-lisp
 (require 'sublimity-map)
 (sublimity-map-set-delay 'inf)
+#+end_src
+
+*** anzu
+#+begin_src emacs-lisp
+(require 'anzu)
+(global-anzu-mode 1)
 #+end_src
 
 ** Window management
@@ -872,6 +890,10 @@ http://steckerhalter.co.vu/
 
 (delete-selection-mode 1)
 
+(setq fill-column 80)
+
+(global-subword-mode 1)
+
 (setq default-major-mode 'org-mode)
 
 (put 'upcase-region 'disabled nil)
@@ -973,6 +995,12 @@ http://steckerhalter.co.vu/
 
 (eval-after-load "back-button"
   '(diminish 'back-button-mode))
+
+(eval-after-load "volatile-highlights"
+  '(diminish 'volatile-highlights-mode))
+
+(eval-after-load "anzu"
+  '(diminish 'anzu-mode))
    #+END_SRC
 
 *** frame-title
@@ -1021,12 +1049,15 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 
 ** Other
 #+begin_src emacs-lisp
-    (winner-mode)
-    (global-hi-lock-mode 1)
-    
-    (global-undo-tree-mode)
-    
-    (global-smartscan-mode 1)
+(global-undo-tree-mode)
+
+(global-smartscan-mode 1)
+
+(require 'volatile-highlights)
+(volatile-highlights-mode t)
+
+(setq initial-scratch-message ";; Use the source Luke !!! \n")
+(setq browse-url-generic-program (executable-find "conkeror"))
 #+end_src
 
 * Key bindings
@@ -1063,8 +1094,18 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
   `(smartrep-define-key my-keys-minor-mode-map
        (kbd ,prefix) '(,@body)))
  #+end_src
+
+** Completion
+ #+begin_src emacs-lisp
+(my-set-key "<C-tab>" 'auto-complete)
+(define-key ac-completing-map [tab] 'my-ac-expand-common)
+(define-key ac-completing-map "\t" 'my-ac-expand-common)
+(define-key ac-completing-map (kbd "<s-tab>") 'ac-expand)
+
+(my-set-key "<C-M-tab>" 'my-ac-complete-with-helm)
+ #+end_src
  
-** Redefinitions
+** Re-definitions
 #+begin_src emacs-lisp
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-c"))
@@ -1079,9 +1120,15 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 (my-set-key "M-o" 'smart-open-line)
 (my-set-key "M-O" 'smart-open-line-above)
+(my-set-key "C-c M-s" 'center-line)
+(my-set-key "C-c M-S" 'center-paragraph)
+
 
 (my-set-key "M-0" 'ace-jump-mode) 
+(my-set-key "M-i" 'jump-char-forward)
+(my-set-key "M-I" 'jump-char-backward)
 (my-set-key "C-=" 'er/expand-region)
+(my-set-key "C-+" 'er/contract-region)
 
 (my-set-key "C-x k" 'kill-this-buffer)
 (my-set-key "C-x j" 'direx:jump-to-directory-other-window)
@@ -1094,9 +1141,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 ** Common
  #+begin_src emacs-lisp
-(my-set-key "<C-tab>" 'auto-complete)
-(my-set-key "<C-M-tab>" 'my-ac-complete-with-helm)
-
 (my-set-key "M-W" 'my-copy-line)
 
 (my-set-key "M-z" 'zap-up-to-char)
