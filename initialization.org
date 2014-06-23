@@ -8,9 +8,6 @@
 
 ** Machine specific settings
   #+BEGIN_SRC emacs-lisp
-    (when (string= system-name "atbeetz5.informatik.tu-muenchen.de")
-      )
-    
     (when (string= system-name "evgeni-ThinkPad-X300")
       )
   #+END_SRC
@@ -44,6 +41,8 @@
 (require 'auto-complete-config)
 (ac-config-default)
 
+(ac-flyspell-workaround)
+
 (setq-default ac-sources '(ac-source-yasnippet
                            ac-source-semantic 
                            ac-source-semantic-raw
@@ -55,20 +54,20 @@
 (define-key ac-completing-map "\r" nil)
 (define-key ac-completing-map (kbd "M-TAB") nil)
 
+(define-key ac-completing-map [tab] 'auto-complete)
+(define-key ac-completing-map "\t" 'auto-complete)
+  #+end_src
 
-(defun my-ac-expand-common ()
-  (interactive)
-  (auto-complete)
-  (ac-stop)
-  (ac-start))
+** Menu bindings
+  #+begin_src emacs-lisp
+(define-key ac-menu-map [tab] 'ac-expand-common)
+(define-key ac-menu-map "\t" 'ac-expand-common)
 
 (define-key ac-menu-map [return] 'ac-complete)
 (define-key ac-menu-map "\r" 'ac-complete)
 (define-key ac-menu-map (kbd "C-n") 'ac-next)
 (define-key ac-menu-map (kbd "C-p") 'ac-previous)    
 (define-key ac-menu-map (kbd "C-h") 'ac-quick-help)
-
-(ac-flyspell-workaround)
   #+END_SRC
 
 ** fuzzy isearch
@@ -157,7 +156,6 @@ hack popup-isearch to do fuzzy search with the help of grizzl
      
      (defvar ac-source-pcomplete
        '((candidates . ac-pcomplete)))
-     
    #+END_SRC
 
 *** ac-shell
@@ -666,6 +664,11 @@ needs link-grammar installed
 (global-anzu-mode 1)
 #+end_src
 
+*** yascroll
+#+begin_src emacs-lisp
+(global-yascroll-bar-mode 1)
+#+end_src
+
 ** Window management
 *** spaces
 #+begin_src emacs-lisp
@@ -753,11 +756,6 @@ integrate golden-ration with window-number
   (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
 #+end_src
 
-** hideshow-org
-#+begin_src emacs-lisp
-  (require 'hideshow-org)
-#+end_src
-
 * Tools
 ** magit
 remap magit keys because of window-meta-mode
@@ -777,6 +775,43 @@ remap magit keys because of window-meta-mode
   (setq projectile-mode-line-lighter " Ⓟ")
   (projectile-global-mode)
 
+#+end_src
+
+** my-minimap
+#+begin_src emacs-lisp
+(let ((base (current-buffer)))
+  (setq ind (make-indirect-buffer
+             base (concat "test"))))
+
+(with-current-buffer ind
+  (setq vertical-scroll-bar nil
+        truncate-lines t
+        buffer-read-only t
+        mode-line-format (and mode-line-format "")
+        minimap-active-overlay (make-overlay 0 0))
+  (overlay-put minimap-active-overlay 
+               'face sublimity-map-active-region)
+  (text-scale-set sublimity-map-text-scale))
+#+end_src
+
+
+#+begin_src emacs-lisp
+(defun my-minimap-update (&optional window start)
+  "Sync window informations to minimap."
+  (interactive)
+  (let ((basewin (get-buffer-window (current-buffer )))
+        (miniwin (get-buffer-window ind))
+        (minibuf ind))
+    (let ((region-beg (window-start basewin))
+          (region-end (window-end basewin t))
+          (point (point)))
+      (with-selected-window miniwin
+        (set-window-buffer nil minibuf t)
+        (with-current-buffer minibuf
+          (goto-char point)
+          (recenter)
+          (move-overlay minimap-active-overlay
+                         region-beg region-end) )))))
 #+end_src
 
 * Customization
@@ -872,6 +907,18 @@ http://steckerhalter.co.vu/
                   (line-beginning-position (+ 1 arg))))
 #+end_src
  
+*** hs-toggle-all
+http://sachachua.com/blog/2006/10/emacs-hideshow/
+#+begin_src emacs-lisp
+(defun my-hs-toggle-all ()
+  "Toggle hideshow all."
+  (interactive)
+  (set (make-variable-buffer-local 'my-hs-hide) (not my-hs-hide))
+  (if my-hs-hide
+      (hs-hide-all)
+    (hs-show-all)))
+#+end_src
+
 ** Options
 #+begin_src emacs-lisp
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -1096,12 +1143,8 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
  #+end_src
 
 ** Completion
- #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (my-set-key "<C-tab>" 'auto-complete)
-(define-key ac-completing-map [tab] 'my-ac-expand-common)
-(define-key ac-completing-map "\t" 'my-ac-expand-common)
-(define-key ac-completing-map (kbd "<s-tab>") 'ac-expand)
-
 (my-set-key "<C-M-tab>" 'my-ac-complete-with-helm)
  #+end_src
  
@@ -1178,7 +1221,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (my-set-key "C-c t a" 'auto-revert-mode)
 (my-set-key "C-c t b" 'sr-speedbar-toggle)
 (my-set-key "C-c t c" 'flycheck-mode)
-(my-set-key "C-c t h" 'hs-org/minor-mode)
+(my-set-key "C-c t h" 'hs-minor-mode)
 (my-set-key "C-c t l" 'scroll-lock-mode)
 (my-set-key "C-c t m" 'sublimity-mode)
 (my-set-key "C-c t s" 'flyspell-mode)
@@ -1400,6 +1443,14 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 #+begin_src emacs-lisp
 (my-set-key "C-c q" (lambda () (interactive) (command-execute 'howdoi-query)))
 (my-set-key "C-c Q" (lambda () (interactive) (command-execute 'howdoi-query-line-at-point)))
+#+end_src
+
+*** hide-show
+#+begin_src emacs-lisp
+(add-hook 'hs-minor-mode-hook
+          '(lambda ()
+             (define-key hs-minor-mode-map (kbd "<s-tab>") 'hs-toggle-hiding)
+             (define-key hs-minor-mode-map (kbd "<S-s-iso-lefttab>") 'my-hs-toggle-all)))
 #+end_src
 
 ** Local
