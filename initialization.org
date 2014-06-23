@@ -31,7 +31,6 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 (el-get 'sync)
 #+end_src
 
@@ -56,6 +55,7 @@
 
 (define-key ac-completing-map [tab] 'auto-complete)
 (define-key ac-completing-map "\t" 'auto-complete)
+(define-key ac-completing-map (kbd "<C-tab>") 'ac-expand)
   #+end_src
 
 ** Menu bindings
@@ -427,6 +427,15 @@ specified in `helm-bibtex-pdf-open-function',"
 
 * Development
 ** Common
+*** Highlight TODO/FIXME keywords
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook 
+ '(lambda ()
+    (font-lock-add-keywords
+     nil
+     '(("\\<\\(FIXME\\|TODO\\|BUG\\):" 1 font-lock-warning-face t)))))
+#+end_src
+
 *** smartparens
 #+begin_src emacs-lisp
 (require 'smartparens-config)
@@ -473,6 +482,11 @@ specified in `helm-bibtex-pdf-open-function',"
 #+begin_src emacs-lisp
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+#+end_src
+
+*** rainbow-delimiters
+#+begin_src emacs-lisp
+(global-rainbow-delimiters-mode 1)
 #+end_src
 
 ** CEDET
@@ -643,15 +657,6 @@ needs link-grammar installed
 
 * Environment
 ** Interface
-*** highlight-parentheses
-   #+BEGIN_SRC emacs-lisp
-(define-globalized-minor-mode global-highlight-parentheses-mode
-  highlight-parentheses-mode
-  (lambda ()
-    (highlight-parentheses-mode t)))
-(global-highlight-parentheses-mode t)
-   #+END_SRC
-
 *** sublimity
 #+begin_src emacs-lisp
 (require 'sublimity-map)
@@ -1112,16 +1117,24 @@ Use a minor mode for custom key bindings. This allows to override other minor mo
 key bindings and also allow to more easily lookup custom bindigs (describe mode ...).
 
 #+begin_src emacs-lisp
-  (defvar evgeni/keys-minor-mode-map (make-keymap) "evgeni/keys-minor-mode keymap.")
-  
-  (define-minor-mode evgeni/keys-minor-mode
-    "A minor mode so that my key settings override annoying major modes."
-    t " evgeni/keys" 'evgeni/keys-minor-mode-map)
- 
-  (evgeni/keys-minor-mode 1)
-  (diminish 'evgeni/keys-minor-mode)
-  
-  (add-hook 'minibuffer-setup-hook '(lambda () (evgeni/keys-minor-mode 0)))
+(defvar evgeni/keys-minor-mode-map (make-keymap) "evgeni/keys-minor-mode keymap.")
+
+(define-minor-mode evgeni/keys-minor-mode
+  "A minor mode so that my key settings override annoying major modes."
+  t " evgeni/keys" 'evgeni/keys-minor-mode-map)
+
+(evgeni/keys-minor-mode 1)
+(diminish 'evgeni/keys-minor-mode)
+
+(add-hook 'minibuffer-setup-hook '(lambda () (evgeni/keys-minor-mode 0)))
+
+(defadvice load (after give-my-keybindings-priority activate)
+  "Try to ensure that my keybindings always have priority."
+  (if (not (eq (car (car minor-mode-map-alist)) 'evgeni/keys-minor-mode))
+      (let ((mykeys (assq 'evgeni/keys-minor-mode minor-mode-map-alist)))
+        (assq-delete-all 'evgeni/keys-minor-mode minor-mode-map-alist)
+        (add-to-list 'minor-mode-map-alist mykeys))))
+
 #+end_src
 
 ** Macros
@@ -1197,6 +1210,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "C-c o a" 'org-agenda)
 (evgeni/set-key "C-c o b" 'org-iswitchb)
 
+(evgeni/set-key "C-c W" 'webjump)
 (evgeni/set-key "C-c R" 
             '(lambda () 
                (interactive)
@@ -1352,12 +1366,14 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
   (drag-stuff-global-mode t)
 #+end_src
 
-*** visual-regexp
+*** visual-regexp and iedit
 #+begin_src emacs-lisp
 (evgeni/set-key "C-c x x" 'vr/replace)
 (evgeni/set-key "C-c x q" 'vr/query-replace)
 ;; if you use multiple-cursors, this is for you:
 (evgeni/set-key "C-c x m" 'vr/mc-mark)
+
+(evgeni/set-key "C-c x i" 'iedit-mode)
 #+end_src
 
 *** bm (visual bookmarsk)
