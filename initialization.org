@@ -8,16 +8,16 @@
 
 ** Machine specific settings
   #+BEGIN_SRC emacs-lisp
-    (when (string= system-name "evgeni-ThinkPad-X300")
-      )
+(when (string= system-name "evgeni-ThinkPad-X300")
+  )
   #+END_SRC
 
 ** Encoding
 #+begin_src emacs-lisp
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-language-environment "UTF-8")
-  (prefer-coding-system 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
 #+end_src
  
 ** el-get
@@ -197,7 +197,6 @@ hack popup-isearch to do fuzzy search with the help of grizzl
 * ORG mode
 ** General
   #+BEGIN_SRC emacs-lisp
-    (setq org-src-fontify-natively t)
     (setq org-confirm-babel-evaluate nil)
     (add-hook 'org-mode-hook 
               '(lambda () 
@@ -784,7 +783,9 @@ remap magit keys because of window-meta-mode
 
 ** evgeni/minimap
 #+begin_src emacs-lisp
-(let ((base (current-buffer)))
+(defun evgeni/minimap-create ()
+  (interactive)
+  (let ((base (current-buffer)))
   (setq ind (make-indirect-buffer
              base (concat "test"))))
 
@@ -796,7 +797,7 @@ remap magit keys because of window-meta-mode
         minimap-active-overlay (make-overlay 0 0))
   (overlay-put minimap-active-overlay 
                'face sublimity-map-active-region)
-  (text-scale-set sublimity-map-text-scale))
+  (text-scale-set sublimity-map-text-scale)))
 #+end_src
 
 
@@ -1020,12 +1021,6 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
   '(diminish 'eproject-mode " eⓅ"))
 (eval-after-load "flyspell"
   '(diminish 'flyspell-mode " Ⓢ"))
-(eval-after-load "smartparens"
-  '(diminish 'smartparens-mode " (Ⓢ)"))
-(eval-after-load "paredit"
-  '(diminish 'paredit-mode " (Ⓟ)"))
-(eval-after-load "tagedit"
-  '(diminish 'tagedit-mode " Ⓣ"))
 
 (eval-after-load "yasnippet"
   '(diminish 'yas-minor-mode))
@@ -1036,8 +1031,8 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
 (eval-after-load "helm"
   '(diminish 'helm-mode))
 
-(eval-after-load "highlight-parentheses"
-  '(diminish 'highlight-parentheses-mode))
+(eval-after-load "smartparens"
+  '(diminish 'smartparens-mode))
 
 (eval-after-load "drag-stuff"
   '(diminish 'drag-stuff-mode))
@@ -1247,6 +1242,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "C-c i b" 'toggle-tool-bar-mode-from-frame)
 (evgeni/set-key "C-c i f" 'auto-fill-mode)
 (evgeni/set-key "C-c i g" 'golden-ratio-mode)
+(evgeni/set-key "C-c i h" 'auto-highlight-symbol-mode)
 (evgeni/set-key "C-c i l" 'linum-mode)
 (evgeni/set-key "C-c i m" 'toggle-menu-bar-mode-from-frame)
 (evgeni/set-key "C-c i s" 'toggle-scroll-bar)
