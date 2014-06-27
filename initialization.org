@@ -48,38 +48,57 @@
                            ac-source-abbrev
                            ac-source-dictionary
                            ac-source-words-in-same-mode-buffers))
-
-(define-key ac-completing-map [return] nil)
-(define-key ac-completing-map "\r" nil)
-(define-key ac-completing-map (kbd "M-TAB") nil)
-
-(define-key ac-completing-map [tab] 'auto-complete)
-(define-key ac-completing-map "\t" 'auto-complete)
-(define-key ac-completing-map (kbd "<C-tab>") 'ac-expand)
   #+end_src
 
-** Menu bindings
+** Completion keymap
+#+begin_src emacs-lisp
+(setq ac-completing-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [tab] 'auto-complete)
+    (define-key map "\t" 'auto-complete)
+    (define-key map (kbd "<s-tab>") 'ac-expand) 
+    map))
+#+end_src
+
+** Menu keymap
   #+begin_src emacs-lisp
 (define-key ac-menu-map [tab] 'ac-expand-common)
 (define-key ac-menu-map "\t" 'ac-expand-common)
+(define-key ac-menu-map (kbd "<C-tab>") 'ac-complete)
 
-(define-key ac-menu-map [return] 'ac-complete)
-(define-key ac-menu-map "\r" 'ac-complete)
-(define-key ac-menu-map (kbd "C-n") 'ac-next)
-(define-key ac-menu-map (kbd "C-p") 'ac-previous)    
+(define-key ac-menu-map [return] nil)
+(define-key ac-menu-map "\r" nil)
+
 (define-key ac-menu-map (kbd "C-h") 'ac-quick-help)
+(define-key ac-menu-map (kbd "C-?") 'ac-help)
+(define-key ac-menu-map (kbd "C-M-?") 'ac-persist-help)
+(define-key ac-menu-map "\C-\M-n" 'ac-quick-help-scroll-down)
+(define-key ac-menu-map "\C-\M-p" 'ac-quick-help-scroll-up)
+
+(define-key ac-menu-map [down] 'ac-next)
+(define-key ac-menu-map [up] 'ac-previous)
+
+(dotimes (i 9)
+  (let ((symbol (intern (format "ac-complete-select-%d" (1+ i)))))
+    (fset symbol
+          `(lambda ()
+             (interactive)
+             (when (and (ac-menu-live-p) (popup-select ac-menu ,i))
+               (ac-complete))))
+    (define-key ac-menu-map (read-kbd-macro (format "C-%s" (1+ i))) symbol)))
+
   #+END_SRC
 
 ** fuzzy isearch
 hack popup-isearch to do fuzzy search with the help of grizzl
 #+begin_src emacs-lisp
-;; (defvar *evgeni/isearch-cache* nil)
+(defvar *evgeni/isearch-cache* nil)
 
-;; (defun popup-isearch-filter-list (pattern list)
-;;   (let*  ((index (grizzl-make-index list))
-;;           (pattern (replace-regexp-in-string " " "" pattern))
-;;           (result (grizzl-search pattern index *evgeni/isearch-cache*)))
-;;     (grizzl-result-strings result index)))
+(defun popup-isearch-filter-list (pattern list)
+  (let*  ((index (grizzl-make-index list))
+          (pattern (replace-regexp-in-string " " "" pattern))
+          (result (grizzl-search pattern index *evgeni/isearch-cache*)))
+    (grizzl-result-strings result index)))
 #+end_src
 
 ** Sources
@@ -426,6 +445,11 @@ specified in `helm-bibtex-pdf-open-function',"
 
 * Development
 ** Common
+*** prog-mode-defaults
+#+begin_src emacs-lisp
+(add-hook 'prog-mode-hook 'electric-indent-mode)
+#+end_src
+
 *** Highlight TODO/FIXME keywords
 #+begin_src emacs-lisp
 (add-hook 'prog-mode-hook 
@@ -503,6 +527,24 @@ specified in `helm-bibtex-pdf-open-function',"
 (require 'eval-sexp-fu)
 #+end_src
 
+*** slime
+  #+BEGIN_SRC emacs-lisp
+    (setq inferior-lisp-program "/usr/bin/sbcl") 
+    (slime-setup '(slime-fancy slime-asdf))
+    
+    (when (file-exists-p (expand-file-name "~/quicklisp/slime-helper.el"))
+      (load (expand-file-name "~/quicklisp/slime-helper.el")))
+  #+END_SRC
+
+*** elisp-slime-nav
+#+begin_src emacs-lisp
+(require 'elisp-slime-nav) 
+(dolist (hook '(emacs-lisp-mode-hook ielm-mode-hook))
+  (add-hook hook 'turn-on-elisp-slime-nav-mode))
+#+end_src
+
+
+
 *** rosemacs
    #+begin_SRC emacs-lisp
 (defun evgeni/ros-slime ()
@@ -512,15 +554,6 @@ specified in `helm-bibtex-pdf-open-function',"
   (invoke-rosemacs)
   (slime-setup '(slime-fancy slime-asdf slime-ros)))
    #+END_SRC
-
-*** slime
-  #+BEGIN_SRC emacs-lisp
-    (setq inferior-lisp-program "/usr/bin/sbcl") 
-    (slime-setup '(slime-fancy slime-asdf))
-    
-    (when (file-exists-p (expand-file-name "~/quicklisp/slime-helper.el"))
-      (load (expand-file-name "~/quicklisp/slime-helper.el")))
-  #+END_SRC
 
 ** Python
 https://github.com/xiaohanyu/oh-evgeni/emacs/blob/master/modules/ome-python.org
@@ -627,6 +660,7 @@ needs link-grammar installed
 (setq synonyms-cache-file (expand-file-name "~/.emacs.d/lib/thesaurus/syn.cache"))
 (setq synonyms-match-more-flag nil)
    #+END_SRC
+
 ** AucTex
   #+BEGIN_SRC emacs-lisp
 (setq TeX-auto-save t)
@@ -671,6 +705,12 @@ needs link-grammar installed
 *** yascroll
 #+begin_src emacs-lisp
 (global-yascroll-bar-mode 1)
+#+end_src
+
+*** fancy-narrow
+#+begin_src emacs-lisp
+(require 'fancy-narrow)
+(fancy-narrow-mode 1)
 #+end_src
 
 ** Window management
@@ -745,19 +785,7 @@ integrate golden-ration with window-number
 
 ** bm (visual bookmarks)
 #+begin_src emacs-lisp
-  (setq-default bm-buffer-persistence nil)
-  
-  (setq bm-restore-repository-on-load t)
   (require 'bm)
-  (add-hook' after-init-hook 'bm-repository-load)
-  (add-hook 'find-file-hooks 'bm-buffer-restore)
-  (add-hook 'kill-buffer-hook 'bm-buffer-save)
-  (add-hook 'kill-emacs-hook '(lambda nil
-                                (bm-buffer-save-all)
-                                (bm-repository-save)))
-  (add-hook 'after-save-hook 'bm-buffer-save)
-  (add-hook 'after-revert-hook 'bm-buffer-restore)
-  (add-hook 'vc-before-checkin-hook 'bm-buffer-save)
 #+end_src
 
 * Tools
@@ -829,6 +857,33 @@ remap magit keys because of window-meta-mode
 #+end_src
 
 ** Functions
+*** back-to-indentation
+http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
+#+begin_src emacs-lisp
+(defun smarter-move-beginning-of-line (arg)
+  "Move point back to indentation of beginning of line.
+
+Move point to the first non-whitespace character on this line.
+If point is already there, move to the beginning of the line.
+Effectively toggle between the first non-whitespace character and
+the beginning of the line.
+
+If ARG is not nil or 1, move forward ARG - 1 lines first.  If
+point reaches the beginning or end of the buffer, stop there."
+  (interactive "^p")
+  (setq arg (or arg 1))
+
+  ;; Move lines first
+  (when (/= arg 1)
+    (let ((line-move-visual nil))
+      (forward-line (1- arg))))
+
+  (let ((orig-point (point)))
+    (back-to-indentation)
+    (when (= orig-point (point))
+      (move-beginning-of-line 1))))
+#+end_src
+
 *** Swap window buffer
 https://gist.github.com/mariusaeriksen/287633
    #+BEGIN_SRC emacs-lisp
@@ -862,7 +917,7 @@ https://gist.github.com/mariusaeriksen/287633
            (insert (current-kill 0)))))
 #+end_src
 
-*** open-line (above/below)
+*** open-line - above/below
 http://emacsredux.com/blog/2013/06/15/open-line-above/
 
 #+begin_src emacs-lisp
@@ -925,6 +980,24 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
     (hs-show-all)))
 #+end_src
 
+*** narrow-to-region
+http://demonastery.org/2013/04/emacs-narrow-to-region-indirect/
+http://paste.lisp.org/display/135818
+#+begin_src emacs-lisp
+(defun evgeni/narrow-to-region-indirect-buffer (start end)
+  (interactive "r")
+  (deactivate-mark)
+  (with-current-buffer (clone-indirect-buffer 
+                        (generate-new-buffer-name 
+                         (concat (buffer-name) "-indirect-" 
+                                 (number-to-string start) "-" 
+                                 (number-to-string end)))
+                        'display)
+    (narrow-to-region start end)
+    (deactivate-mark)
+    (goto-char (point-min))))
+#+end_src
+
 ** Options
 #+begin_src emacs-lisp
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -933,6 +1006,9 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
 (add-hook 'after-save-hook
           'executable-make-buffer-file-executable-if-script-p)
 (setq set-mark-command-repeat-pop t)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+(setq-default require-final-newline 'ask)
 
 (setq-default indent-tabs-mode nil)
 (setq tab-width 4)
@@ -1108,11 +1184,12 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 #+end_src
 
 * Key bindings
+** General
 Use a minor mode for custom key bindings. This allows to override other minor mode
 key bindings and also allow to more easily lookup custom bindigs (describe mode ...).
 
 #+begin_src emacs-lisp
-(defvar evgeni/keys-minor-mode-map (make-keymap) "evgeni/keys-minor-mode keymap.")
+(defvar evgeni/keys-minor-mode-map (make-sparse-keymap) "evgeni/keys-minor-mode keymap.")
 
 (define-minor-mode evgeni/keys-minor-mode
   "A minor mode so that my key settings override annoying major modes."
@@ -1123,13 +1200,9 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 (add-hook 'minibuffer-setup-hook '(lambda () (evgeni/keys-minor-mode 0)))
 
-(defadvice load (after give-my-keybindings-priority activate)
-  "Try to ensure that my keybindings always have priority."
-  (if (not (eq (car (car minor-mode-map-alist)) 'evgeni/keys-minor-mode))
-      (let ((mykeys (assq 'evgeni/keys-minor-mode minor-mode-map-alist)))
-        (assq-delete-all 'evgeni/keys-minor-mode minor-mode-map-alist)
-        (add-to-list 'minor-mode-map-alist mykeys))))
-
+(add-to-list 'emulation-mode-map-alists
+             (cons 'evgeni/keys-minor-mode
+                   evgeni/keys-minor-mode-map))
 #+end_src
 
 ** Macros
@@ -1150,14 +1223,12 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
        (kbd ,prefix) '(,@body)))
  #+end_src
 
-** Completion
+** Re-definitions
 #+begin_src emacs-lisp
 (evgeni/set-key "<C-tab>" 'auto-complete)
 (evgeni/set-key "<C-M-tab>" 'evgeni/ac-complete-with-helm)
- #+end_src
- 
-** Re-definitions
-#+begin_src emacs-lisp
+
+
 (global-unset-key (kbd "C-z"))
 (global-unset-key (kbd "C-x C-c"))
 (evgeni/set-key "C-z C-z" 'global-set-key)
@@ -1166,6 +1237,9 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "<s-SPC>" 'just-one-space)
 (evgeni/set-key "<M-SPC>" 'set-mark-command)
 
+
+(global-set-key [remap move-beginning-of-line]
+                'smarter-move-beginning-of-line)
 (evgeni/set-key "C-o" 'yas/expand)
 (evgeni/set-key "M-/" 'hippie-expand)
 
@@ -1175,7 +1249,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "C-c M-S" 'center-paragraph)
 
 
-(evgeni/set-key "M-0" 'ace-jump-mode) 
+(evgeni/set-key "M-j" 'ace-jump-mode)
 (evgeni/set-key "M-i" 'jump-char-forward)
 (evgeni/set-key "M-I" 'jump-char-backward)
 (evgeni/set-key "C-=" 'er/expand-region)
@@ -1197,6 +1271,7 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "M-z" 'zap-up-to-char)
 (evgeni/set-key "M-Z" 'zap-to-char)
 
+(evgeni/set-key "C-c j j" 'helm-imenu-anywhere)
 (evgeni/set-key "C-c e" 'eval-and-replace)
 (evgeni/set-key "C-c F" 'evgeni/show-file-name)
 
@@ -1205,7 +1280,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "C-c o a" 'org-agenda)
 (evgeni/set-key "C-c o b" 'org-iswitchb)
 
-(evgeni/set-key "C-c W" 'webjump)
 (evgeni/set-key "C-c R" 
             '(lambda () 
                (interactive)
@@ -1213,8 +1287,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
                 (expand-file-name "~/.emacs.d/init.el"))))
 
 (evgeni/set-key "C-c l" 'slime-selector)
-
-(evgeni/set-key "C-c f" 'ffap)
 
 ;; rosemacs
 (when (boundp 'ros-keymap)
@@ -1277,9 +1349,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 ** Helm bindings
  #+begin_src emacs-lisp
-(evgeni/set-key "C-c G" 'helm-google-suggest)
-(evgeni/set-key "C-c g" 'helm-google)
-
 (evgeni/set-key "C-c h A" 'helm-ag-r)
 (evgeni/set-key "C-c h B" 'helm-bibtex)
 (evgeni/set-key "C-c h C" 'helm-colors)
@@ -1293,12 +1362,11 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "C-c h S" 'math-symbols-helm)
 (evgeni/set-key "C-c h T" 'helm-themes)
 (evgeni/set-key "C-c h a" 'helm-ag)
-(evgeni/set-key "C-c h b" 'helm-bm)
+(evgeni/set-key "C-c h b" 'helm-bookmarks)
 (evgeni/set-key "C-c h c" 'helm-flycheck)
 (evgeni/set-key "C-c h d" 'helm-dash)
 (evgeni/set-key "C-c h f" 'helm-for-files) 
 (evgeni/set-key "C-c h g" 'helm-do-grep)
-(evgeni/set-key "C-c h h" 'helm-org-headlines)
 (evgeni/set-key "C-c h i" 'helm-imenu)
 (evgeni/set-key "C-c h k" 'helm-show-kill-ring)
 (evgeni/set-key "C-c h l" 'helm-locate)
@@ -1316,8 +1384,19 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "C-c h I e" 'helm-info-emacs)
 (evgeni/set-key "C-c h I o" 'helm-orgcard)
 (evgeni/set-key "C-c h I p" 'helm-pydoc)
+(evgeni/set-key "C-c h I c" 'clojure-cheatsheet)
  #+end_src
- 
+
+** Internet bindings
+#+begin_src emacs-lisp
+(evgeni/set-key "C-c n w" 'webjump)
+(evgeni/set-key "C-c n s" 'helm-google-suggest)
+(evgeni/set-key "C-c n g" 'helm-google)
+
+(evgeni/set-key "C-c n q" (lambda () (interactive) (command-execute 'howdoi-query)))
+(evgeni/set-key "C-c n Q" (lambda () (interactive) (command-execute 'howdoi-query-line-at-point)))
+#+end_src
+
 ** Modes
 *** Window management
 #+begin_src emacs-lisp
@@ -1336,6 +1415,14 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
                           ("o" . (command-execute 'other-window))
                           ("O" . (command-execute 'other-window '-)))
 #+end_src
+
+*** File management
+#+begin_src emacs-lisp
+(evgeni/set-key "C-c f f" 'ffap)
+(evgeni/set-key "C-c f n" 'evgeni/narrow-to-region-indirect-buffer)
+
+#+end_src
+
 
 *** goto-last-change
 #+begin_src emacs-lisp
@@ -1372,10 +1459,12 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (evgeni/set-key "C-c x i" 'iedit-mode)
 #+end_src
 
-*** bm (visual bookmarsk)
+*** bm visual bookmarsk
 #+begin_src emacs-lisp
 (evgeni/set-key "C-c b b" 'bm-toggle)
 (evgeni/set-key "C-c b s" 'bm-toggle-buffer-persistence)
+(evgeni/set-key "C-c b h" 'helm-bm)
+
 
 (evgeni/add-smartrep-bindings "C-c b"
                           ("n" . (bm-next))
@@ -1385,11 +1474,14 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 *** smartscan 
 #+begin_src emacs-lisp
-  (define-key smartscan-map (kbd "M-p") nil)
-  (define-key smartscan-map (kbd "M-n") nil)
-  
-  (define-key smartscan-map (kbd "M-s-p") 'smartscan-symbol-go-backward)
-  (define-key smartscan-map (kbd "M-s-n") 'smartscan-symbol-go-forward)
+(define-key smartscan-map (kbd "M-p") nil)
+(define-key smartscan-map (kbd "M-n") nil)
+(define-key smartscan-map (kbd "M-'") nil)
+
+(define-key smartscan-map (kbd "M-s-p") 'smartscan-symbol-go-backward)
+(define-key smartscan-map (kbd "M-s-n") 'smartscan-symbol-go-forward)
+(define-key smartscan-map (kbd "M-s-'") 'smartscan-symbol-replace)
+
 #+end_src
 
 *** multiple-cursors
@@ -1451,12 +1543,6 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 (define-key sp-keymap (kbd "C-c s k") 'sp-kill-hybrid-sexp)
 #+end_src
 
-*** howdoi
-#+begin_src emacs-lisp
-(evgeni/set-key "C-c q" (lambda () (interactive) (command-execute 'howdoi-query)))
-(evgeni/set-key "C-c Q" (lambda () (interactive) (command-execute 'howdoi-query-line-at-point)))
-#+end_src
-
 *** hide-show
 #+begin_src emacs-lisp
 (add-hook 'hs-minor-mode-hook
@@ -1469,8 +1555,17 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 *** org-mode
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 
-          (lambda () "DOCSTRING"   
-            (local-set-key (kbd "C-z s") 'org-screenshot)))
+          (lambda () "setup org bindings"   
+            (local-set-key (kbd "C-z s") 'org-screenshot)
+            (local-set-key (kbd "C-c h h") 'helm-org-headlines)))
+#+end_src
+
+*** eshell
+#+begin_src emacs-lisp
+(add-hook 'eshell-mode-hook 
+          (lambda () "setup eshell bindings"   
+            (local-set-key (kbd "<tab>") 'auto-complete)
+            (local-set-key (kbd "C-c h h") 'helm-eshell-history)))
 #+end_src
 
 * TODO Work to do
