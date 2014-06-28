@@ -707,12 +707,6 @@ needs link-grammar installed
 (global-yascroll-bar-mode 1)
 #+end_src
 
-*** fancy-narrow
-#+begin_src emacs-lisp
-(require 'fancy-narrow)
-(fancy-narrow-mode 1)
-#+end_src
-
 ** Window management
 *** spaces
 #+begin_src emacs-lisp
@@ -857,33 +851,6 @@ remap magit keys because of window-meta-mode
 #+end_src
 
 ** Functions
-*** back-to-indentation
-http://emacsredux.com/blog/2013/05/22/smarter-navigation-to-the-beginning-of-a-line/
-#+begin_src emacs-lisp
-(defun smarter-move-beginning-of-line (arg)
-  "Move point back to indentation of beginning of line.
-
-Move point to the first non-whitespace character on this line.
-If point is already there, move to the beginning of the line.
-Effectively toggle between the first non-whitespace character and
-the beginning of the line.
-
-If ARG is not nil or 1, move forward ARG - 1 lines first.  If
-point reaches the beginning or end of the buffer, stop there."
-  (interactive "^p")
-  (setq arg (or arg 1))
-
-  ;; Move lines first
-  (when (/= arg 1)
-    (let ((line-move-visual nil))
-      (forward-line (1- arg))))
-
-  (let ((orig-point (point)))
-    (back-to-indentation)
-    (when (= orig-point (point))
-      (move-beginning-of-line 1))))
-#+end_src
-
 *** Swap window buffer
 https://gist.github.com/mariusaeriksen/287633
    #+BEGIN_SRC emacs-lisp
@@ -1141,8 +1108,7 @@ http://paste.lisp.org/display/135818
 (define-key dired-mode-map (kbd "<return>") 'dired-find-alternate-file) ; was dired-advertised-find-file
 (define-key dired-mode-map (kbd "^") (lambda () (interactive) (find-alternate-file "..")))  ; was dired-up-directory
 (add-hook 'dired-mode-hook (lambda () "setup dired"
-                             (hl-line-mode 1)
-                             (evgeni/set-key "C-o" nil)))
+                             (hl-line-mode 1)))
 #+end_src
 
 ** recentf (recent files)
@@ -1185,229 +1151,304 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 
 * Key bindings
 ** General
-Use a minor mode for custom key bindings. This allows to override other minor mode
-key bindings and also allow to more easily lookup custom bindigs (describe mode ...).
-
 #+begin_src emacs-lisp
-(defvar evgeni/keys-minor-mode-map (make-sparse-keymap) "evgeni/keys-minor-mode keymap.")
+(require 'bind-key)
 
-(define-minor-mode evgeni/keys-minor-mode
-  "A minor mode so that my key settings override annoying major modes."
-  t " evgeni/keys" 'evgeni/keys-minor-mode-map)
-
-(evgeni/keys-minor-mode 1)
-(diminish 'evgeni/keys-minor-mode)
-
-(add-hook 'minibuffer-setup-hook '(lambda () (evgeni/keys-minor-mode 0)))
-
-(add-to-list 'emulation-mode-map-alists
-             (cons 'evgeni/keys-minor-mode
-                   evgeni/keys-minor-mode-map))
-#+end_src
-
-** Macros
- #+BEGIN_SRC emacs-lisp 
-(defmacro evgeni/set-key (key &rest body)
-  `(define-key evgeni/keys-minor-mode-map (kbd ,key) ,@body))
-
-(defmacro evgeni/add-binding (key name &rest body)
-  `(progn
-     (defun ,name ()
-       (interactive)
-       ,@body)
-     (evgeni/set-key (kbd ,key)
-                 ',name)))
-
-(defmacro evgeni/add-smartrep-bindings (prefix &rest body)
-  `(smartrep-define-key evgeni/keys-minor-mode-map
+(defmacro evgeni/add-smartrep-bindings (prefix prefix-map &rest body)
+  `(smartrep-define-key ,prefix-map
        (kbd ,prefix) '(,@body)))
  #+end_src
 
 ** Re-definitions
 #+begin_src emacs-lisp
-(evgeni/set-key "<C-tab>" 'auto-complete)
-(evgeni/set-key "<C-M-tab>" 'evgeni/ac-complete-with-helm)
+(bind-keys
+ ("<C-tab>"   . auto-complete)
+ ("<C-M-tab>" . evgeni/ac-complete-with-helm))
 
 
-(global-unset-key (kbd "C-z"))
-(global-unset-key (kbd "C-x C-c"))
-(evgeni/set-key "C-z C-z" 'global-set-key)
-(evgeni/set-key "C-z C-l" 'local-set-key)
+(unbind-key "C-z")
+(unbind-key "C-x C-c")
 
-(evgeni/set-key "<s-SPC>" 'just-one-space)
-(evgeni/set-key "<M-SPC>" 'set-mark-command)
+(bind-keys
+ ("C-z C-z" . global-set-key)
+ ("C-z C-l" . local-set-key)
+ 
+ ("<s-SPC>" . just-one-space)
+ ("<M-SPC>" . set-mark-command)
+ 
+ ("C-S-o" . yas/expand)
+ ("M-/"   . hippie-expand)
+ 
+ ("M-o"     . smart-open-line)
+ ("M-O"     . smart-open-line-above)
+ ("C-c M-s" . center-line)
+ ("C-c M-S" . center-paragraph)
+ 
+ ("M-j" . ace-jump-mode)
+ ("M-i" . jump-char-forward)
+ ("M-I" . jump-char-backward)
+ 
+ ("C-=" . er/expand-region)
+ ("C-+" . er/contract-region)
 
+ ("M-W" . evgeni/copy-line)
 
-(global-set-key [remap move-beginning-of-line]
-                'smarter-move-beginning-of-line)
-(evgeni/set-key "C-o" 'yas/expand)
-(evgeni/set-key "M-/" 'hippie-expand)
-
-(evgeni/set-key "M-o" 'smart-open-line)
-(evgeni/set-key "M-O" 'smart-open-line-above)
-(evgeni/set-key "C-c M-s" 'center-line)
-(evgeni/set-key "C-c M-S" 'center-paragraph)
-
-
-(evgeni/set-key "M-j" 'ace-jump-mode)
-(evgeni/set-key "M-i" 'jump-char-forward)
-(evgeni/set-key "M-I" 'jump-char-backward)
-(evgeni/set-key "C-=" 'er/expand-region)
-(evgeni/set-key "C-+" 'er/contract-region)
-
-(evgeni/set-key "C-x k" 'kill-this-buffer)
-(evgeni/set-key "C-x j" 'direx:jump-to-directory-other-window)
-
-(evgeni/set-key "C-h a" 'helm-apropos)
-(evgeni/set-key "C-x C-b" 'helm-buffers-list)
-(evgeni/set-key "M-x" 'helm-M-x)
-(evgeni/set-key "C-x C-f" 'helm-find-files)
+ ("M-z" . zap-up-to-char)
+ ("M-Z" . zap-to-char)
+ 
+ ("C-x k"   . kill-this-buffer)
+ ("C-x j"   . direx:jump-to-directory-other-window)
+ ("C-h a"   . helm-apropos)
+ ("C-x C-b" . helm-buffers-list)
+ ("M-x"     . helm-M-x)
+ ("C-x C-f" . helm-find-files))
 #+end_src
 
-** Common
+** Custom
  #+begin_src emacs-lisp
-(evgeni/set-key "M-W" 'evgeni/copy-line)
+(bind-keys
+ ("C-c e" . eval-and-replace)
+ ("C-c F" . evgeni/show-file-name))
 
-(evgeni/set-key "M-z" 'zap-up-to-char)
-(evgeni/set-key "M-Z" 'zap-to-char)
+(bind-key
+ "C-c R" 
+ '(lambda ()
+    "reinitialize"
+    (interactive)
+    (load-file 
+     (expand-file-name "~/.emacs.d/init.el"))))
 
-(evgeni/set-key "C-c j j" 'helm-imenu-anywhere)
-(evgeni/set-key "C-c e" 'eval-and-replace)
-(evgeni/set-key "C-c F" 'evgeni/show-file-name)
-
-(evgeni/set-key "C-c o l" 'org-store-link)
-(evgeni/set-key "C-c o c" 'org-capture)
-(evgeni/set-key "C-c o a" 'org-agenda)
-(evgeni/set-key "C-c o b" 'org-iswitchb)
-
-(evgeni/set-key "C-c R" 
-            '(lambda () 
-               (interactive)
-               (load-file 
-                (expand-file-name "~/.emacs.d/init.el"))))
-
-(evgeni/set-key "C-c l" 'slime-selector)
+(bind-key "C-c l" 'slime-selector)
 
 ;; rosemacs
 (when (boundp 'ros-keymap)
-  (evgeni/set-key "C-c r" ros-keymap))
+  (bind-key "C-c r" ros-keymap))
 
  #+END_SRC
 
-** Toggle
-*** Common
+** Prefixes
+*** b - bm visual bookmarsk
 #+begin_src emacs-lisp
-(evgeni/add-binding "C-c t t" evgeni/toggle-terminal (shell-pop nil))
+(bind-keys :prefix "C-c b"
+           :prefix-map evgeni/bm-prefix
+           ("b" . bm-toggle)
+           ("s" . bm-toggle-buffer-persistence)
+           ("h" . helm-bm))
 
-(evgeni/set-key "C-c t a" 'auto-revert-mode)
-(evgeni/set-key "C-c t b" 'sr-speedbar-toggle)
-(evgeni/set-key "C-c t c" 'flycheck-mode)
-(evgeni/set-key "C-c t h" 'hs-minor-mode)
-(evgeni/set-key "C-c t l" 'scroll-lock-mode)
-(evgeni/set-key "C-c t m" 'sublimity-mode)
-(evgeni/set-key "C-c t s" 'flyspell-mode)
-(evgeni/set-key "C-c t v" 'view-mode)
- #+end_src
- 
-*** Interface
-#+begin_src emacs-lisp
-(evgeni/set-key "C-c i b" 'toggle-tool-bar-mode-from-frame)
-(evgeni/set-key "C-c i f" 'auto-fill-mode)
-(evgeni/set-key "C-c i g" 'golden-ratio-mode)
-(evgeni/set-key "C-c i h" 'auto-highlight-symbol-mode)
-(evgeni/set-key "C-c i l" 'linum-mode)
-(evgeni/set-key "C-c i m" 'toggle-menu-bar-mode-from-frame)
-(evgeni/set-key "C-c i s" 'toggle-scroll-bar)
-(evgeni/set-key "C-c i t" 'tabbar-mode)
-(evgeni/set-key "C-c i v" 'visual-line-mode)
-(evgeni/set-key "C-c i w" 'toggle-truncate-lines)
- #+end_src
- 
-*** ECB
-#+begin_src emacs-lisp
-      (setq evgeni/ecb-active-p nil)
-      (add-hook 'ecb-activate-hook #'(lambda () (setq evgeni/ecb-active-p t)))
-      (add-hook 'ecb-deactivate-hook #'(lambda () (setq evgeni/ecb-active-p nil)))
-      
-      (evgeni/add-binding "C-c t E" evgeni/toggle-ecb
-                      (if evgeni/ecb-active-p
-                          (command-execute 'ecb-deactivate)
-                        (command-execute 'ecb-activate)))
- #+end_src
-
-** Major-modes
-#+begin_src emacs-lisp
-(evgeni/set-key "C-c m m" 'helm-enable-minor-mode)
-(evgeni/set-key "C-c m M" 'helm-disable-minor-mode)
-
-(evgeni/set-key "C-c m g" 'magit-status)
-
-(evgeni/set-key "C-c m e" 'ebib)
-
-(evgeni/set-key "C-c m s" 'eshell)
+(evgeni/add-smartrep-bindings "C-c b" global-map
+                          ("n" . (bm-next))
+                          ("p" . (bm-previous)))
 #+end_src
 
-** Helm bindings
+*** f - File management
+#+begin_src emacs-lisp
+(bind-keys :prefix "C-c f"
+           :prefix-map evgeni/file-prefix
+           ("f" . ffap)
+           ("n" . evgeni/narrow-to-region-indirect-buffer))
+#+end_src
+
+*** h - Helm bindings
  #+begin_src emacs-lisp
-(evgeni/set-key "C-c h A" 'helm-ag-r)
-(evgeni/set-key "C-c h B" 'helm-bibtex)
-(evgeni/set-key "C-c h C" 'helm-colors)
-(evgeni/set-key "C-c h F" 'helm-find)
-(evgeni/set-key "C-c h G" 'helm-git-grep)
-(evgeni/set-key "C-c h L" 'helm-locate-library)
-(evgeni/set-key "C-c h M" 'helm-descbinds)
-(evgeni/set-key "C-c h O" 'helm-multi-occur)
-(evgeni/set-key "C-c h P" 'helm-browse-project)
-(evgeni/set-key "C-c h R" 'helm-resume)
-(evgeni/set-key "C-c h S" 'math-symbols-helm)
-(evgeni/set-key "C-c h T" 'helm-themes)
-(evgeni/set-key "C-c h a" 'helm-ag)
-(evgeni/set-key "C-c h b" 'helm-bookmarks)
-(evgeni/set-key "C-c h c" 'helm-flycheck)
-(evgeni/set-key "C-c h d" 'helm-dash)
-(evgeni/set-key "C-c h f" 'helm-for-files) 
-(evgeni/set-key "C-c h g" 'helm-do-grep)
-(evgeni/set-key "C-c h i" 'helm-imenu)
-(evgeni/set-key "C-c h k" 'helm-show-kill-ring)
-(evgeni/set-key "C-c h l" 'helm-locate)
-(evgeni/set-key "C-c h m" 'helm-all-mark-rings)
-(evgeni/set-key "C-c h o" 'helm-occur)
-(evgeni/set-key "C-c h p" 'helm-projectile)
-(evgeni/set-key "C-c h r" 'helm-register)
-(evgeni/set-key "C-c h s" 'helm-semantic)
-(evgeni/set-key "C-c h w" 'helm-spaces)
-(evgeni/set-key "C-c h x" 'helm-regexp)
-(evgeni/set-key "C-c h y" 'helm-yas-complete)
-(evgeni/set-key "C-c h 8" 'helm-ucs)
-
-; info commands
-(evgeni/set-key "C-c h I e" 'helm-info-emacs)
-(evgeni/set-key "C-c h I o" 'helm-orgcard)
-(evgeni/set-key "C-c h I p" 'helm-pydoc)
-(evgeni/set-key "C-c h I c" 'clojure-cheatsheet)
+(bind-keys :prefix "C-c h"
+           :prefix-map evgeni/helm-prefix
+           ("A" . helm-ag-r)
+           ("B" . helm-bibtex)
+           ("C" . helm-colors)
+           ("F" . helm-find)
+           ("G" . helm-git-grep)
+           ("L" . helm-locate-library)
+           ("M" . helm-descbinds)
+           ("O" . helm-multi-occur)
+           ("P" . helm-browse-project)
+           ("R" . helm-resume)
+           ("S" . math-symbols-helm)
+           ("T" . helm-themes)
+           ("a" . helm-ag)
+           ("b" . helm-bookmarks)
+           ("c" . helm-flycheck)
+           ("d" . helm-dash)
+           ("f" . helm-for-files) 
+           ("g" . helm-do-grep)
+           ("i" . helm-imenu)
+           ("k" . helm-show-kill-ring)
+           ("l" . helm-locate)
+           ("m" . helm-all-mark-rings)
+           ("o" . helm-occur)
+           ("p" . helm-projectile)
+           ("r" . helm-register)
+           ("s" . helm-semantic)
+           ("w" . helm-spaces)
+           ("x" . helm-regexp)
+           ("y" . helm-yas-complete)
+           ("8" . helm-ucs))
+ #+end_src
+ 
+**** helm docu searches
+ #+begin_src emacs-lisp
+(bind-keys :prefix "C-c h I"
+           :prefix-map evgeni/helm-info-prefix
+           ("e" . helm-info-emacs)
+           ("o" . helm-orgcard)
+           ("p" . helm-pydoc)
+           ("c" . clojure-cheatsheet))
  #+end_src
 
-** Internet bindings
+*** i - Interface
 #+begin_src emacs-lisp
-(evgeni/set-key "C-c n w" 'webjump)
-(evgeni/set-key "C-c n s" 'helm-google-suggest)
-(evgeni/set-key "C-c n g" 'helm-google)
+(bind-keys :prefix "C-c i"
+           :prefix-map evgeni/interface-prefix
+           ("b" . toggle-tool-bar-mode-from-frame)
+           ("f" . auto-fill-mode)
+           ("g" . golden-ratio-mode)
+           ("h" . auto-highlight-symbol-mode)
+           ("l" . linum-mode)
+           ("m" . toggle-menu-bar-mode-from-frame)
+           ("s" . toggle-scroll-bar)
+           ("t" . tabbar-mode)
+           ("v" . visual-line-mode)
+           ("w" . toggle-truncate-lines))
+ #+end_src
 
-(evgeni/set-key "C-c n q" (lambda () (interactive) (command-execute 'howdoi-query)))
-(evgeni/set-key "C-c n Q" (lambda () (interactive) (command-execute 'howdoi-query-line-at-point)))
+*** j - Jump bindings
+#+begin_src emacs-lisp
+(bind-keys :prefix "C-c j"
+           :prefix-map evgeni/jump-prefix
+           ("j" . helm-imenu-anywhere))
+#+end_src
+*** m - Major-modes
+#+begin_src emacs-lisp
+(bind-keys :prefix "C-c m"
+           :prefix-map evgeni/major-modes-prefix
+           ("m" . helm-enable-minor-mode)
+           ("M" . helm-disable-minor-mode)
+           ("g" . magit-status)
+           ("e" . ebib)
+           ("s" . eshell))
 #+end_src
 
-** Modes
-*** Window management
+*** n - Internet bindings
 #+begin_src emacs-lisp
-(evgeni/add-smartrep-bindings "C-c w"
+(bind-keys :prefix "C-c n"
+           :prefix-map evgeni/internet-prefix
+           ("w" . webjump)
+           ("s" . helm-google-suggest)
+           ("g" . helm-google)
+
+           ("q" . howdoi-query)
+           ("Q" . howdoi-query-line-at-point))
+#+end_src
+
+*** o - org-mode
+#+begin_src emacs-lisp
+(bind-keys :prefix "C-c o"
+           :prefix-map evgeni/org-prefix
+           ("l" . org-store-link)
+           ("c" . org-capture)
+           ("a" . org-agenda)
+           ("b" . org-iswitchb))
+#+end_src
+
+*** s - smartparens
+#+begin_src emacs-lisp
+(bind-keys :map sp-keymap
+           ("C-M-f" . sp-forward-sexp)
+           ("C-M-b" . sp-backward-sexp)
+           ("C-M-n" . sp-next-sexp)
+           ("C-M-p" . sp-previous-sexp)
+           ("C-M-u" . sp-backward-up-sexp)
+           ("C-M-d" . sp-down-sexp)
+           ("C-M-t" . sp-transpose-sexp)
+
+           ("C-M-k" . sp-kill-sexp)
+
+           ("C-M-e" . sp-up-sexp)
+           ("C-M-a" . sp-backward-down-sexp)
+
+           ("C-)" . sp-forward-slurp-sexp)
+           ("C-(" . sp-backward-slurp-sexp)
+           ("C-M-)" . sp-forward-barf-sexp)
+           ("C-M-(" . sp-backward-barf-sexp)
+
+           ("M-F" . sp-forward-symbol)
+           ("M-B" . sp-backward-symbol)
+
+           ("C-]" . sp-select-next-thing-exchange)
+           ("C-}" . sp-select-previous-thing)
+           ("C-M-]" . sp-select-next-thing)
+           
+           ("<s-t>" . sp-prefix-tag-object)
+           ("<s-p>" . sp-prefix-pair-object))
+
+(bind-keys :map sp-keymap
+           :prefix "C-c s"
+           :prefix-map smartparens-prefix
+           ("M-w" . sp-copy-sexp)
+
+           ("u" . sp-unwrap-sexp)
+           ("U" . sp-backward-unwrap-sexp)
+
+           ("s" . sp-splice-sexp)
+           ("F" . sp-splice-sexp-killing-forward)
+           ("B" . sp-splice-sexp-killing-backward)
+           ("r" . sp-splice-sexp-killing-around)
+
+
+           ("c" . sp-convolute-sexp)
+           ("a" . sp-absorb-sexp)
+           ("e" . sp-emit-sexp)
+           ("p" . sp-add-to-previous-sexp)
+           ("n" . sp-add-to-next-sexp)
+           ("j" . sp-join-sexp)
+           ("S" . sp-split-sexp)
+
+           ("k" . sp-kill-hybrid-sexp))
+#+end_src
+
+*** t - Toggle
+#+begin_src emacs-lisp
+(bind-keys :prefix "C-c t"
+           :prefix-map evgeni/toggle-prefix
+           ("t" . shell-pop)
+           ("a" . auto-revert-mode)
+           ("b" . sr-speedbar-toggle)
+           ("c" . flycheck-mode)
+           ("h" . hs-minor-mode)
+           ("l" . scroll-lock-mode)
+           ("m" . sublimity-mode)
+           ("s" . flyspell-mode)
+           ("v" . view-mode))
+ #+end_src
+ 
+**** ECB
+#+begin_src emacs-lisp
+(setq evgeni/ecb-active-p nil)
+(add-hook 'ecb-activate-hook #'(lambda () (setq evgeni/ecb-active-p t)))
+(add-hook 'ecb-deactivate-hook #'(lambda () (setq evgeni/ecb-active-p nil)))
+
+(defun evgeni/toggle-ecb ()
+  (interactive)
+  (if evgeni/ecb-active-p
+      (command-execute 'ecb-deactivate)
+    (command-execute 'ecb-activate)))
+
+(bind-key "C-c t E" 'evgeni/toggle-ecb)
+
+ #+end_src
+ 
+*** w - Window management
+#+begin_src emacs-lisp
+(bind-keys :prefix "C-c w"
+           :prefix-map evgeni/window-prefix
+           ("t" . transpose-frame)
+           ("m" . evgeni/switch-to-minibuffer-window)
+           ("d" . dedicated-mode))
+
+(evgeni/add-smartrep-bindings "C-c w" global-map
                           ("w" . (winner-undo))
                           ("W" . (winner-redo)))
-(evgeni/set-key "C-c w t" 'transpose-frame)
-(evgeni/set-key "C-c w m" 'evgeni/switch-to-minibuffer-window)
-(evgeni/set-key "C-c w d" 'dedicated-mode)
 
-(evgeni/add-smartrep-bindings "C-c w c"
+(evgeni/add-smartrep-bindings "C-c w c" global-map
                           ("i" . (command-execute 'enlarge-window))
                           ("k" . (command-execute 'shrink-window))
                           ("l" . (command-execute 'enlarge-window-horizontally))
@@ -1416,156 +1457,85 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
                           ("O" . (command-execute 'other-window '-)))
 #+end_src
 
-*** File management
+*** x - visual-regexp and iedit
 #+begin_src emacs-lisp
-(evgeni/set-key "C-c f f" 'ffap)
-(evgeni/set-key "C-c f n" 'evgeni/narrow-to-region-indirect-buffer)
+(bind-keys :prefix "C-c x"
+           :prefix-map evgeni/regexp-prefix
+           ("x" . vr/replace)
+           ("q" . vr/query-replace)
+           ("m" . vr/mc-mark)
+
+           ("i" . iedit-mode)
+           
+           ("l" . mc/edit-lines)
+           ("a" . mc/mark-all-like-this))
+
+(evgeni/add-smartrep-bindings "C-c x" global-map
+                              ("M-n" . (mc/mark-next-like-this))
+                              ("M-p" . (mc/mark-previous-like-this)))
 
 #+end_src
 
-
+** Other
 *** goto-last-change
 #+begin_src emacs-lisp
-(evgeni/set-key "s-/" 'goto-last-change)
-(evgeni/set-key "s-?" 'goto-last-change-reverse)
+(bind-key "s-/" 'goto-last-change)
+(bind-key "s-?" 'goto-last-change-reverse)
 #+end_src
 
 *** evgeni/swap-window bindings 
  #+begin_src emacs-lisp
-   (evgeni/set-key "C-M-1" '(lambda () "move buffer to window 1" (interactive) (evgeni/swap-window-buffer 1)))
-   (evgeni/set-key "C-M-2" '(lambda () "move buffer to window 2" (interactive) (evgeni/swap-window-buffer 2)))
-   (evgeni/set-key "C-M-3" '(lambda () "move buffer to window 3" (interactive) (evgeni/swap-window-buffer 3)))
-   (evgeni/set-key "C-M-4" '(lambda () "move buffer to window 4" (interactive) (evgeni/swap-window-buffer 4)))
-   (evgeni/set-key "C-M-5" '(lambda () "move buffer to window 5" (interactive) (evgeni/swap-window-buffer 5)))
-   (evgeni/set-key "C-M-6" '(lambda () "move buffer to window 6" (interactive) (evgeni/swap-window-buffer 6)))
-   (evgeni/set-key "C-M-7" '(lambda () "move buffer to window 7" (interactive) (evgeni/swap-window-buffer 7)))
-   (evgeni/set-key "C-M-8" '(lambda () "move buffer to window 8" (interactive) (evgeni/swap-window-buffer 8)))
-   (evgeni/set-key "C-M-9" '(lambda () "move buffer to window 9" (interactive) (evgeni/swap-window-buffer 9)))
+   (bind-key "C-M-1" '(lambda () "move buffer to window 1" (interactive) (evgeni/swap-window-buffer 1)))
+   (bind-key "C-M-2" '(lambda () "move buffer to window 2" (interactive) (evgeni/swap-window-buffer 2)))
+   (bind-key "C-M-3" '(lambda () "move buffer to window 3" (interactive) (evgeni/swap-window-buffer 3)))
+   (bind-key "C-M-4" '(lambda () "move buffer to window 4" (interactive) (evgeni/swap-window-buffer 4)))
+   (bind-key "C-M-5" '(lambda () "move buffer to window 5" (interactive) (evgeni/swap-window-buffer 5)))
+   (bind-key "C-M-6" '(lambda () "move buffer to window 6" (interactive) (evgeni/swap-window-buffer 6)))
+   (bind-key "C-M-7" '(lambda () "move buffer to window 7" (interactive) (evgeni/swap-window-buffer 7)))
+   (bind-key "C-M-8" '(lambda () "move buffer to window 8" (interactive) (evgeni/swap-window-buffer 8)))
+   (bind-key "C-M-9" '(lambda () "move buffer to window 9" (interactive) (evgeni/swap-window-buffer 9)))
  #+end_src
-
-*** drag-stuff
-#+begin_src emacs-lisp
-  (setq drag-stuff-modifier '(meta super))
-  (drag-stuff-global-mode t)
-#+end_src
-
-*** visual-regexp and iedit
-#+begin_src emacs-lisp
-(evgeni/set-key "C-c x x" 'vr/replace)
-(evgeni/set-key "C-c x q" 'vr/query-replace)
-;; if you use multiple-cursors, this is for you:
-(evgeni/set-key "C-c x m" 'vr/mc-mark)
-
-(evgeni/set-key "C-c x i" 'iedit-mode)
-#+end_src
-
-*** bm visual bookmarsk
-#+begin_src emacs-lisp
-(evgeni/set-key "C-c b b" 'bm-toggle)
-(evgeni/set-key "C-c b s" 'bm-toggle-buffer-persistence)
-(evgeni/set-key "C-c b h" 'helm-bm)
-
-
-(evgeni/add-smartrep-bindings "C-c b"
-                          ("n" . (bm-next))
-                          ("p" . (bm-previous)))
-
-#+end_src
-
-*** smartscan 
-#+begin_src emacs-lisp
-(define-key smartscan-map (kbd "M-p") nil)
-(define-key smartscan-map (kbd "M-n") nil)
-(define-key smartscan-map (kbd "M-'") nil)
-
-(define-key smartscan-map (kbd "M-s-p") 'smartscan-symbol-go-backward)
-(define-key smartscan-map (kbd "M-s-n") 'smartscan-symbol-go-forward)
-(define-key smartscan-map (kbd "M-s-'") 'smartscan-symbol-replace)
-
-#+end_src
-
-*** multiple-cursors
-#+begin_src emacs-lisp
-(evgeni/set-key  "C-c _" 'mc/edit-lines)
-
-(evgeni/set-key  "C->" 'mc/mark-next-like-this)
-(evgeni/set-key  "C-<" 'mc/mark-previous-like-this)
-(evgeni/set-key  "C-c C-<" 'mc/mark-all-like-this)
-#+end_src
-
-*** smartparens
-#+begin_src emacs-lisp
-(define-key sp-keymap (kbd "C-M-f") 'sp-forward-sexp)
-(define-key sp-keymap (kbd "C-M-b") 'sp-backward-sexp)
-(define-key sp-keymap (kbd "C-M-n") 'sp-next-sexp)
-(define-key sp-keymap (kbd "C-M-p") 'sp-previous-sexp)
-(define-key sp-keymap (kbd "C-M-u") 'sp-backward-up-sexp)
-(define-key sp-keymap (kbd "C-M-d") 'sp-down-sexp)
-(define-key sp-keymap (kbd "C-M-t") 'sp-transpose-sexp)
-
-(define-key sp-keymap (kbd "C-M-k") 'sp-kill-sexp)
-
-(define-key sp-keymap (kbd "C-M-e") 'sp-up-sexp)
-(define-key sp-keymap (kbd "C-M-a") 'sp-backward-down-sexp)
-
-(define-key sp-keymap (kbd "C-)") 'sp-forward-slurp-sexp)
-(define-key sp-keymap (kbd "C-(") 'sp-backward-slurp-sexp)
-(define-key sp-keymap (kbd "C-M-)") 'sp-forward-barf-sexp)
-(define-key sp-keymap (kbd "C-M-(") 'sp-backward-barf-sexp)
-
-(define-key sp-keymap (kbd "M-F") 'sp-forward-symbol)
-(define-key sp-keymap (kbd "M-B") 'sp-backward-symbol)
-
-(define-key sp-keymap (kbd "C-c s M-w") 'sp-copy-sexp)
-
-(define-key sp-keymap (kbd "C-c s u") 'sp-unwrap-sexp)
-(define-key sp-keymap (kbd "C-c s U") 'sp-backward-unwrap-sexp)
-
-(define-key sp-keymap (kbd "C-c s s") 'sp-splice-sexp)
-(define-key sp-keymap (kbd "C-c s F") 'sp-splice-sexp-killing-forward)
-(define-key sp-keymap (kbd "C-c s B") 'sp-splice-sexp-killing-backward)
-(define-key sp-keymap (kbd "C-c s r") 'sp-splice-sexp-killing-around)
-
-(define-key sp-keymap (kbd "C-]") 'sp-select-next-thing-exchange)
-(define-key sp-keymap (kbd "C-}") 'sp-select-previous-thing)
-(define-key sp-keymap (kbd "C-M-]") 'sp-select-next-thing)
- 
-(define-key sp-keymap (kbd "<s-t>") 'sp-prefix-tag-object)
-(define-key sp-keymap (kbd "<s-p>") 'sp-prefix-pair-object)
-(define-key sp-keymap (kbd "C-c s c") 'sp-convolute-sexp)
-(define-key sp-keymap (kbd "C-c s a") 'sp-absorb-sexp)
-(define-key sp-keymap (kbd "C-c s e") 'sp-emit-sexp)
-(define-key sp-keymap (kbd "C-c s p") 'sp-add-to-previous-sexp)
-(define-key sp-keymap (kbd "C-c s n") 'sp-add-to-next-sexp)
-(define-key sp-keymap (kbd "C-c s j") 'sp-join-sexp)
-(define-key sp-keymap (kbd "C-c s S") 'sp-split-sexp)
-
-(define-key sp-keymap (kbd "C-c s k") 'sp-kill-hybrid-sexp)
-#+end_src
-
-*** hide-show
-#+begin_src emacs-lisp
-(add-hook 'hs-minor-mode-hook
-          '(lambda ()
-             (define-key hs-minor-mode-map (kbd "<s-tab>") 'hs-toggle-hiding)
-             (define-key hs-minor-mode-map (kbd "<S-s-iso-lefttab>") 'evgeni/hs-toggle-all)))
-#+end_src
 
 ** Local
 *** org-mode
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 
           (lambda () "setup org bindings"   
-            (local-set-key (kbd "C-z s") 'org-screenshot)
-            (local-set-key (kbd "C-c h h") 'helm-org-headlines)))
+            (bind-key "C-z s" 'org-screenshot org-mode-map)
+            (bind-key "C-c h h" 'helm-org-headlines org-mode-map)))
 #+end_src
 
 *** eshell
 #+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook 
           (lambda () "setup eshell bindings"   
-            (local-set-key (kbd "<tab>") 'auto-complete)
-            (local-set-key (kbd "C-c h h") 'helm-eshell-history)))
+            (bind-key "<tab>" 'auto-complete eshell-mode-map)
+            (bind-key "C-c h h" 'helm-eshell-history eshell-mode-map)))
+#+end_src
+
+*** hide-show
+#+begin_src emacs-lisp
+(add-hook 'hs-minor-mode-hook
+          '(lambda ()
+             (bind-key "<s-tab>" 'hs-toggle-hiding hs-minor-mode-map)
+             (bind-key "<S-s-iso-lefttab>" 'evgeni/hs-toggle-all hs-minor-mode-map)))
+#+end_src
+
+*** smartscan 
+#+begin_src emacs-lisp
+(unbind-key "M-p" smartscan-map)
+(unbind-key "M-n" smartscan-map)
+(unbind-key "M-'" smartscan-map)
+
+(bind-key "M-s-p" 'smartscan-symbol-go-backward smartscan-map)
+(bind-key "M-s-n" 'smartscan-symbol-go-forward smartscan-map)
+(bind-key "M-s-'" 'smartscan-symbol-replace smartscan-map)
+#+end_src
+
+*** drag-stuff
+#+begin_src emacs-lisp
+  (setq drag-stuff-modifier '(meta super))
+  (drag-stuff-global-mode t)
 #+end_src
 
 * TODO Work to do
@@ -1629,5 +1599,11 @@ key bindings and also allow to more easily lookup custom bindigs (describe mode 
 
 (add-hook 'god-mode-enabled-hook 'evgeni/update-cursor)
 (add-hook 'god-mode-disabled-hook 'evgeni/update-cursor)
+#+end_src
+
+** fancy-narrow
+#+begin_src emacs-lisp
+(require 'fancy-narrow)
+(fancy-narrow-mode 1)
 #+end_src
 
