@@ -31,186 +31,37 @@
     (goto-char (point-max))
     (eval-print-last-sexp)))
 
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
 (el-get 'sync)
+
 #+end_src
 
-* Auto-complete
-** General
-  #+BEGIN_SRC emacs-lisp
-(require 'auto-complete-config)
-(ac-config-default)
-
-(ac-flyspell-workaround)
-
-(setq-default ac-sources '(ac-source-yasnippet
-                           ac-source-semantic 
-                           ac-source-semantic-raw
-                           ac-source-abbrev
-                           ac-source-dictionary
-                           ac-source-words-in-same-mode-buffers))
-  #+end_src
-
-** Completion keymap
+* Company
 #+begin_src emacs-lisp
-(setq ac-completing-map
-  (let ((map (make-sparse-keymap)))
-    (define-key map [tab] 'auto-complete)
-    (define-key map "\t" 'auto-complete)
-    (define-key map (kbd "<s-tab>") 'ac-expand) 
-    map))
+(require 'company)
+(global-company-mode 1)
 #+end_src
 
-** Menu keymap
-  #+begin_src emacs-lisp
-(define-key ac-menu-map [tab] 'ac-expand-common)
-(define-key ac-menu-map "\t" 'ac-expand-common)
-(define-key ac-menu-map (kbd "<C-tab>") 'ac-complete)
-
-(define-key ac-menu-map [return] nil)
-(define-key ac-menu-map "\r" nil)
-
-(define-key ac-menu-map (kbd "C-h") 'ac-quick-help)
-(define-key ac-menu-map (kbd "C-?") 'ac-help)
-(define-key ac-menu-map (kbd "C-M-?") 'ac-persist-help)
-(define-key ac-menu-map "\C-\M-n" 'ac-quick-help-scroll-down)
-(define-key ac-menu-map "\C-\M-p" 'ac-quick-help-scroll-up)
-
-(define-key ac-menu-map [down] 'ac-next)
-(define-key ac-menu-map [up] 'ac-previous)
-
-(dotimes (i 9)
-  (let ((symbol (intern (format "ac-complete-select-%d" (1+ i)))))
-    (fset symbol
-          `(lambda ()
-             (interactive)
-             (when (and (ac-menu-live-p) (popup-select ac-menu ,i))
-               (ac-complete))))
-    (define-key ac-menu-map (read-kbd-macro (format "C-%s" (1+ i))) symbol)))
-
-  #+END_SRC
-
-** fuzzy isearch
-hack popup-isearch to do fuzzy search with the help of grizzl
+** theme
 #+begin_src emacs-lisp
-(defvar *evgeni/isearch-cache* nil)
-
-(defun popup-isearch-filter-list (pattern list)
-  (let*  ((index (grizzl-make-index list))
-          (pattern (replace-regexp-in-string " " "" pattern))
-          (result (grizzl-search pattern index *evgeni/isearch-cache*)))
-    (grizzl-result-strings result index)))
+(require 'color)
+(defun evgeni/company-setup-theme ()
+  (interactive)
+  (let ((bg (face-attribute 'default :background)))
+    (custom-set-faces
+     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+     `(company-tooltip-common ((t (:inherit font-lock-constant-face)))))))
 #+end_src
 
-** Sources
-*** ac-math 
-    #+BEGIN_SRC emacs-lisp
-(require 'ac-math) 
-(add-to-list 'ac-modes 'latex-mode) 
-
- (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
-   (setq ac-sources
-         (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
-                 ac-sources))
-   )
-(add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
-(setq ac-math-unicode-in-math-p t)
-    #+END_SRC
-
-*** ac-slime
-   #+BEGIN_SRC emacs-lisp
-(add-hook 'slime-mode-hook 'set-up-slime-ac)
-(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
-(eval-after-load "auto-complete"
-  '(add-to-list 'ac-modes 'slime-repl-mode))
-   #+END_SRC
-
-*** ac-pcomplete
-   #+BEGIN_SRC emacs-lisp
-     (defun ac-pcomplete ()
-       ;; eshell uses `insert-and-inherit' to insert a \t if no completion
-       ;; can be found, but this must not happen as auto-complete source
-       (flet ((insert-and-inherit (&rest args)))
-         ;; this code is stolen from `pcomplete' in pcomplete.el
-         (let* (tramp-mode ;; do not automatically complete remote stuff
-                (pcomplete-stub)
-                (pcomplete-show-list t) ;; inhibit patterns like * being deleted
-                pcomplete-seen pcomplete-norm-func
-                pcomplete-args pcomplete-last pcomplete-index
-                (pcomplete-autolist pcomplete-autolist)
-                (pcomplete-suffix-list pcomplete-suffix-list)
-                (candidates (pcomplete-completions))
-                (beg (pcomplete-begin))
-                ;; note, buffer text and completion argument may be
-                ;; different because the buffer text may bet transformed
-                ;; before being completed (e.g. variables like $HOME may be
-                ;; expanded)
-                (buftext (buffer-substring beg (point)))
-                (arg (nth pcomplete-index pcomplete-args)))
-           ;; we auto-complete only if the stub is non-empty and matches
-           ;; the end of the buffer text
-           (when (and (not (zerop (length pcomplete-stub)))
-                      (or (string= pcomplete-stub ; Emacs 23
-                                   (substring buftext
-                                              (max 0
-                                                   (- (length buftext)
-                                                      (length pcomplete-stub)))))
-                          (string= pcomplete-stub ; Emacs 24
-                                   (substring arg
-                                              (max 0
-                                                   (- (length arg)
-                                                      (length pcomplete-stub)))))))
-             ;; Collect all possible completions for the stub. Note that
-             ;; `candidates` may be a function, that's why we use
-             ;; `all-completions`.
-             (let* ((cnds (all-completions pcomplete-stub candidates))
-                    (bnds (completion-boundaries pcomplete-stub
-                                                 candidates
-                                                 nil
-                                                 ""))
-                    (skip (- (length pcomplete-stub) (car bnds))))
-               ;; We replace the stub at the beginning of each candidate by
-               ;; the real buffer content.
-               (mapcar #'(lambda (cand) (concat buftext (substring cand skip)))
-                       cnds))))))
-     
-     (defvar ac-source-pcomplete
-       '((candidates . ac-pcomplete)))
-   #+END_SRC
-
-*** ac-shell
-    #+BEGIN_SRC emacs-lisp :tangle no
-(setq explicit-shell-file-name "bash")
-(setq explicit-bash-args '("-c" "export EMACS=; stty echo; bash"))
-(setq comint-process-echoes t)
-(require 'readline-complete)
-(add-to-list 'ac-modes 'shell-mode)
-(add-hook 'shell-mode-hook 'ac-rlc-setup-sources)
-    #+END_SRC
-
-*** ac-eshell
-   #+BEGIN_SRC emacs-lisp
-     (add-hook 'eshell-mode-hook #'(lambda () (setq ac-sources '(ac-source-pcomplete))))
-     (add-to-list 'ac-modes 'eshell-mode)
-   #+END_SRC
-
-*** ac-ielm (interactive emacs lisp mode)
-   #+BEGIN_SRC emacs-lisp
-     (defun ielm-auto-complete ()
-       "Enables `auto-complete' support in \\[ielm]."
-       (setq ac-sources '(ac-source-functions
-                          ac-source-variables
-                          ac-source-features
-                          ac-source-symbols
-                          ac-source-words-in-same-mode-buffers))
-       (add-to-list 'ac-modes 'inferior-emacs-lisp-mode)
-       (auto-complete-mode 1))
-     (add-hook 'ielm-mode-hook 'ielm-auto-complete)
-   #+END_SRC
-
-*** org-ac
+** org-mode
 #+begin_src emacs-lisp
-(require 'org-ac)
-(org-ac/config-default)
+(defun my-pcomplete-capf ()
+  (interactive)
+  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+(add-hook 'org-mode-hook #'my-pcomplete-capf)
 #+end_src
 
 * ORG mode
@@ -363,19 +214,6 @@ thing."
 (helm-mode 1) 
 #+END_SRC
 
-** ac-helm
-#+begin_src emacs-lisp
-(require 'ac-helm)
-(defun evgeni/ac-complete-with-helm ()
-  "Select `auto-complete' candidates by `helm'.
-It is useful to narrow candidates."
-  (interactive)
-  (unless ac-completing
-    (call-interactively 'auto-complete)
-    (helm-other-buffer '(helm-source-auto-complete-candidates)
-                       "*helm auto-complete*")))
-#+end_src
-
 ** helm-ag
 #+begin_src emacs-lisp
 (setq helm-ag-source-type 'file-line)
@@ -498,7 +336,8 @@ specified in `helm-bibtex-pdf-open-function',"
 (yas-global-mode 1)
 (define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-keymap (kbd "C-o") 'yas-next-field-or-maybe-expand)
+(define-key yas-keymap (kbd "<s-tab>") 'yas/next-field-or-maybe-expand)
+(define-key yas-keymap (kbd "<S-s-iso-lefttab>") 'yas/prev-field)
    #+END_SRC
 
 *** eldoc
@@ -516,7 +355,6 @@ specified in `helm-bibtex-pdf-open-function',"
 #+begin_src emacs-lisp
 (setq semantic-default-submodes '(global-semantic-idle-scheduler-mode
                                   global-semanticdb-minor-mode
-                                  global-semantic-idle-summary-mode
                                   global-semantic-mru-bookmark-mode))
 (semantic-mode 1)
 #+end_src
@@ -571,24 +409,15 @@ https://github.com/xiaohanyu/oh-evgeni/emacs/blob/master/modules/ome-python.org
  "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")
 #+END_SRC
 
-*** jedi
+*** disable electric indent
 #+begin_src emacs-lisp
-
-(defun evgeni/setup-jedi () 
-  (interactive)
-  (jedi:setup)
-  (define-key jedi-mode-map (kbd "<C-tab>") nil)
-  (setq jedi:complete-on-dot t))
-
-(add-hook 'python-mode-hook 'evgeni/setup-jedi)
-(add-hook 'inferior-python-mode-hook 'evgeni/setup-jedi)
+(add-hook 'python-mode-hook '(lambda () (electric-indent-mode 0)))
 #+end_src
 
-*** jedi-direx
+*** anaconda-mode
 #+begin_src emacs-lisp
-(eval-after-load "python"
-  '(define-key python-mode-map "\C-zx" 'jedi-direx:pop-to-buffer))
-;(add-hook 'jedi-mode-hook 'jedi-direx:setup)
+(add-hook 'python-mode-hook 'anaconda-mode)
+(add-hook 'python-mode-hook 'eldoc-mode)
 #+end_src
 
 ** Maxima
@@ -803,7 +632,7 @@ remap magit keys because of window-meta-mode
 
 #+end_src
 
-** evgeni/minimap
+** TODO evgeni/minimap
 #+begin_src emacs-lisp
 (defun evgeni/minimap-create ()
   (interactive)
@@ -965,6 +794,16 @@ http://paste.lisp.org/display/135818
     (goto-char (point-min))))
 #+end_src
 
+*** open-init-file
+#+begin_src emacs-lisp
+(defun evgeni/open-init-file ()
+  "Opens the org-mode initialization file and starts header search"
+  (interactive)
+  (find-file (expand-file-name "~/.emacs.d/initialization.org"))
+  (helm-org-headlines))
+#+end_src
+
+** Keyboard Macros
 ** Options
 #+begin_src emacs-lisp
 (setq backup-directory-alist `((".*" . ,temporary-file-directory)))
@@ -1057,13 +896,13 @@ http://paste.lisp.org/display/135818
 *** diminish
    #+begin_src emacs-lisp
 (eval-after-load "auto-complete"
-  '(diminish 'auto-complete-mode " Ⓐ"))
+  '(diminish 'auto-complete-mode " A"))
 (eval-after-load "auto-highlight-symbol"
-  '(diminish 'auto-highlight-symbol-mode " Ⓗ"))
+  '(diminish 'auto-highlight-symbol-mode " H"))
 (eval-after-load "eproject"
-  '(diminish 'eproject-mode " eⓅ"))
+  '(diminish 'eproject-mode " E"))
 (eval-after-load "flyspell"
-  '(diminish 'flyspell-mode " Ⓢ"))
+  '(diminish 'flyspell-mode " S"))
 
 (eval-after-load "yasnippet"
   '(diminish 'yas-minor-mode))
@@ -1162,8 +1001,10 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 ** Re-definitions
 #+begin_src emacs-lisp
 (bind-keys
- ("<C-tab>"   . auto-complete)
- ("<C-M-tab>" . evgeni/ac-complete-with-helm))
+ ("<C-tab>"   . company-complete)
+ ("s-o" . company-other-backend)
+ ("C-s-c" . company-capf)
+ ("<C-M-tab>" . helm-company))
 
 
 (unbind-key "C-z")
@@ -1176,7 +1017,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("<s-SPC>" . just-one-space)
  ("<M-SPC>" . set-mark-command)
  
- ("C-S-o" . yas/expand)
+ ("<s-tab>" . yas/expand)
  ("M-/"   . hippie-expand)
  
  ("M-o"     . smart-open-line)
@@ -1208,6 +1049,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  #+begin_src emacs-lisp
 (bind-keys
  ("C-c e" . eval-and-replace)
+ ("C-c G" . customize-group)
+ ("C-c E" . evgeni/open-init-file)
  ("C-c F" . evgeni/show-file-name))
 
 (bind-key
@@ -1223,7 +1066,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 ;; rosemacs
 (when (boundp 'ros-keymap)
   (bind-key "C-c r" ros-keymap))
-
  #+END_SRC
 
 ** Prefixes
@@ -1236,8 +1078,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("h" . helm-bm))
 
 (evgeni/add-smartrep-bindings "C-c b" global-map
-                          ("n" . (bm-next))
-                          ("p" . (bm-previous)))
+                          ("n" . 'bm-next)
+                          ("p" . 'bm-previous))
 #+end_src
 
 *** f - File management
@@ -1299,6 +1141,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (bind-keys :prefix "C-c i"
            :prefix-map evgeni/interface-prefix
            ("b" . toggle-tool-bar-mode-from-frame)
+           ("c" . fci-mode)
            ("f" . auto-fill-mode)
            ("g" . golden-ratio-mode)
            ("h" . auto-highlight-symbol-mode)
@@ -1316,6 +1159,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            :prefix-map evgeni/jump-prefix
            ("j" . helm-imenu-anywhere))
 #+end_src
+
 *** m - Major-modes
 #+begin_src emacs-lisp
 (bind-keys :prefix "C-c m"
@@ -1445,16 +1289,15 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("d" . dedicated-mode))
 
 (evgeni/add-smartrep-bindings "C-c w" global-map
-                          ("w" . (winner-undo))
-                          ("W" . (winner-redo)))
+                          ("w" . 'winner-undo)
+                          ("W" . 'winner-redo))
 
 (evgeni/add-smartrep-bindings "C-c w c" global-map
-                          ("i" . (command-execute 'enlarge-window))
-                          ("k" . (command-execute 'shrink-window))
-                          ("l" . (command-execute 'enlarge-window-horizontally))
-                          ("j" . (command-execute 'shrink-window-horizontally))
-                          ("o" . (command-execute 'other-window))
-                          ("O" . (command-execute 'other-window '-)))
+                          ("i" . 'enlarge-window)
+                          ("k" . 'shrink-window)
+                          ("l" . 'enlarge-window-horizontally)
+                          ("j" . 'shrink-window-horizontally)
+                          ("o" . 'other-window) )
 #+end_src
 
 *** x - visual-regexp and iedit
@@ -1471,8 +1314,10 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("a" . mc/mark-all-like-this))
 
 (evgeni/add-smartrep-bindings "C-c x" global-map
-                              ("M-n" . (mc/mark-next-like-this))
-                              ("M-p" . (mc/mark-previous-like-this)))
+                              ("M-n" . 'mc/mark-next-like-this)
+                              ("M-p" . 'mc/mark-previous-like-this)
+                              ("C-n" . 'mc/mark-next-symbol-like-this)
+                              ("C-p" . 'mc/mark-previous-symbol-like-this))
 
 #+end_src
 
@@ -1509,7 +1354,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 #+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook 
           (lambda () "setup eshell bindings"   
-            (bind-key "<tab>" 'auto-complete eshell-mode-map)
+            (bind-key "<tab>" 'company-complete eshell-mode-map)
             (bind-key "C-c h h" 'helm-eshell-history eshell-mode-map)))
 #+end_src
 
@@ -1605,5 +1450,216 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 #+begin_src emacs-lisp
 (require 'fancy-narrow)
 (fancy-narrow-mode 1)
+#+end_src
+
+** Auto-complete
+*** General
+  #+BEGIN_SRC emacs-lisp
+(require 'auto-complete-config)
+(ac-config-default)
+
+(ac-flyspell-workaround)
+
+(setq-default ac-sources '(ac-source-yasnippet
+                           ac-source-semantic 
+                           ac-source-semantic-raw
+                           ac-source-abbrev
+                           ac-source-dictionary
+                           ac-source-words-in-same-mode-buffers))
+  #+end_src
+
+*** Completion keymap
+#+begin_src emacs-lisp
+(setq ac-completing-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [tab] 'auto-complete)
+    (define-key map "\r" 'ac-expand) 
+    map))
+#+end_src
+
+*** Menu keymap
+  #+begin_src emacs-lisp
+(define-key ac-menu-map [tab] 'ac-expand-common)
+(define-key ac-menu-map "\t" nil)
+
+(define-key ac-menu-map [return] nil)
+(define-key ac-menu-map "\r" 'ac-complete)
+(define-key ac-menu-map (kbd "<C-tab>") 'ac-complete)
+
+(define-key ac-menu-map (kbd "C-h") 'ac-quick-help)
+(define-key ac-menu-map (kbd "C-?") 'ac-help)
+(define-key ac-menu-map (kbd "C-M-?") 'ac-persist-help)
+(define-key ac-menu-map "\C-\M-n" 'ac-quick-help-scroll-down)
+(define-key ac-menu-map "\C-\M-p" 'ac-quick-help-scroll-up)
+
+(define-key ac-menu-map [down] 'ac-next)
+(define-key ac-menu-map [up] 'ac-previous)
+
+(dotimes (i 9)
+  (let ((symbol (intern (format "ac-complete-select-%d" (1+ i)))))
+    (fset symbol
+          `(lambda ()
+             (interactive)
+             (when (and (ac-menu-live-p) (popup-select ac-menu ,i))
+               (ac-complete))))
+    (define-key ac-menu-map (read-kbd-macro (format "C-%s" (1+ i))) symbol)))
+
+  #+END_SRC
+
+*** fuzzy isearch
+hack popup-isearch to do fuzzy search with the help of grizzl
+#+begin_src emacs-lisp
+(defvar *evgeni/isearch-cache* nil)
+
+(defun popup-isearch-filter-list (pattern list)
+  (let*  ((index (grizzl-make-index list))
+          (pattern (replace-regexp-in-string " " "" pattern))
+          (result (grizzl-search pattern index *evgeni/isearch-cache*)))
+    (grizzl-result-strings result index)))
+#+end_src
+
+*** Sources
+**** ac-math 
+    #+BEGIN_SRC emacs-lisp
+(require 'ac-math) 
+(add-to-list 'ac-modes 'latex-mode) 
+
+ (defun ac-LaTeX-mode-setup () ; add ac-sources to default ac-sources
+   (setq ac-sources
+         (append '(ac-source-math-unicode ac-source-math-latex ac-source-latex-commands)
+                 ac-sources))
+   )
+(add-hook 'LaTeX-mode-hook 'ac-LaTeX-mode-setup)
+(setq ac-math-unicode-in-math-p t)
+    #+END_SRC
+
+**** ac-slime
+   #+BEGIN_SRC emacs-lisp
+(add-hook 'slime-mode-hook 'set-up-slime-ac)
+(add-hook 'slime-repl-mode-hook 'set-up-slime-ac)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'slime-repl-mode))
+   #+END_SRC
+
+**** ac-pcomplete
+   #+BEGIN_SRC emacs-lisp
+     (defun ac-pcomplete ()
+       ;; eshell uses `insert-and-inherit' to insert a \t if no completion
+       ;; can be found, but this must not happen as auto-complete source
+       (flet ((insert-and-inherit (&rest args)))
+         ;; this code is stolen from `pcomplete' in pcomplete.el
+         (let* (tramp-mode ;; do not automatically complete remote stuff
+                (pcomplete-stub)
+                (pcomplete-show-list t) ;; inhibit patterns like * being deleted
+                pcomplete-seen pcomplete-norm-func
+                pcomplete-args pcomplete-last pcomplete-index
+                (pcomplete-autolist pcomplete-autolist)
+                (pcomplete-suffix-list pcomplete-suffix-list)
+                (candidates (pcomplete-completions))
+                (beg (pcomplete-begin))
+                ;; note, buffer text and completion argument may be
+                ;; different because the buffer text may bet transformed
+                ;; before being completed (e.g. variables like $HOME may be
+                ;; expanded)
+                (buftext (buffer-substring beg (point)))
+                (arg (nth pcomplete-index pcomplete-args)))
+           ;; we auto-complete only if the stub is non-empty and matches
+           ;; the end of the buffer text
+           (when (and (not (zerop (length pcomplete-stub)))
+                      (or (string= pcomplete-stub ; Emacs 23
+                                   (substring buftext
+                                              (max 0
+                                                   (- (length buftext)
+                                                      (length pcomplete-stub)))))
+                          (string= pcomplete-stub ; Emacs 24
+                                   (substring arg
+                                              (max 0
+                                                   (- (length arg)
+                                                      (length pcomplete-stub)))))))
+             ;; Collect all possible completions for the stub. Note that
+             ;; `candidates` may be a function, that's why we use
+             ;; `all-completions`.
+             (let* ((cnds (all-completions pcomplete-stub candidates))
+                    (bnds (completion-boundaries pcomplete-stub
+                                                 candidates
+                                                 nil
+                                                 ""))
+                    (skip (- (length pcomplete-stub) (car bnds))))
+               ;; We replace the stub at the beginning of each candidate by
+               ;; the real buffer content.
+               (mapcar #'(lambda (cand) (concat buftext (substring cand skip)))
+                       cnds))))))
+     
+     (defvar ac-source-pcomplete
+       '((candidates . ac-pcomplete)))
+   #+END_SRC
+
+**** ac-shell
+    #+BEGIN_SRC emacs-lisp :tangle no
+(setq explicit-shell-file-name "bash")
+(setq explicit-bash-args '("-c" "export EMACS=; stty echo; bash"))
+(setq comint-process-echoes t)
+(require 'readline-complete)
+(add-to-list 'ac-modes 'shell-mode)
+(add-hook 'shell-mode-hook 'ac-rlc-setup-sources)
+    #+END_SRC
+
+**** ac-eshell
+   #+BEGIN_SRC emacs-lisp
+     (add-hook 'eshell-mode-hook #'(lambda () (setq ac-sources '(ac-source-pcomplete))))
+     (add-to-list 'ac-modes 'eshell-mode)
+   #+END_SRC
+
+**** ac-ielm (interactive emacs lisp mode)
+   #+BEGIN_SRC emacs-lisp
+     (defun ielm-auto-complete ()
+       "Enables `auto-complete' support in \\[ielm]."
+       (setq ac-sources '(ac-source-functions
+                          ac-source-variables
+                          ac-source-features
+                          ac-source-symbols
+                          ac-source-words-in-same-mode-buffers))
+       (add-to-list 'ac-modes 'inferior-emacs-lisp-mode)
+       (auto-complete-mode 1))
+     (add-hook 'ielm-mode-hook 'ielm-auto-complete)
+   #+END_SRC
+
+**** org-ac
+#+begin_src emacs-lisp
+(require 'org-ac)
+(org-ac/config-default)
+#+end_src
+
+** jedi
+#+begin_src emacs-lisp
+
+(defun evgeni/setup-jedi () 
+  (interactive)
+  (jedi:setup)
+  (define-key jedi-mode-map (kbd "<C-tab>") nil)
+  (setq jedi:complete-on-dot t))
+
+(add-hook 'python-mode-hook 'evgeni/setup-jedi)
+(add-hook 'inferior-python-mode-hook 'evgeni/setup-jedi)
+#+end_src
+
+** jedi-direx
+#+begin_src emacs-lisp
+(eval-after-load "python"
+  '(define-key python-mode-map "\C-zx" 'jedi-direx:pop-to-buffer))
+;(add-hook 'jedi-mode-hook 'jedi-direx:setup)
+#+end_src
+
+** ac-helm
+#+begin_src emacs-lisp
+(require 'ac-helm)
+(defun evgeni/ac-complete-with-helm ()
+  "Select `auto-complete' candidates by `helm'.
+It is useful to narrow candidates."
+  (interactive)
+  (unless ac-completing
+    (call-interactively 'auto-complete)
+    (helm-other-buffer '(helm-source-auto-complete-candidates)
+                       "*helm auto-complete*")))
 #+end_src
 
