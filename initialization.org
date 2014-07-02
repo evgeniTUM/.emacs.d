@@ -113,15 +113,17 @@ is intended for personal use only.
 * ORG mode
 ** General
   #+BEGIN_SRC emacs-lisp
-    (setq org-confirm-babel-evaluate nil)
-    (add-hook 'org-mode-hook 
-              '(lambda () 
-                 (flyspell-mode)
-                 (local-unset-key (kbd "C-c SPC"))
-                 (org-indent-mode)))
-    
-    (setq org-completion-use-iswitchb t)
-    (setq org-export-babel-evaluate 'inline-only)
+(setq org-confirm-babel-evaluate nil)
+(add-hook 'org-mode-hook 
+          '(lambda () 
+             (flyspell-mode)
+             (local-unset-key (kbd "C-c SPC"))
+             (org-indent-mode)))
+
+(setq org-completion-use-iswitchb t)
+(setq org-export-babel-evaluate 'inline-only)
+
+(require 'org-eshell)
   #+END_SRC
 
 ** integrate ebib
@@ -256,9 +258,10 @@ thing."
 #+end_src
 
 * Helm
-#+BEGIN_SRC emacs-lisp
-(helm-mode 1) 
-#+END_SRC
+** General
+#+begin_src emacs-lisp :tangle yes
+(helm-mode 1)
+#+end_src
 
 ** helm-ag
 #+begin_src emacs-lisp
@@ -841,22 +844,24 @@ http://paste.lisp.org/display/135818
 #+end_src
 
 *** open important files
-**** init-file
 #+begin_src emacs-lisp
-(defun evgeni/open-init-file ()
-  "Opens the org-mode initialization file and starts header search"
-  (interactive)
-  (find-file (expand-file-name "~/.emacs.d/initialization.org"))
+(defun evgeni/open-org-file (file)
+  "Opens an org-mode file and starts header search"
+  (interactive "fFile: ")
+  (find-file (expand-file-name file))
   (helm-org-headlines))
-#+end_src
 
-**** secrets-file
-#+begin_src emacs-lisp :tangle yes
-(defun evgeni/open-secrets-file ()
-  "Opens the org-mode initialization file and starts header search"
+(defun evgeni/open-init-file ()
   (interactive)
-  (find-file (expand-file-name "~/shared/secrets.org.gpg"))
-  (helm-org-headlines))
+  (evgeni/open-org-file "~/.emacs.d/initialization.org"))
+
+(defun evgeni/open-secrets-file ()
+  (interactive)
+  (evgeni/open-org-file  "~/shared/secrets.org.gpg"))
+
+(defun evgeni/open-bookmarks-file ()
+  (interactive)
+  (evgeni/open-org-file "~/shared/bookmarks.org"))
 #+end_src
 
 ** Keyboard Macros
@@ -870,7 +875,6 @@ http://paste.lisp.org/display/135818
 (setq set-mark-command-repeat-pop t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
-(setq-default require-final-newline 'ask)
 
 (setq-default indent-tabs-mode nil)
 (setq tab-width 4)
@@ -1079,7 +1083,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("<M-SPC>" . set-mark-command)
  
  ("s-o" . yas/expand)
- ("M-/"   . hippie-expand)
+ ("M-/" . hippie-expand)
  
  ("M-o"     . smart-open-line)
  ("M-O"     . smart-open-line-above)
@@ -1113,6 +1117,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-c e" . eval-and-replace)
  ("C-c G" . customize-group)
  ("C-c S" . evgeni/open-secrets-file)
+ ("C-c B" . evgeni/open-bookmarks-file)
  ("C-c E" . evgeni/open-init-file)
  ("C-c F" . evgeni/show-file-name))
 
@@ -1150,7 +1155,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (bind-keys :prefix "C-c f"
            :prefix-map evgeni/file-prefix
            ("f" . ffap)
-           ("n" . evgeni/narrow-to-region-indirect-buffer))
+           ("n" . evgeni/narrow-to-region-indirect-buffer)
+           ("r" . rename-buffer))
 #+end_src
 
 *** h - Helm bindings
@@ -1223,15 +1229,16 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("j" . helm-imenu-anywhere))
 #+end_src
 
-*** m - Major-modes
+*** m - Mode bindings
 #+begin_src emacs-lisp
 (bind-keys :prefix "C-c m"
            :prefix-map evgeni/major-modes-prefix
-           ("m" . helm-enable-minor-mode)
-           ("M" . helm-disable-minor-mode)
+           ("<SPC>" . helm-enable-minor-mode)
+           ("<DEL>" . helm-disable-minor-mode)
+           ("m" . helm-switch-major-mode)
            ("g" . magit-status)
-           ("e" . ebib)
-           ("s" . eshell))
+           ("e" . eshell)
+           ("s" . shell))
 #+end_src
 
 *** n - Internet bindings
