@@ -1,9 +1,21 @@
 * Initialization
+** Notes
+This configuration is optimized with the control key remapped to space! (xcape)
+
+Code snippets were taken from various wikis, blogs and forums.
+For the most part there are no credits and links as this configuration
+is intended for personal use only.
+
 ** Inits
    #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (require 'cl)
+   #+end_src
+
+** Personal settings
+   #+begin_src emacs-lisp
 (setq user-full-name "Evgeni Pavlidis")
+(setq user-mail-address "Evgeni.Pavlidis@gmail.com")
    #+END_SRC
 
 ** Machine specific settings
@@ -36,10 +48,44 @@
 
 #+end_src
 
+* Gnus
+** Email configuration
+#+begin_src emacs-lisp :tangle yes
+(require 'nnir)
+(add-to-list 'gnus-secondary-select-methods
+             '(nnimap "gmail"
+                      (nnimap-address "imap.gmail.com")
+                      (nnimap-server-port 993)
+                      (nnimap-stream ssl)
+                      (nnir-search-engine imap)
+                      (nnimap-authinfo-file "~/.authinfo.gpg")
+                      ; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
+                      ;; press 'E' to expire email
+                      (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+                      (nnmail-expiry-wait 90)
+                      )
+             )
+
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials '(("smtp.gmail.com" 587
+				   "Evgeni.Pavlidis@gmail.com" nil))
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+#+end_src
+
 * Company
 #+begin_src emacs-lisp
 (require 'company)
 (global-company-mode 1)
+#+end_src
+
+** bindings
+#+begin_src emacs-lisp :tangle yes
+(define-key company-active-map (kbd "<C-tab>") 'company-complete-selection)
+(define-key company-active-map [return] nil)
 #+end_src
 
 ** theme
@@ -58,10 +104,10 @@
 
 ** org-mode
 #+begin_src emacs-lisp
-(defun my-pcomplete-capf ()
+(defun evgeni/pcomplete-capf ()
   (interactive)
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-(add-hook 'org-mode-hook #'my-pcomplete-capf)
+(add-hook 'org-mode-hook #'evgeni/pcomplete-capf)
 #+end_src
 
 * ORG mode
@@ -219,7 +265,7 @@ thing."
 (setq helm-ag-source-type 'file-line)
 #+end_src
 
-** helm-bibtex
+** helm-bibtex-hack
 #+begin_src emacs-lisp
 (setq helm-bibtex-bibliography "~/thesis/bibliography.bib")
 
@@ -336,8 +382,8 @@ specified in `helm-bibtex-pdf-open-function',"
 (yas-global-mode 1)
 (define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-keymap (kbd "<s-tab>") 'yas/next-field-or-maybe-expand)
-(define-key yas-keymap (kbd "<S-s-iso-lefttab>") 'yas/prev-field)
+(define-key yas-keymap (kbd "s-o") 'yas/next-field-or-maybe-expand)
+(define-key yas-keymap (kbd "s-O") 'yas/prev-field)
    #+END_SRC
 
 *** eldoc
@@ -794,12 +840,22 @@ http://paste.lisp.org/display/135818
     (goto-char (point-min))))
 #+end_src
 
-*** open-init-file
+*** open important files
+**** init-file
 #+begin_src emacs-lisp
 (defun evgeni/open-init-file ()
   "Opens the org-mode initialization file and starts header search"
   (interactive)
   (find-file (expand-file-name "~/.emacs.d/initialization.org"))
+  (helm-org-headlines))
+#+end_src
+
+**** secrets-file
+#+begin_src emacs-lisp :tangle yes
+(defun evgeni/open-secrets-file ()
+  "Opens the org-mode initialization file and starts header search"
+  (interactive)
+  (find-file (expand-file-name "~/shared/secrets.org.gpg"))
   (helm-org-headlines))
 #+end_src
 
@@ -998,15 +1054,20 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
        (kbd ,prefix) '(,@body)))
  #+end_src
 
-** Re-definitions
+** Completion
 #+begin_src emacs-lisp
 (bind-keys
- ("<C-tab>"   . company-complete)
- ("s-o" . company-other-backend)
+ ("<C-tab>" . company-complete)
+ ("<s-tab>" . company-other-backend)
  ("C-s-c" . company-capf)
+ ("C-s-f" . company-files)
+ ("C-s-d" . company-dabbrev)
+ ("<C-s-tab>" . company-mode)
  ("<C-M-tab>" . helm-company))
+#+end_src
 
-
+** Re-definitions
+#+begin_src emacs-lisp
 (unbind-key "C-z")
 (unbind-key "C-x C-c")
 
@@ -1017,7 +1078,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("<s-SPC>" . just-one-space)
  ("<M-SPC>" . set-mark-command)
  
- ("<s-tab>" . yas/expand)
+ ("s-o" . yas/expand)
  ("M-/"   . hippie-expand)
  
  ("M-o"     . smart-open-line)
@@ -1042,6 +1103,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-h a"   . helm-apropos)
  ("C-x C-b" . helm-buffers-list)
  ("M-x"     . helm-M-x)
+ ("M-:"     . helm-eval-expression-with-eldoc)
  ("C-x C-f" . helm-find-files))
 #+end_src
 
@@ -1050,6 +1112,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (bind-keys
  ("C-c e" . eval-and-replace)
  ("C-c G" . customize-group)
+ ("C-c S" . evgeni/open-secrets-file)
  ("C-c E" . evgeni/open-init-file)
  ("C-c F" . evgeni/show-file-name))
 
