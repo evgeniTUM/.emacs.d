@@ -31,6 +31,8 @@
  '(ein:use-auto-complete t)
  '(ein:use-auto-complete-superpack t)
  '(enable-recursive-minibuffers t)
+ '(eshell-cmpl-cycle-completions nil)
+ '(eshell-history-size 1000)
  '(eshell-ls-use-in-dired t nil (em-ls))
  '(eshell-prefer-lisp-functions t)
  '(eshell-visual-commands (quote ("vim" "vi" "screen" "top" "less" "more" "lynx" "ncftp" "pine" "tin" "trn" "elm")))
@@ -69,6 +71,7 @@
  '(org-src-tab-acts-natively t)
  '(org-src-window-setup (quote current-window))
  '(paradox-github-token t)
+ '(pcomplete-cycle-completions nil)
  '(popwin-mode t)
  '(popwin:special-display-config (quote ((direx:direx-mode :width 25 :position left :dedicated t) ("*Miniedit Help*" :noselect t) (help-mode) (completion-list-mode :noselect t) ("*Pp Macroexpand Output*" :noselect t) ("*Shell Command Output*") ("*vc-diff*") ("*vc-change-log*") ("*slime-apropos*") ("*slime-macroexpansion*") ("*slime-description*") ("*slime-compilation*" :noselect t) ("*slime-xref*") (sldb-mode :stick t) (slime-repl-mode) (slime-connection-list-mode))))
  '(preview-gs-options (quote ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
@@ -91,6 +94,7 @@
  '(volatile-highlights-mode t)
  '(winner-mode t)
  '(yas-fallback-behavior (quote call-other-command))
+ '(yas-wrap-around-region t)
  '(yascroll:delay-to-hide nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

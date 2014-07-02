@@ -84,7 +84,7 @@ is intended for personal use only.
 
 ** bindings
 #+begin_src emacs-lisp :tangle yes
-(define-key company-active-map (kbd "<C-tab>") 'company-complete-selection)
+(define-key company-active-map "\t" 'company-complete-selection)
 (define-key company-active-map [return] nil)
 #+end_src
 
@@ -400,6 +400,11 @@ specified in `helm-bibtex-pdf-open-function',"
 (global-rainbow-delimiters-mode 1)
 #+end_src
 
+*** color-identifiers-mode
+#+begin_src emacs-lisp :tangle yes
+(global-color-identifiers-mode 1)
+#+end_src
+
 ** CEDET
 #+begin_src emacs-lisp
 (setq semantic-default-submodes '(global-semantic-idle-scheduler-mode
@@ -661,6 +666,17 @@ integrate golden-ration with window-number
 #+end_src
 
 * Tools
+** eshell
+https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
+#+begin_src emacs-lisp :tangle yes
+(defun eshell/up (&optional level)
+  "Change directory from one up to a level of folders."
+  (let* ((path-level (or level 1))
+         (path-levels-list (cl-loop for i from path-level downto 1 collect "../"))
+         (path-string (apply #'concat path-levels-list)))
+    (cd path-string)))
+#+end_src
+
 ** magit
 remap magit keys because of window-meta-mode
 #+begin_src emacs-lisp
@@ -883,13 +899,13 @@ http://paste.lisp.org/display/135818
 (setq scroll-preserve-screen-position t)
 (setq isearch-allow-scroll t)
 
-(delete-selection-mode 1)
-
 (setq fill-column 80)
 
 (global-subword-mode 1)
 
 (setq default-major-mode 'org-mode)
+
+(setq jump-char-lazy-highlight-face nil)
 
 (put 'upcase-region 'disabled nil)
 (put 'narrow-to-page 'disabled nil)
@@ -1119,7 +1135,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-c S" . evgeni/open-secrets-file)
  ("C-c B" . evgeni/open-bookmarks-file)
  ("C-c E" . evgeni/open-init-file)
- ("C-c F" . evgeni/show-file-name))
+ ("C-c F" . evgeni/show-file-name)
+ ("C-c V" . customize-variable))
 
 (bind-key
  "C-c R" 
