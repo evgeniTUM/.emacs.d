@@ -1037,6 +1037,27 @@ http://paste.lisp.org/display/135818
                              (hl-line-mode 1)))
 #+end_src
 
+*** dired-rainbow
+http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
+#+begin_src emacs-lisp :tangle yes
+(require 'dired-rainbow)
+
+(defconst dired-audio-files-extensions
+  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+  "Dired Audio files extensions")
+
+(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+(defconst dired-video-files-extensions
+    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+    "Dired Video files extensions")
+
+(dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
+
+(dired-rainbow-define-chmod executable-unix "Green" "-.*x.*")
+#+end_src
+
 ** recentf (recent files)
 http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
    #+BEGIN_SRC emacs-lisp
@@ -1048,8 +1069,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
      (setq hippie-expand-try-functions-list '(yas-hippie-try-expand
  					      try-expand-dabbrev
 					      try-expand-dabbrev-from-kill
-					      try-complete-file-name-partially
-					      try-complete-file-name
 					      try-expand-dabbrev-all-buffers
 					      try-expand-all-abbrevs
 					      try-expand-list
