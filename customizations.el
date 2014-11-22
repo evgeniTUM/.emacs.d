@@ -3,7 +3,44 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(TeX-command-list (quote (("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil (plain-tex-mode texinfo-mode ams-tex-mode) :help "Run plain TeX") ("XeLaTeX" "%`xelatex%(mode)%' --shell-escape %t" TeX-run-TeX t t) ("LaTeX" "%`%l%(mode)%' %t" TeX-run-TeX nil (latex-mode doctex-mode) :help "Run LaTeX") ("Makeinfo" "makeinfo %t" TeX-run-compile nil (texinfo-mode) :help "Run Makeinfo with Info output") ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil (texinfo-mode) :help "Run Makeinfo with HTML output") ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil (ams-tex-mode) :help "Run AMSTeX") ("ConTeXt" "texexec --once --texutil %(execopts)%t" TeX-run-TeX nil (context-mode) :help "Run ConTeXt once") ("ConTeXt Full" "texexec %(execopts)%t" TeX-run-TeX nil (context-mode) :help "Run ConTeXt until completion") ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX") ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber") ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer") ("Print" "%p" TeX-run-command t t :help "Print the file") ("Queue" "%q" TeX-run-background nil t :help "View the printer queue" :visible TeX-queue-command) ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file") ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file") ("Check" "lacheck %s" TeX-run-compile nil (latex-mode) :help "Check LaTeX file for correctness") ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t :help "Spell-check the document") ("Clean" "TeX-clean" TeX-run-function nil t :help "Delete generated intermediate files") ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files") ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))))
+ '(TeX-command-list
+   (quote
+    (("TeX" "%(PDF)%(tex) %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil
+      (plain-tex-mode texinfo-mode ams-tex-mode)
+      :help "Run plain TeX")
+     ("XeLaTeX" "%`xelatex%(mode)%' --shell-escape %t" TeX-run-TeX t t)
+     ("LaTeX" "%`%l%(mode)%' %t" TeX-run-TeX nil
+      (latex-mode doctex-mode)
+      :help "Run LaTeX")
+     ("Makeinfo" "makeinfo %t" TeX-run-compile nil
+      (texinfo-mode)
+      :help "Run Makeinfo with Info output")
+     ("Makeinfo HTML" "makeinfo --html %t" TeX-run-compile nil
+      (texinfo-mode)
+      :help "Run Makeinfo with HTML output")
+     ("AmSTeX" "%(PDF)amstex %`%S%(PDFout)%(mode)%' %t" TeX-run-TeX nil
+      (ams-tex-mode)
+      :help "Run AMSTeX")
+     ("ConTeXt" "texexec --once --texutil %(execopts)%t" TeX-run-TeX nil
+      (context-mode)
+      :help "Run ConTeXt once")
+     ("ConTeXt Full" "texexec %(execopts)%t" TeX-run-TeX nil
+      (context-mode)
+      :help "Run ConTeXt until completion")
+     ("BibTeX" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
+     ("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber")
+     ("View" "%V" TeX-run-discard-or-function t t :help "Run Viewer")
+     ("Print" "%p" TeX-run-command t t :help "Print the file")
+     ("Queue" "%q" TeX-run-background nil t :help "View the printer queue" :visible TeX-queue-command)
+     ("File" "%(o?)dvips %d -o %f " TeX-run-command t t :help "Generate PostScript file")
+     ("Index" "makeindex %s" TeX-run-command nil t :help "Create index file")
+     ("Check" "lacheck %s" TeX-run-compile nil
+      (latex-mode)
+      :help "Check LaTeX file for correctness")
+     ("Spell" "(TeX-ispell-document \"\")" TeX-run-function nil t :help "Spell-check the document")
+     ("Clean" "TeX-clean" TeX-run-function nil t :help "Delete generated intermediate files")
+     ("Clean All" "(TeX-clean t)" TeX-run-function nil t :help "Delete generated intermediate and output files")
+     ("Other" "" TeX-run-command t t :help "Run an arbitrary command"))))
  '(ac-auto-show-menu nil)
  '(ac-dwim nil)
  '(ac-quick-help-delay 1)
@@ -16,24 +53,34 @@
  '(bm-repository-file "/home/evgeni/.emacs.d/.bm-repository")
  '(browse-url-browser-function (quote browse-url-generic))
  '(company-auto-complete nil)
- '(company-backends (quote (company-inf-python company-anaconda company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf (company-dabbrev-code company-gtags company-etags company-keywords) company-oddmuse company-files company-dabbrev)))
+ '(company-backends
+   (quote
+    (company-inf-python company-anaconda company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf
+                        (company-dabbrev-code company-gtags company-etags company-keywords)
+                        company-oddmuse company-files company-dabbrev)))
  '(company-idle-delay 0.3)
  '(company-minimum-prefix-length 2)
  '(company-show-numbers t)
  '(company-tooltip-flip-when-above t)
  '(company-transformers (quote (company-sort-by-occurrence)))
  '(custom-file "~/.emacs.d/customizations.el")
- '(custom-safe-themes (quote ("f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "75c9f0b0499ecdd0c856939a5de052742d85af81814e84faa666522c2bba7e85" "6fe6ab4abe97a4f13533e47ae59fbba7f2919583f9162b440dd06707b01f7794" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "025354235e98db5e7fd9c1a74622ff53ad31b7bde537d290ff68d85665213d85" "8b231ba3e5f61c2bb1bc3a2d84cbd16ea17ca13395653566d4dfbb11feaf8567" "f32dd8e7b3a508874eded03d5be43d2bdfffe81c199eea72de06ce3e653db720" "8eef22cd6c122530722104b7c82bc8cdbb690a4ccdd95c5ceec4f3efa5d654f5" default)))
+ '(custom-safe-themes
+   (quote
+    ("f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "75c9f0b0499ecdd0c856939a5de052742d85af81814e84faa666522c2bba7e85" "6fe6ab4abe97a4f13533e47ae59fbba7f2919583f9162b440dd06707b01f7794" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "025354235e98db5e7fd9c1a74622ff53ad31b7bde537d290ff68d85665213d85" "8b231ba3e5f61c2bb1bc3a2d84cbd16ea17ca13395653566d4dfbb11feaf8567" "f32dd8e7b3a508874eded03d5be43d2bdfffe81c199eea72de06ce3e653db720" "8eef22cd6c122530722104b7c82bc8cdbb690a4ccdd95c5ceec4f3efa5d654f5" default)))
  '(dired-listing-switches "-alh --group-directories-first")
  '(ebib-file-associations (quote (("pdf" . "evince") ("ps" . "gv"))))
  '(ebib-filename-separator ":")
  '(ecb-options-version "2.40")
  '(ein:use-auto-complete t)
  '(ein:use-auto-complete-superpack t)
+ '(electric-indent-mode t)
  '(enable-recursive-minibuffers t)
+ '(eshell-cmpl-cycle-completions nil)
  '(eshell-history-size 1000)
  '(eshell-prefer-lisp-functions t)
- '(eshell-visual-commands (quote ("vim" "vi" "screen" "top" "less" "more" "lynx" "ncftp" "pine" "tin" "trn" "elm")))
+ '(eshell-visual-commands
+   (quote
+    ("vim" "vi" "screen" "top" "less" "more" "lynx" "ncftp" "pine" "tin" "trn" "elm")))
  '(eval-expression-print-length nil)
  '(eval-expression-print-level nil)
  '(fill-column 80)
@@ -55,6 +102,7 @@
  '(howdoi-display-question nil)
  '(inhibit-startup-screen t)
  '(jedi:tooltip-method (quote (pos-tip pos-tip)))
+ '(jump-char-forward-key ".")
  '(minimap-dedicated-window t)
  '(minimap-recenter-type (quote middle))
  '(minimap-resizes-buffer nil)
@@ -62,30 +110,90 @@
  '(minimap-width-fraction 0.15)
  '(org-agenda-files nil)
  '(org-babel-python-command "~/shared/bin/ipython.sh")
- '(org-file-apps (quote ((auto-mode . emacs) ("\\.mm\\'" . default) ("\\.x?html?\\'" . default) ("\\.pdf\\'" . "evince %s"))))
- '(org-format-latex-options (quote (:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers ("begin" "$1" "$" "$$" "\\(" "\\["))))
+ '(org-file-apps
+   (quote
+    ((auto-mode . emacs)
+     ("\\.mm\\'" . default)
+     ("\\.x?html?\\'" . default)
+     ("\\.pdf\\'" . "evince %s"))))
+ '(org-format-latex-options
+   (quote
+    (:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
+                 ("begin" "$1" "$" "$$" "\\(" "\\["))))
  '(org-src-fontify-natively t)
  '(org-src-preserve-indentation t)
  '(org-src-tab-acts-natively t)
  '(org-src-window-setup (quote current-window))
  '(paradox-github-token t)
  '(popwin-mode t)
- '(popwin:special-display-config (quote ((direx:direx-mode :width 25 :position left :dedicated t) ("*Miniedit Help*" :noselect t) (help-mode) (completion-list-mode :noselect t) ("*Pp Macroexpand Output*" :noselect t) ("*Shell Command Output*") ("*vc-diff*") ("*vc-change-log*") ("*slime-apropos*") ("*slime-macroexpansion*") ("*slime-description*") ("*slime-compilation*" :noselect t) ("*slime-xref*") (sldb-mode :stick t) (slime-repl-mode) (slime-connection-list-mode))))
- '(preview-gs-options (quote ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
+ '(popwin:special-display-config
+   (quote
+    ((direx:direx-mode :width 25 :position left :dedicated t)
+     ("*Miniedit Help*" :noselect t)
+     (help-mode)
+     (completion-list-mode :noselect t)
+     ("*Pp Macroexpand Output*" :noselect t)
+     ("*Shell Command Output*")
+     ("*vc-diff*")
+     ("*vc-change-log*")
+     ("*slime-apropos*")
+     ("*slime-macroexpansion*")
+     ("*slime-description*")
+     ("*slime-compilation*" :noselect t)
+     ("*slime-xref*")
+     (sldb-mode :stick t)
+     (slime-repl-mode)
+     (slime-connection-list-mode))))
+ '(preview-gs-options
+   (quote
+    ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
  '(projectile-completion-system (quote default))
  '(projectile-remember-window-configs t)
  '(python-shell-interpreter "~/shared/bin/ipython.sh")
  '(require-final-newline (quote visit-save))
- '(safe-local-variable-values (quote ((require-final-newline . t) (mangle-whitespace . t))))
+ '(safe-local-variable-values
+   (quote
+    ((require-final-newline . t)
+     (mangle-whitespace . t))))
  '(savehist-additional-variables (quote (kill-ring search-ring regexp-search-ring)))
  '(savehist-mode t)
  '(shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell)))))
  '(size-indication-mode nil)
  '(smartrep-mode-line-active-bg "#880000")
- '(sublimity-handle-scroll-criteria (quote ((eq sublimity--prev-buf (current-buffer)) (eq sublimity--prev-wnd (selected-window)) (or (not (boundp (quote cua--rectangle))) (not cua--rectangle)) (or (not (boundp (quote multiple-cursors-mode))) (not multiple-cursors-mode)) (not (eq major-mode (quote shell-mode))))))
- '(sublimity-map-criteria (quote ((not (eq guide-key/guide-buffer-name (buffer-name))) (not (window-minibuffer-p)) (<= (/ sublimity-map-size (window-total-width) 1.0) sublimity-map-max-fraction))))
+ '(sublimity-handle-scroll-criteria
+   (quote
+    ((eq sublimity--prev-buf
+         (current-buffer))
+     (eq sublimity--prev-wnd
+         (selected-window))
+     (or
+      (not
+       (boundp
+        (quote cua--rectangle)))
+      (not cua--rectangle))
+     (or
+      (not
+       (boundp
+        (quote multiple-cursors-mode)))
+      (not multiple-cursors-mode))
+     (not
+      (eq major-mode
+          (quote shell-mode))))))
+ '(sublimity-map-criteria
+   (quote
+    ((not
+      (eq guide-key/guide-buffer-name
+          (buffer-name)))
+     (not
+      (window-minibuffer-p))
+     (<=
+      (/ sublimity-map-size
+         (window-total-width)
+         1.0)
+      sublimity-map-max-fraction))))
  '(tramp-default-method "ssh")
  '(view-read-only t)
+ '(visible-bell t)
  '(visual-line-fringe-indicators (quote (left-curly-arrow right-curly-arrow)))
  '(volatile-highlights-mode t)
  '(winner-mode t)
@@ -108,4 +216,5 @@
  '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
  '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
  '(grammar-error-face ((t (:underline (:color "red" :style wave)))) t)
+ '(org-column ((t (:background "SkyBlue4" :foreground "#000000" :strike-through nil :underline nil :slant normal :weight normal))))
  '(sp-show-pair-match-face ((t (:background "DeepSkyBlue4")))))

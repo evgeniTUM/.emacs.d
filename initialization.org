@@ -3,7 +3,7 @@
 This configuration is optimized with the control key remapped to space! (xcape)
 
 Code snippets were taken from various wikis, blogs and forums.
-For the most part there are no credits and links as this configuration
+For the most part there are no credits and references as this configuration
 is intended for personal use only.
 
 ** Inits
@@ -150,6 +150,7 @@ is intended for personal use only.
 *** Preview
 #+begin_src emacs-lisp
 (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
+(setq org-export-latex-hyperref-format "\\ref{%s}")
 #+end_src
 
 *** Xelatex
@@ -280,7 +281,7 @@ specified in `helm-bibtex-pdf-open-function',"
     (dolist (key keys)
       (let* ((entry (helm-bibtex-get-entry key))
              (file (helm-bibtex-get-value entry 'file)))
-        (if file (shell-command (concat "evince `find ~/Dropbox/configs/zotero/storage -name " (first (split-string file ":")) "`"))
+        (if file (shell-command (concat "evince `find ~/Dropbox/configs/zotero/storage -name " (first (split-string file ":")) "` &"))
           (message "No URL or DOI found for this entry: %s"
                    key))))))
 
@@ -409,7 +410,8 @@ specified in `helm-bibtex-pdf-open-function',"
 
 *** rainbow-delimiters
 #+begin_src emacs-lisp
-(global-rainbow-delimiters-mode 1)
+;(global-rainbow-delimiters-mode 1)
+(add-hook 'prog-mode 'rainbow-delimiters-mode)
 #+end_src
 
 *** color-identifiers-mode
@@ -456,7 +458,8 @@ specified in `helm-bibtex-pdf-open-function',"
   (add-to-list 'load-path (expand-file-name "~/.emacs.d/lisp/rosemacs"))
   (require 'rosemacs nil t)
   (invoke-rosemacs)
-  (slime-setup '(slime-fancy slime-asdf slime-ros)))
+  (slime-setup '(slime-fancy slime-asdf slime-ros))
+  (bind-key "C-c r" ros-keymap))
    #+END_SRC
 
 ** Python
@@ -894,7 +897,6 @@ http://paste.lisp.org/display/135818
   (message "%s" (evgeni/buffer-list-same-mode)))
 #+end_src
 
-
 *** open important files
 #+begin_src emacs-lisp
 (defun evgeni/open-org-file (file)
@@ -1180,7 +1182,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-h a"   . helm-apropos)
  ("C-x C-b" . helm-buffers-list)
  ("M-x"     . helm-M-x)
- ("M-:"     . helm-eval-expression-with-eldoc)
  ("C-x C-f" . helm-find-files))
 #+end_src
 
@@ -1209,9 +1210,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 
 (bind-key "C-c l" 'slime-selector)
 
-;; rosemacs
-(when (boundp 'ros-keymap)
-  (bind-key "C-c r" ros-keymap))
  #+END_SRC
 
 ** Prefixes
@@ -1295,6 +1293,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("g" . golden-ratio-mode)
            ("h" . auto-highlight-symbol-mode)
            ("l" . linum-mode)
+           ("L" . hl-line-mode)
            ("m" . toggle-menu-bar-mode-from-frame)
            ("s" . toggle-scroll-bar)
            ("t" . tabbar-mode)
@@ -1356,8 +1355,9 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 
            ("C-M-k" . sp-kill-sexp)
 
-           ("C-M-e" . sp-up-sexp)
-           ("C-M-a" . sp-backward-down-sexp)
+
+           ("M-E" . sp-up-sexp)
+           ("M-A" . sp-backward-down-sexp)
 
            ("C-)" . sp-forward-slurp-sexp)
            ("C-(" . sp-backward-slurp-sexp)
@@ -1511,7 +1511,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 #+begin_src emacs-lisp
 (add-hook 'hs-minor-mode-hook
           '(lambda ()
-             (bind-key "<s-tab>" 'hs-toggle-hiding hs-minor-mode-map)
+             (bind-key "<backtab>" 'hs-toggle-hiding hs-minor-mode-map)
              (bind-key "<S-s-iso-lefttab>" 'evgeni/hs-toggle-all hs-minor-mode-map)))
 #+end_src
 

@@ -9,7 +9,8 @@
 (package-initialize)
 
 (unless (package-installed-p 'save-packages)
-    (package-install 'save-packages))
+  (package-install 'save-packages))
+
 ; (install-saved-packages)
 
 ;;; load initializatoin.org file
@@ -21,3 +22,4 @@
 (put 'downcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
 (put 'dired-find-alternate-file 'disabled nil)
+(put 'erase-buffer 'disabled nil)
