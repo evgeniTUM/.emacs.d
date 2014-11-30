@@ -46,8 +46,9 @@
  '(ac-quick-help-delay 1)
  '(ac-use-menu-map t)
  '(ac-use-quick-help nil)
- '(back-button-global-forward-keystrokes (quote ("C-x <M-S-SPC>")))
- '(back-button-global-keystrokes (quote ("C-x <M-SPC>")))
+ '(auth-sources
+   (quote
+    ("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" "~/.emacs.d/.authinfo.gpg")))
  '(back-button-local-forward-keystrokes (quote ("C-x <S-SPC>")))
  '(back-button-mode t)
  '(bm-repository-file "/home/evgeni/.emacs.d/.bm-repository")
@@ -66,7 +67,7 @@
  '(custom-file "~/.emacs.d/customizations.el")
  '(custom-safe-themes
    (quote
-    ("f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "75c9f0b0499ecdd0c856939a5de052742d85af81814e84faa666522c2bba7e85" "6fe6ab4abe97a4f13533e47ae59fbba7f2919583f9162b440dd06707b01f7794" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "025354235e98db5e7fd9c1a74622ff53ad31b7bde537d290ff68d85665213d85" "8b231ba3e5f61c2bb1bc3a2d84cbd16ea17ca13395653566d4dfbb11feaf8567" "f32dd8e7b3a508874eded03d5be43d2bdfffe81c199eea72de06ce3e653db720" "8eef22cd6c122530722104b7c82bc8cdbb690a4ccdd95c5ceec4f3efa5d654f5" default)))
+    ("a31c86c0a9ba5d06480b02bb912ae58753e09f13edeb07af8927d67c3bb94d68" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "75c9f0b0499ecdd0c856939a5de052742d85af81814e84faa666522c2bba7e85" "6fe6ab4abe97a4f13533e47ae59fbba7f2919583f9162b440dd06707b01f7794" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "025354235e98db5e7fd9c1a74622ff53ad31b7bde537d290ff68d85665213d85" "8b231ba3e5f61c2bb1bc3a2d84cbd16ea17ca13395653566d4dfbb11feaf8567" "f32dd8e7b3a508874eded03d5be43d2bdfffe81c199eea72de06ce3e653db720" "8eef22cd6c122530722104b7c82bc8cdbb690a4ccdd95c5ceec4f3efa5d654f5" default)))
  '(dired-listing-switches "-alh --group-directories-first")
  '(ebib-file-associations (quote (("pdf" . "evince") ("ps" . "gv"))))
  '(ebib-filename-separator ":")
@@ -86,6 +87,7 @@
  '(fill-column 80)
  '(global-auto-complete-mode t)
  '(global-hi-lock-mode t)
+ '(global-prettify-symbols-mode t)
  '(global-rainbow-delimiters-mode t)
  '(global-smartscan-mode t)
  '(global-undo-tree-mode t)
@@ -147,7 +149,9 @@
  '(preview-gs-options
    (quote
     ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
+ '(proced-auto-update-interval 2)
  '(projectile-completion-system (quote default))
+ '(projectile-mode-line (quote (:eval (format " P[%s]" (projectile-project-name)))))
  '(projectile-remember-window-configs t)
  '(python-shell-interpreter "~/shared/bin/ipython.sh")
  '(require-final-newline (quote visit-save))
@@ -158,6 +162,7 @@
  '(savehist-additional-variables (quote (kill-ring search-ring regexp-search-ring)))
  '(savehist-mode t)
  '(shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell)))))
+ '(shift-select-mode nil)
  '(size-indication-mode nil)
  '(smartrep-mode-line-active-bg "#880000")
  '(sublimity-handle-scroll-criteria
@@ -216,5 +221,6 @@
  '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
  '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
  '(grammar-error-face ((t (:underline (:color "red" :style wave)))) t)
+ '(mode-line-buffer-id ((t (:foreground "orange" :weight bold))))
  '(org-column ((t (:background "SkyBlue4" :foreground "#000000" :strike-through nil :underline nil :slant normal :weight normal))))
  '(sp-show-pair-match-face ((t (:background "DeepSkyBlue4")))))

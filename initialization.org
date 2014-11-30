@@ -49,27 +49,19 @@ is intended for personal use only.
 #+end_src
 
 * Gnus
-** Email configuration
-#+begin_src emacs-lisp :tangle yes
-(require 'nnir)
-(add-to-list 'gnus-secondary-select-methods
-             '(nnimap "gmail"
-                      (nnimap-address "imap.gmail.com")
-                      (nnimap-server-port 993)
-                      (nnimap-stream ssl)
-                      (nnir-search-engine imap)
-                      (nnimap-authinfo-file "~/.authinfo.gpg")
-                      ; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
-                      ;; press 'E' to expire email
-                      (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-                      (nnmail-expiry-wait 90)
-                      )
-             )
+** Mail configuration
+#+begin_src emacs-lisp
+(setq gnus-select-method
+      '(nnimap "gmail"
+	       (nnimap-address "imap.gmail.com")
+	       (nnimap-server-port 993)
+               (nnir-search-engine imap)
+	       (nnimap-stream ssl)))
 
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
       smtpmail-auth-credentials '(("smtp.gmail.com" 587
-				   "Evgeni.Pavlidis@gmail.com" nil))
+				   "evgeni.pavlidis@gmail.com" nil))
       smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587
@@ -321,6 +313,7 @@ specified in `helm-bibtex-pdf-open-function',"
 *** Bash
 #+begin_src emacs-lisp
 (evgeni/dash-define-docsets-for-mode 'shell-script-mode-hook '("Bash"))
+(evgeni/dash-define-docsets-for-mode 'shell-mode-hook '("Bash"))
 #+end_src
 
 *** Emacs lisp
@@ -337,7 +330,7 @@ specified in `helm-bibtex-pdf-open-function',"
 ** Common
 *** prog-mode-defaults
 #+begin_src emacs-lisp
-(add-hook 'prog-mode-hook 'electric-indent-mode)
+(add-hook 'prog-mode-hook 'aggressive-indent-mode)
 #+end_src
 
 *** Highlight TODO/FIXME keywords
@@ -398,20 +391,20 @@ specified in `helm-bibtex-pdf-open-function',"
 (yas-global-mode 1)
 (define-key yas-minor-mode-map (kbd "<tab>") nil)
 (define-key yas-minor-mode-map (kbd "TAB") nil)
-(define-key yas-keymap (kbd "s-o") 'yas/next-field-or-maybe-expand)
-(define-key yas-keymap (kbd "s-O") 'yas/prev-field)
    #+END_SRC
 
 *** eldoc
 #+begin_src emacs-lisp
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'ielm-mode-hook 'turn-on-eldoc-mode)
+
+(add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
 #+end_src
 
 *** rainbow-delimiters
 #+begin_src emacs-lisp
 ;(global-rainbow-delimiters-mode 1)
-(add-hook 'prog-mode 'rainbow-delimiters-mode)
+(add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+end_src
 
 *** color-identifiers-mode
@@ -449,8 +442,6 @@ specified in `helm-bibtex-pdf-open-function',"
   (add-hook hook 'turn-on-elisp-slime-nav-mode))
 #+end_src
 
-
-
 *** rosemacs
    #+begin_SRC emacs-lisp
 (defun evgeni/ros-slime ()
@@ -480,7 +471,7 @@ https://github.com/xiaohanyu/oh-evgeni/emacs/blob/master/modules/ome-python.org
 
 *** disable electric indent
 #+begin_src emacs-lisp
-(add-hook 'python-mode-hook '(lambda () (electric-indent-mode 0)))
+(add-hook 'python-mode-hook '(lambda () (aggressive-indent-mode 0)))
 #+end_src
 
 *** anaconda-mode
@@ -491,7 +482,7 @@ https://github.com/xiaohanyu/oh-evgeni/emacs/blob/master/modules/ome-python.org
 
 ** Maxima
   #+BEGIN_SRC emacs-lisp
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/maxima/")
+(add-to-list 'load-path (first (f-glob "/usr/share/maxima/*/emacs/")))
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
 (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
 (autoload 'maxima "maxima" "Maxima interaction" t)
@@ -642,12 +633,6 @@ integrate golden-ration with window-number
   "Kill up to, but not including ARGth occurrence of CHAR.")
 #+end_src
 
-*** back-button
-#+begin_src emacs-lisp
-(require 'back-button)
-(back-button-mode 1)
-#+end_src
-
 ** save-packages
 #+begin_src emacs-lisp
 (add-hook 'kill-emacs-hook 'save-packages)
@@ -682,6 +667,34 @@ integrate golden-ration with window-number
 
 * Tools
 ** eshell
+*** Helm directory history
+#+begin_src emacs-lisp
+(defun helm-eshell-last-dirs ()
+  (mapcar (lambda (x) (cons x x))
+          (ring-elements evgeni/eshell-last-dir-ring)))
+
+(defun helm-eshell-last-dirs-actions (actions dir)
+  "Return a list of helm ACTIONS available for this directory."
+  `((,(format "Switch to Directory - %s" dir) . (lambda (dir)
+                                                  (cd dir)
+                                                  (eshell-send-input)))
+    (,(format "Show directory - %s" dir) . pp)))
+
+(setq helm-source-eshell-last-dirs
+      '((name . "Directory history")
+        (init . (lambda ()
+                  (setq evgeni/eshell-last-dir-ring eshell-last-dir-ring)))
+        (candidates-process . helm-eshell-last-dirs)
+        (action-transformer . helm-eshell-last-dirs-actions)))
+
+(defun evgeni/helm-eshell-last-dirs ()
+  "Bring up the directory history of eshell."
+  (interactive)
+  (helm :sources '(helm-source-eshell-last-dirs)
+        :buffer "*helm-directory-history*"))
+#+end_src
+
+*** Go up several directories
 https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
 #+begin_src emacs-lisp :tangle yes
 (defun eshell/up (&optional level)
@@ -957,6 +970,16 @@ http://paste.lisp.org/display/135818
 #+END_SRC
 
 ** Mode line
+*** path in mode line for shells
+#+begin_src emacs-lisp
+(defun add-mode-line-dirtrack ()
+  (add-to-list 'mode-line-buffer-identification 
+               '(:propertize (" " default-directory " ") face dired-directory)))
+
+(add-hook 'shell-mode-hook 'add-mode-line-dirtrack)
+(add-hook 'eshell-mode-hook 'add-mode-line-dirtrack)
+#+end_src
+
 *** format
 #+begin_src emacs-lisp
 (setq-default mode-line-format 
@@ -995,13 +1018,13 @@ http://paste.lisp.org/display/135818
                                      'face 'font-lock-type-face
                                      'help-echo "Buffer is read-only")))  
                 " "
-                (:eval (propertize "%b "
-                                   'face 'font-lock-keyword-face))
+                mode-line-buffer-identification
+                " "
 
                 smartrep-mode-line-string
                 mode-line-modes 
                 mode-line-misc-info 
-                mode-line-end-spaces
+                MODE-LINE-END-SPACES
 
                 (:eval (when vc-mode (propertize vc-mode  
                                    'face 'font-lock-string-face)))))
@@ -1044,6 +1067,12 @@ http://paste.lisp.org/display/135818
 
 (eval-after-load "anzu"
   '(diminish 'anzu-mode))
+
+(eval-after-load "company"
+  '(diminish 'company-mode " C"))
+
+(eval-after-load "subword"
+  '(diminish 'subword-mode))
    #+END_SRC
 
 *** frame-title
@@ -1157,7 +1186,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("<s-SPC>" . just-one-space)
  ("<M-SPC>" . set-mark-command)
  
- ("s-o" . yas/expand)
  ("M-/" . hippie-expand)
  
  ("M-o"     . smart-open-line)
@@ -1165,9 +1193,9 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-c M-s" . center-line)
  ("C-c M-S" . center-paragraph)
  
- ("M-j" . ace-jump-mode)
- ("M-i" . jump-char-forward)
- ("M-I" . jump-char-backward)
+ ("M-i" . ace-jump-mode)
+ ("M-j" . jump-char-forward)
+ ("M-J" . jump-char-backward)
  
  ("C-=" . er/expand-region)
  ("C-+" . er/contract-region)
@@ -1179,6 +1207,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  
  ("C-x k"   . kill-this-buffer)
  ("C-x j"   . direx:jump-to-directory-other-window)
+ ("C-x t"   . anchored-transpose)
  ("C-h a"   . helm-apropos)
  ("C-x C-b" . helm-buffers-list)
  ("M-x"     . helm-M-x)
@@ -1244,6 +1273,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("C-a" . helm-ag-r-from-git-repo)
            ("B" . helm-bibtex)
            ("C" . helm-colors)
+           ("D" . helm-dired-recent-dirs-view)
            ("F" . helm-find)
            ("G" . helm-git-grep)
            ("L" . helm-locate-library)
@@ -1280,7 +1310,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("e" . helm-info-emacs)
            ("o" . helm-orgcard)
            ("p" . helm-pydoc)
-           ("c" . clojure-cheatsheet))
+           ("c" . clojure-cheatsheet)
+           ("m" . helm-man-woman))
  #+end_src
 
 *** i - Interface
@@ -1317,7 +1348,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("m" . helm-switch-major-mode)
            ("g" . magit-status)
            ("e" . eshell)
-           ("s" . shell))
+           ("s" . shell)
+           ("t" . ansi-term))
 #+end_src
 
 *** n - Internet bindings
@@ -1347,17 +1379,13 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (bind-keys :map sp-keymap
            ("C-M-f" . sp-forward-sexp)
            ("C-M-b" . sp-backward-sexp)
-           ("C-M-n" . sp-next-sexp)
-           ("C-M-p" . sp-previous-sexp)
+           ("C-M-n" . sp-up-sexp)
+           ("C-M-p" . sp-backward-down-sexp)
            ("C-M-u" . sp-backward-up-sexp)
            ("C-M-d" . sp-down-sexp)
            ("C-M-t" . sp-transpose-sexp)
 
            ("C-M-k" . sp-kill-sexp)
-
-
-           ("M-E" . sp-up-sexp)
-           ("M-A" . sp-backward-down-sexp)
 
            ("C-)" . sp-forward-slurp-sexp)
            ("C-(" . sp-backward-slurp-sexp)
@@ -1378,15 +1406,15 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            :prefix "C-c s"
            :prefix-map smartparens-prefix
            ("M-w" . sp-copy-sexp)
+           ("<SPC>" . sp-rewrap-sexp)
 
            ("u" . sp-unwrap-sexp)
            ("U" . sp-backward-unwrap-sexp)
 
            ("s" . sp-splice-sexp)
-           ("F" . sp-splice-sexp-killing-forward)
-           ("B" . sp-splice-sexp-killing-backward)
+           ("f" . sp-splice-sexp-killing-forward)
+           ("b" . sp-splice-sexp-killing-backward)
            ("r" . sp-splice-sexp-killing-around)
-
 
            ("c" . sp-convolute-sexp)
            ("a" . sp-absorb-sexp)
@@ -1407,9 +1435,10 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("a" . auto-revert-mode)
            ("b" . sr-speedbar-toggle)
            ("c" . flycheck-mode)
-           ("h" . hs-minor-mode)
+           ("h" . helm-mode)
            ("l" . scroll-lock-mode)
            ("m" . sublimity-mode)
+           ("o" . hs-minor-mode)
            ("s" . flyspell-mode)
            ("v" . view-mode))
  #+end_src
@@ -1500,11 +1529,20 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
             (bind-key "C-c h h" 'helm-org-headlines org-mode-map)))
 #+end_src
 
+*** comint-mode
+#+begin_src emacs-lisp
+(add-hook 'comint-mode-hook 
+          (lambda () "setup comint bindings"   
+            (bind-key "C-c h h" 'helm-comint-input-ring)))
+#+end_src
+
+
 *** eshell
 #+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook 
           (lambda () "setup eshell bindings"   
-            (bind-key "C-c h h" 'helm-eshell-history eshell-mode-map)))
+            (bind-key "C-c h h" 'helm-eshell-history eshell-mode-map)
+            (bind-key "C-c h d" 'evgeni/helm-eshell-last-dirs)))
 #+end_src
 
 *** hide-show
@@ -1532,9 +1570,10 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
   (drag-stuff-global-mode t)
 #+end_src
 
-* TODO Work to do
-** bookmark+
-** webjump
+* Things
+** eshell and company
+** eshell tramp
+** hungry delete
 * Inactive
 :PROPERTIES:
 :tangle: no
