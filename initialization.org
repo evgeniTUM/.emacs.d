@@ -96,13 +96,14 @@ is intended for personal use only.
 (add-hook 'org-mode-hook #'evgeni/pcomplete-capf)
 #+end_src
 
-** complete candidate and stay in company state
+** complete candidate and stay in completion state
 #+begin_src emacs-lisp
 (defun evgeni/company-complete-and-stay ()
   (interactive)
-  (company-complete)
+  (company-complete-selection)
   (company-complete))
 #+end_src
+
 * ORG mode
 ** General
   #+BEGIN_SRC emacs-lisp
@@ -1058,8 +1059,9 @@ http://paste.lisp.org/display/135818
 (eval-after-load "company"
   '(diminish 'company-mode " C"))
 
-(eval-after-load "subword"
-  '(diminish 'subword-mode))
+; TODO: fix this
+;(eval-after-load "subword"
+;  '(diminish 'subword-mode))
    #+END_SRC
 
 *** frame-title
@@ -1125,8 +1127,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 ** Other
 #+begin_src emacs-lisp
 (global-undo-tree-mode)
-
-(global-smartscan-mode 1)
 
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
@@ -1555,24 +1555,12 @@ remap magit keys because of window-meta-mode
 (bind-key "TAB" nil yas-minor-mode-map)
 #+end_src
 
-
 *** hide-show
 #+begin_src emacs-lisp
 (add-hook 'hs-minor-mode-hook
           '(lambda ()
              (bind-key "<backtab>" 'hs-toggle-hiding hs-minor-mode-map)
              (bind-key "<S-s-iso-lefttab>" 'evgeni/hs-toggle-all hs-minor-mode-map)))
-#+end_src
-
-*** smartscan 
-#+begin_src emacs-lisp
-(unbind-key "M-p" smartscan-map)
-(unbind-key "M-n" smartscan-map)
-(unbind-key "M-'" smartscan-map)
-
-(bind-key "M-s-p" 'smartscan-symbol-go-backward smartscan-map)
-(bind-key "M-s-n" 'smartscan-symbol-go-forward smartscan-map)
-(bind-key "M-s-'" 'smartscan-symbol-replace smartscan-map)
 #+end_src
 
 *** drag-stuff
@@ -1582,6 +1570,11 @@ remap magit keys because of window-meta-mode
 #+end_src
 
 * Things
+
+** Re-mappings
+C-x C-d
+C-x d
+
 ** eshell and company
 ** eshell tramp
 ** hungry delete
