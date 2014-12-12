@@ -525,14 +525,6 @@ https://github.com/xiaohanyu/oh-evgeni/emacs/blob/master/modules/ome-python.org
 (add-hook 'c++-mode-hook 'c-turn-on-eldoc-mode)
 #+end_src
 
-** Java
-#+begin_src emacs-lisp
-  (require 'malabar-mode)
-  (setq malabar-groovy-lib-dir 
-        (expand-file-name "~/.emacs.d/lib/malabar-mode-jar/target/lib"))
-  (add-to-list 'auto-mode-alist '("\\.java\\'" . malabar-mode))
-#+end_src
-
 ** Web Development
 *** CSS
 #+begin_src emacs-lisp
@@ -665,13 +657,6 @@ integrate golden-ration with window-number
 ** save-packages
 #+begin_src emacs-lisp
 (add-hook 'kill-emacs-hook 'save-packages)
-#+end_src
-
-** keyfreq
-#+begin_src emacs-lisp
-  (require 'keyfreq)
-  (keyfreq-mode 1)
-  (keyfreq-autosave-mode 1)
 #+end_src
 
 ** midnight
