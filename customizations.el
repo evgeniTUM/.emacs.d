@@ -101,6 +101,7 @@
  '(history-delete-duplicates t)
  '(hl-paren-colors (quote ("red" "yellow" "green")))
  '(howdoi-display-question nil)
+ '(indicate-buffer-boundaries (quote left))
  '(inhibit-startup-screen t)
  '(jedi:tooltip-method (quote (pos-tip pos-tip)))
  '(jump-char-forward-key ".")
@@ -148,7 +149,7 @@
  '(preview-gs-options
    (quote
     ("-q" "-dNOPAUSE" "-DNOPLATFONTS" "-dPrinted" "-dTextAlphaBits=4" "-dGraphicsAlphaBits=4")))
- '(proced-auto-update-interval 2)
+ '(proced-auto-update-interval 1)
  '(projectile-completion-system (quote default))
  '(projectile-mode-line (quote (:eval (format " P[%s]" (projectile-project-name)))))
  '(projectile-remember-window-configs t)
@@ -195,6 +196,7 @@
          (window-total-width)
          1.0)
       sublimity-map-max-fraction))))
+ '(tab-width 4)
  '(tramp-default-method "ssh")
  '(view-read-only t)
  '(visible-bell nil)

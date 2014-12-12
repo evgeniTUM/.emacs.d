@@ -51,21 +51,51 @@ is intended for personal use only.
 * Gnus
 ** Mail configuration
 #+begin_src emacs-lisp
-(setq gnus-select-method
+ (setq gnus-select-method
       '(nnimap "gmail"
-	       (nnimap-address "imap.gmail.com")
-	       (nnimap-server-port 993)
+               (nnimap-address "imap.gmail.com")
+               (nnimap-server-port 993)
                (nnir-search-engine imap)
-	       (nnimap-stream ssl)))
+               (nnimap-stream ssl)))
+
+(setq gnus-secondary-select-methods
+      '((nnimap "mnet"
+                (nnimap-address "imap.mnet-online.de")
+                (nnimap-server-port 143)
+                (nnir-search-engine imap)
+                (nnimap-stream starttls))))
+
 
 (setq message-send-mail-function 'smtpmail-send-it
       smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
       smtpmail-auth-credentials '(("smtp.gmail.com" 587
-				   "evgeni.pavlidis@gmail.com" nil))
+                                   "evgeni.pavlidis@gmail.com" nil))
       smtpmail-default-smtp-server "smtp.gmail.com"
       smtpmail-smtp-server "smtp.gmail.com"
       smtpmail-smtp-service 587
       gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+#+end_src
+
+** Date in mail summary
+#+begin_src emacs-lisp
+
+#+end_src
+ 
+** Gnus daemon 
+#+begin_src emacs-lisp
+(require 'gnus)
+(gnus-demon-add-handler 'gnus-demon-scan-news 2 2)
+(gnus-demon-init)
+#+end_src
+
+** Gnus notifications
+#+begin_src emacs-lisp
+(add-hook 'gnus-after-getting-new-news-hook 'gnus-notifications)
+#+end_src
+
+** Configuration
+#+begin_src emacs-lisp
+ (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
 #+end_src
 
 * Company
@@ -1131,8 +1161,11 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 
-(setq initial-scratch-message ";; Use the source Luke !!! \n")
-(setq browse-url-generic-program (executable-find "conkeror"))
+(setq initial-scratch-message ";; Use the source Luke !!!\n")
+
+(setq browse-url-browser-function 'eww-browse-url)
+(setq browse-url-generic-program (executable-find "conkeror")
+	shr-external-browser 'browse-url-generic)
 #+end_src
 
 * Key bindings
@@ -1174,9 +1207,9 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 
 (bind-keys
  ("C-z C-z" . global-set-key)
- ("C-z C-l" . local-set-key)
+ ("C-z z" . local-set-key)
  
- ("<s-SPC>" . just-one-space)
+ ("M-\\" . cycle-spacing)
  ("<M-SPC>" . set-mark-command)
  
  ("M-/" . hippie-expand)
@@ -1203,6 +1236,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-x t"   . anchored-transpose)
  ("C-h a"   . helm-apropos)
  ("C-x C-b" . helm-buffers-list)
+ ("C-x M-b" . buffer-menu)
  ("M-x"     . helm-M-x)
  ("C-x C-f" . helm-find-files))
 #+end_src
@@ -1529,7 +1563,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
             (bind-key "C-c h h" 'helm-comint-input-ring)))
 #+end_src
 
-
 *** eshell
 #+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook 
@@ -1570,7 +1603,9 @@ remap magit keys because of window-meta-mode
 #+end_src
 
 * Things
-
+** Completion
+*** Make completion work with aspell
+*** Checkout completion-at-point
 ** Re-mappings
 C-x C-d
 C-x d
@@ -1592,11 +1627,6 @@ C-x d
 #+end_src
 
 *
-** Company-mode
-#+begin_src emacs-lisp
-(add-hook 'after-init-hook 'global-company-mode)
-#+end_src
-
 ** Libre fix (remove T1 fontenc)
 #+begin_src emacs-lisp
   (eval-after-load "org"
