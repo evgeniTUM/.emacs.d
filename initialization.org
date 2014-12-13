@@ -1074,9 +1074,8 @@ http://paste.lisp.org/display/135818
 (eval-after-load "company"
   '(diminish 'company-mode " C"))
 
-; TODO: fix this
-;(eval-after-load "subword"
-;  '(diminish 'subword-mode))
+(eval-after-load "subword"
+  '(diminish 'subword-mode))
    #+END_SRC
 
 *** frame-title
@@ -1148,7 +1147,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 
 (setq initial-scratch-message ";; Use the source Luke !!!\n")
 
-(setq browse-url-browser-function 'eww-browse-url)
 (setq browse-url-generic-program (executable-find "conkeror")
 	shr-external-browser 'browse-url-generic)
 #+end_src
@@ -1163,14 +1161,13 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
        (kbd ,prefix) '(,@body)))
  #+end_src
 
-** Completion
+** TODO Completion
 #+begin_src emacs-lisp
 (bind-key [return] nil company-active-map)
 (bind-key "\r" nil company-active-map)
 
 (bind-key "\t" 'company-complete-selection company-active-map)
-(bind-key  "<C-tab>" 'evgeni/company-complete-and-stay company-active-map)
-
+;(bind-key  "<C-tab>" 'evgeni/company-complete-and-stay company-active-map)
 
 (bind-keys
  ("<C-tab>" . company-complete)
@@ -1178,7 +1175,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-s-c" . company-capf)
  ("C-s-f" . company-files)
  ("C-s-s" . company-semantic)
- ("C-s-y" . company-yasnippet)
  ("C-s-i" . company-ispell)
  ("C-s-d" . company-dabbrev)
  ("<C-s-tab>" . company-mode)
@@ -1221,7 +1217,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-x t"   . anchored-transpose)
  ("C-h a"   . helm-apropos)
  ("C-x C-b" . helm-buffers-list)
- ("C-x M-b" . buffer-menu)
+ ("C-x b"   . buffer-menu)
  ("M-x"     . helm-M-x)
  ("C-x C-f" . helm-find-files))
 #+end_src
@@ -1254,7 +1250,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  #+END_SRC
 
 ** Prefixes
-*** b - bm visual bookmarsk
+*** b - bm visual bookmarks
 #+begin_src emacs-lisp
 (bind-keys :prefix "C-c b"
            :prefix-map evgeni/bm-prefix
@@ -1271,6 +1267,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 #+begin_src emacs-lisp
 (bind-keys :prefix "C-c f"
            :prefix-map evgeni/file-prefix
+           ("c" . helm-complete-file-name-at-point)
            ("f" . ffap)
            ("n" . evgeni/narrow-to-region-indirect-buffer)
            ("r" . rename-buffer)
@@ -1361,7 +1358,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("g" . magit-status)
            ("e" . eshell)
            ("s" . shell)
-           ("t" . ansi-term))
+           ("t" . ansi-term)
+           ("w" . eww))
 #+end_src
 
 *** n - Internet bindings
@@ -1371,7 +1369,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("w" . webjump)
            ("s" . helm-google-suggest)
            ("g" . helm-google)
-
+           ("w" . helm-wikipedia-suggest)
            ("q" . howdoi-query)
            ("Q" . howdoi-query-line-at-point))
 #+end_src
@@ -1553,7 +1551,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (add-hook 'eshell-mode-hook 
           (lambda () "setup eshell bindings"   
             (bind-key "C-c h h" 'helm-eshell-history eshell-mode-map)
-            (bind-key "C-c h d" 'evgeni/helm-eshell-last-dirs)))
+            (bind-key "C-c h d" 'evgeni/helm-eshell-last-dirs) eshell-mode-map))
 #+end_src
 
 *** magit

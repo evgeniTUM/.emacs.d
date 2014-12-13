@@ -52,7 +52,7 @@
  '(back-button-local-forward-keystrokes (quote ("C-x <S-SPC>")))
  '(back-button-mode t)
  '(bm-repository-file "/home/evgeni/.emacs.d/.bm-repository")
- '(browse-url-browser-function (quote browse-url-generic))
+ '(browse-url-browser-function (quote eww-browse-url))
  '(company-auto-complete nil)
  '(company-backends
    (quote
@@ -212,7 +212,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(default ((t (:background nil))))
- '(ahs-face ((t (:background "dim gray" :foreground "GhostWhite"))) t)
+ '(ahs-face ((t (:background "dim gray" :foreground "GhostWhite"))))
  '(company-preview ((t (:inherit helm-candidate-number))))
  '(company-preview-common ((t (:inherit company-preview :foreground "dim gray"))))
  '(company-scrollbar-bg ((t (:background "#191919"))))
