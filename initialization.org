@@ -1234,8 +1234,10 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("C-c V" . customize-variable))
 
 (bind-keys
- ("s-." . evgeni/next-buffer-same-mode)
- ("s-," . evgeni/previous-buffer-same-mode))
+ ("s-." . next-buffer)
+ ("s-," . previous-buffer)
+ ("s->" . evgeni/next-buffer-same-mode)
+ ("s-<" . evgeni/previous-buffer-same-mode))
 
 (bind-key
  "C-c R" 
