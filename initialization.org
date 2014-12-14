@@ -408,7 +408,7 @@ specified in `helm-bibtex-pdf-open-function',"
 
 **** Advices
 #+begin_src emacs-lisp :tangle yes
-(defadvice sp-delete-char (around evgeni/sp-delete-char activate)
+(defadvice sp-backward-delete-char (around evgeni/sp-delete-char activate)
   "Handle active-region properly"
   (if (and delete-active-region
            (use-region-p))

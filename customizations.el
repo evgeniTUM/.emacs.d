@@ -56,9 +56,9 @@
  '(company-auto-complete nil)
  '(company-backends
    (quote
-    (company-inf-python company-anaconda company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf
-                        (company-dabbrev-code company-gtags company-etags company-keywords)
-                        company-oddmuse company-files company-dabbrev)))
+    (company-anaconda company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf
+                      (company-dabbrev-code company-gtags company-etags company-keywords)
+                      company-oddmuse company-files company-dabbrev)))
  '(company-idle-delay 0.3)
  '(company-minimum-prefix-length 2)
  '(company-show-numbers t)
@@ -74,7 +74,7 @@
  '(ecb-options-version "2.40")
  '(ein:use-auto-complete t)
  '(ein:use-auto-complete-superpack t)
- '(electric-indent-mode t)
+ '(electric-indent-mode nil)
  '(enable-recursive-minibuffers t)
  '(eshell-cmpl-cycle-completions nil)
  '(eshell-history-size 1000)
