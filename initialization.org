@@ -1197,7 +1197,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (bind-key "\r" nil company-active-map)
 
 (bind-key "TAB" 'company-complete-selection company-active-map)
-(bind-key [tab] 'company-complete-common company-active-map)
 ;(bind-key  "<C-tab>" 'evgeni/company-complete-and-stay company-active-map)
 
 (bind-keys
@@ -1241,7 +1240,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  ("M-W" . evgeni/copy-line)
 
  ("M-z" . zap-up-to-char)
- ("M-Z" . zap-to-char)
  
  ("C-x k"   . kill-this-buffer)
  ("C-x j"   . direx:jump-to-directory-other-window)
@@ -1280,7 +1278,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
      (expand-file-name "~/.emacs.d/init.el"))))
 
 (bind-key "C-c l" 'slime-selector)
-
  #+END_SRC
 
 ** Prefixes
@@ -1312,6 +1309,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  #+begin_src emacs-lisp
 (bind-keys :prefix "C-c h"
            :prefix-map evgeni/helm-prefix
+           ("SPC" . helm-resume)
            ("A" . helm-ag-r)
            ("C-a" . helm-ag-r-from-git-repo)
            ("B" . helm-bibtex)
@@ -1323,7 +1321,6 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("M" . helm-descbinds)
            ("O" . helm-multi-occur)
            ("P" . helm-browse-project)
-           ("R" . helm-resume)
            ("S" . math-symbols-helm)
            ("T" . helm-themes)
            ("a" . helm-ag)
@@ -1332,6 +1329,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
            ("d" . helm-dash-at-point)
            ("f" . helm-for-files) 
            ("g" . helm-do-grep)
+           ("h" . helm-complex-command-history)
            ("i" . helm-imenu)
            ("k" . helm-show-kill-ring)
            ("l" . helm-locate)
@@ -1570,22 +1568,22 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (add-hook 'org-mode-hook 
           (lambda () "setup org bindings"   
             (bind-key "C-z s" 'org-screenshot org-mode-map)
-            (bind-key "C-c h h" 'helm-org-in-buffer-headings org-mode-map)))
+            (bind-key "C-z h" 'helm-org-in-buffer-headings org-mode-map)))
 #+end_src
 
 *** comint-mode
 #+begin_src emacs-lisp
 (add-hook 'comint-mode-hook 
           (lambda () "setup comint bindings"   
-            (bind-key "C-c h h" 'helm-comint-input-ring)))
+            (bind-key "C-z h" 'helm-comint-input-ring)))
 #+end_src
 
 *** eshell
 #+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook 
           (lambda () "setup eshell bindings"   
-            (bind-key "C-c h h" 'helm-eshell-history eshell-mode-map)
-            (bind-key "C-c h d" 'evgeni/helm-eshell-last-dirs) eshell-mode-map))
+            (bind-key "C-z h" 'helm-eshell-history eshell-mode-map)
+            (bind-key "C-z d" 'evgeni/helm-eshell-last-dirs eshell-mode-map)))
 #+end_src
 
 *** magit
@@ -1597,12 +1595,6 @@ remap magit keys because of window-meta-mode
               (bind-key "C-c 2" 'magit-show-level-2-all magit-mode-map)
               (bind-key "C-c 3" 'magit-show-level-3-all magit-mode-map)
               (bind-key "C-c 4" 'magit-show-level-4-all magit-mode-map)))
-#+end_src
-
-*** yasnippet
-#+begin_src emacs-lisp
-(bind-key "<tab>" nil yas-minor-mode-map)
-(bind-key "TAB" nil yas-minor-mode-map)
 #+end_src
 
 *** hide-show

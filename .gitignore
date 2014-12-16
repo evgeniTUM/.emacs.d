@@ -33,3 +33,8 @@
 /oauth2.plstore
 /project-persist/
 /snippets/org-mode/esrc~
+/%backup%~
+/initialization.fdb_latexmk
+/initialization.fls
+/initialization.pdf
+/initialization.tex
