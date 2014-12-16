@@ -680,6 +680,19 @@ integrate golden-ration with window-number
 #+end_src
 
 * Tools
+** shell
+colors, please!!!
+#+begin_src emacs-lisp
+(defun evgeni/shell-mode-colors ()
+  (interactive)
+  (end-of-buffer)
+  (insert "export TERM=xterm")
+  (comint-send-input))
+
+(add-hook 'shell-mode-hook 'evgeni/shell-mode-colors )
+#+end_src
+
+
 ** eshell
 *** Helm directory history
 #+begin_src emacs-lisp
@@ -726,6 +739,13 @@ https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
   (setq projectile-mode-line-lighter " Ⓟ")
   (projectile-global-mode)
 
+#+end_src
+
+** Emacs multimedia system EMMS
+#+begin_src emacs-lisp
+(require 'emms-setup)
+(emms-all)
+(emms-default-players)
 #+end_src
 
 ** TODO evgeni/minimap
@@ -919,11 +939,15 @@ http://paste.lisp.org/display/135818
   "Opens an org-mode file and starts header search"
   (interactive "fFile: ")
   (find-file (expand-file-name file))
-  (helm-org-headlines))
+  (helm-org-in-buffer-headings))
 
 (defun evgeni/open-init-file ()
   (interactive)
   (evgeni/open-org-file "~/.emacs.d/initialization.org"))
+
+(defun evgeni/open-authinfo-file ()
+  (interactive)
+  (evgeni/open-org-file  "~/.emacs.d/.authinfo.gpg"))
 
 (defun evgeni/open-secrets-file ()
   (interactive)
@@ -1115,6 +1139,12 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 (dired-rainbow-define-chmod executable-unix "Green" "-.*x.*")
 #+end_src
 
+*** dired-async
+#+begin_src emacs-lisp
+(when (require 'dired-aux)
+  (require 'dired-async))
+#+end_src
+
 ** recentf (recent files)
 http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
    #+BEGIN_SRC emacs-lisp
@@ -1166,7 +1196,8 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (bind-key [return] nil company-active-map)
 (bind-key "\r" nil company-active-map)
 
-(bind-key "\t" 'company-complete-selection company-active-map)
+(bind-key "TAB" 'company-complete-selection company-active-map)
+(bind-key [tab] 'company-complete-common company-active-map)
 ;(bind-key  "<C-tab>" 'evgeni/company-complete-and-stay company-active-map)
 
 (bind-keys
@@ -1226,11 +1257,12 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  #+begin_src emacs-lisp
 (bind-keys
  ("C-c e" . eval-and-replace)
- ("C-c G" . customize-group)
+ ("C-c A" . evgeni/open-authinfo-file)
  ("C-c S" . evgeni/open-secrets-file)
  ("C-c B" . evgeni/open-bookmarks-file)
  ("C-c E" . evgeni/open-init-file)
  ("C-c F" . evgeni/show-file-name)
+ ("C-c G" . customize-group)
  ("C-c V" . customize-variable))
 
 (bind-keys
@@ -1538,7 +1570,7 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
 (add-hook 'org-mode-hook 
           (lambda () "setup org bindings"   
             (bind-key "C-z s" 'org-screenshot org-mode-map)
-            (bind-key "C-c h h" 'helm-org-headlines org-mode-map)))
+            (bind-key "C-c h h" 'helm-org-in-buffer-headings org-mode-map)))
 #+end_src
 
 *** comint-mode
@@ -1594,7 +1626,7 @@ remap magit keys because of window-meta-mode
 ** Re-mappings
 C-x C-d
 C-x d
-
+M-'
 ** eshell and company
 ** eshell tramp
 ** hungry delete
