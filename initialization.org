@@ -654,6 +654,11 @@ integrate golden-ration with window-number
   "Kill up to, but not including ARGth occurrence of CHAR.")
 #+end_src
 
+** recentf-ext
+#+begin_src emacs-lisp
+(require 'recentf-ext)
+#+end_src
+
 ** save-packages
 #+begin_src emacs-lisp
 (add-hook 'kill-emacs-hook 'save-packages)
@@ -1190,12 +1195,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
   (require 'dired-async))
 #+end_src
 
-** recentf (recent files)
-http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files-package/
-   #+BEGIN_SRC emacs-lisp
-(setq recentf-max-saved-items 50)
-   #+END_SRC
-
 ** hippie-expand
    #+BEGIN_SRC emacs-lisp
      (setq hippie-expand-try-functions-list '(yas-hippie-try-expand
@@ -1608,15 +1607,13 @@ http://www.masteringemacs.org/articles/2011/01/27/find-files-faster-recent-files
  #+end_src
 
 ** Local
-
 *** dired
 #+begin_src emacs-lisp
-(add-hook 'dired
+(add-hook 'dired-mode-hook
           (lambda () "set dired bindings"
             (bind-key "C-z o" 'xah-open-in-external-app dired-mode-map)
             (bind-key "C-z d" 'xah-open-in-desktop dired-mode-map)))
 #+end_src
-
 
 *** org-mode
 #+begin_src emacs-lisp
