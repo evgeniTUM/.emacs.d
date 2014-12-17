@@ -154,6 +154,9 @@
  '(projectile-mode-line (quote (:eval (format " P[%s]" (projectile-project-name)))))
  '(projectile-remember-window-configs t)
  '(python-shell-interpreter "~/shared/bin/ipython.sh")
+ '(recentf-max-menu-items 20)
+ '(recentf-max-saved-items 50)
+ '(recentf-mode t)
  '(require-final-newline (quote visit-save))
  '(safe-local-variable-values
    (quote
