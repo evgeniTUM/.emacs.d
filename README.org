@@ -1,0 +1,20 @@
+* .emacs.d
+
+Evgeni's emacs configuration
+
+** Files
+
+*** init.el
+Bootstrap file to load the org-mode file initialization.org
+
+*** initialization.org
+The main Emacs configuration
+
+*** customization.el
+File containing all Emacs based custom configurations
+
+*** saved-packages
+Saves the installed packages (see: save-packages)
+
+*** snippets directory
+Save custom yasnippets
