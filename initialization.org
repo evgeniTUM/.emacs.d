@@ -1280,6 +1280,8 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 
  ("M-z" . zap-up-to-char)
  
+ ("C-h C-m" . discover-my-major)
+
  ("C-x k"   . kill-this-buffer)
  ("C-x j"   . direx:jump-to-directory-other-window)
  ("C-x t"   . anchored-transpose)
@@ -1939,3 +1941,4 @@ It is useful to narrow candidates."
                        "*helm auto-complete*")))
 #+end_src
 
+ 
