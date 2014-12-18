@@ -671,12 +671,7 @@ integrate golden-ration with window-number
 
 ** guide-key
 #+begin_src emacs-lisp
-  (setq guide-key/guide-key-sequence '("C-x" "C-c" "M-s" "C-h"
-                                       (org-mode "C-c C-x")))
-  (guide-key-mode 1) 
-  (setq guide-key/idle-delay 1)
-  (setq guide-key/popup-window-position 'bottom)
-  (setq guide-key/recursive-key-sequence-flag t)
+(guide-key-mode 1)
 #+end_src
 
 ** bm (visual bookmarks)
@@ -1358,7 +1353,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("C-a" . helm-ag-r-from-git-repo)
            ("B" . helm-bibtex)
            ("C" . helm-colors)
-           ("D" . helm-dired-recent-dirs-view)
            ("F" . helm-find)
            ("G" . helm-git-grep)
            ("L" . helm-locate-library)
