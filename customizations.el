@@ -46,6 +46,8 @@
  '(ac-quick-help-delay 1)
  '(ac-use-menu-map t)
  '(ac-use-quick-help nil)
+ '(ansi-color-names-vector
+   ["#000000" "#8b0000" "#00ff00" "#ffa500" "#7b68ee" "#dc8cc3" "#93e0e3" "#dcdccc"])
  '(auth-sources
    (quote
     ("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" "~/.emacs.d/.authinfo.gpg")))
@@ -53,12 +55,15 @@
  '(back-button-mode t)
  '(bm-repository-file "/home/evgeni/.emacs.d/.bm-repository")
  '(browse-url-browser-function (quote eww-browse-url))
+ '(comint-input-ignoredups t)
+ '(comint-scroll-to-bottom-on-input t)
  '(company-auto-complete nil)
  '(company-backends
    (quote
     (company-anaconda company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf
                       (company-dabbrev-code company-gtags company-etags company-keywords)
                       company-oddmuse company-files company-dabbrev)))
+ '(company-dabbrev-downcase nil)
  '(company-idle-delay 0.3)
  '(company-minimum-prefix-length 2)
  '(company-show-numbers t)
@@ -85,6 +90,7 @@
     ("vim" "vi" "screen" "top" "less" "more" "lynx" "ncftp" "pine" "tin" "trn" "elm")))
  '(eval-expression-print-length nil)
  '(eval-expression-print-level nil)
+ '(fci-rule-color "#383838")
  '(fill-column 80)
  '(global-auto-complete-mode t)
  '(global-hi-lock-mode t)
@@ -207,6 +213,7 @@
          1.0)
       sublimity-map-max-fraction))))
  '(tab-width 4)
+ '(text-scale-mode-step 1.1)
  '(tramp-default-method "ssh")
  '(view-read-only t)
  '(visible-bell nil)
