@@ -32,22 +32,6 @@ is intended for personal use only.
 (prefer-coding-system 'utf-8)
 #+end_src
  
-** el-get
-#+begin_src emacs-lisp
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.github.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
-
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-(el-get 'sync)
-
-#+end_src
-
 * Gnus
 ** Mail configuration
 #+begin_src emacs-lisp
@@ -284,7 +268,7 @@ thing."
 
 * Helm
 ** General
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (helm-mode 1)
 #+end_src
 
@@ -392,6 +376,7 @@ specified in `helm-bibtex-pdf-open-function',"
     (sp-local-pair "(" nil :bind "C-("))
 #+end_src
 
+**** smartparens strict mode
 #+begin_src emacs-lisp
 ;; turn on smartparens-strict-mode on all lisp-like mode
   (dolist (sp--lisp-mode-hook
@@ -407,7 +392,7 @@ specified in `helm-bibtex-pdf-open-function',"
 #+end_src
 
 **** Advices
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defadvice sp-backward-delete-char (around evgeni/sp-delete-char activate)
   "Handle active-region properly"
   (if (and delete-active-region
@@ -437,7 +422,7 @@ specified in `helm-bibtex-pdf-open-function',"
 #+end_src
 
 *** color-identifiers-mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (global-color-identifiers-mode 1)
 #+end_src
 
@@ -511,6 +496,7 @@ https://github.com/xiaohanyu/oh-evgeni/emacs/blob/master/modules/ome-python.org
 
 ** Maxima
   #+BEGIN_SRC emacs-lisp
+(require 'f)
 (add-to-list 'load-path (first (f-glob "/usr/share/maxima/*/emacs/")))
 (autoload 'maxima-mode "maxima" "Maxima mode" t)
 (autoload 'imaxima "imaxima" "Frontend for maxima with Image support" t)
@@ -637,11 +623,6 @@ integrate golden-ration with window-number
   (when golden-ratio-mode (golden-ratio)))
 #+end_src
 
-*** transpose-frame
-#+begin_src emacs-lisp
-(require 'transpose-frame)
-#+end_src
-
 *** dedicated
 #+begin_src emacs-lisp
 (require 'dedicated)
@@ -723,7 +704,7 @@ colors, please!!!
 
 *** Go up several directories
 https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defun eshell/up (&optional level)
   "Change directory from one up to a level of folders."
   (let* ((path-level (or level 1))
@@ -911,7 +892,7 @@ http://paste.lisp.org/display/135818
 #+end_src
 
 *** next/previous buffer for same mode
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (defun evgeni/buffer-list-same-mode ()
   (delq nil
         (mapcar (lambda (buffer)
@@ -1165,7 +1146,7 @@ The app is chosen from your OS's preference."
 
 *** dired-rainbow
 http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (require 'dired-rainbow)
 
 (defconst dired-audio-files-extensions
@@ -1545,7 +1526,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 #+begin_src emacs-lisp
 (bind-keys :prefix "C-c w"
            :prefix-map evgeni/window-prefix
-           ("t" . transpose-frame)
            ("m" . evgeni/switch-to-minibuffer-window)
            ("d" . dedicated-mode))
 
