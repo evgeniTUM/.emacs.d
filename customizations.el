@@ -244,6 +244,7 @@
  '(company-tooltip-annotation ((t (:inherit company-template-field))))
  '(company-tooltip-common ((t (:inherit font-lock-constant-face))))
  '(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+ '(eww-lnum-number ((t (:foreground "gold"))))
  '(grammar-error-face ((t (:underline (:color "red" :style wave)))) t)
  '(mode-line-buffer-id ((t (:foreground "orange" :weight bold))))
  '(org-column ((t (:background "SkyBlue4" :foreground "#000000" :strike-through nil :underline nil :slant normal :weight normal))))

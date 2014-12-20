@@ -1588,6 +1588,18 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
  #+end_src
 
 ** Local
+*** view-mode
+#+begin_src emacs-lisp
+(add-hook 'view-mode-hook
+          (lambda () "set view mode bindings"
+            (bind-key "h" 'backward-char view-mode-map)
+            (bind-key "l" 'forward-char view-mode-map)
+            (bind-key "j" 'next-line view-mode-map)
+            (bind-key "k" 'previous-line view-mode-map)))
+
+#+end_src
+
+
 *** dired
 #+begin_src emacs-lisp
 (add-hook 'dired-mode-hook
