@@ -1643,6 +1643,14 @@ remap magit keys because of window-meta-mode
   (drag-stuff-global-mode t)
 #+end_src
 
+*** eww
+#+begin_src emacs-lisp
+(add-hook 'eww-mode-hook
+          #'(lambda ()
+              (bind-key "f" 'eww-lnum-follow eww-mode-map)
+              (bind-key "F" 'eww-lnum-universal eww-mode-map)))
+#+end_src
+
 * Things
 ** Completion
 *** Make completion work with aspell
