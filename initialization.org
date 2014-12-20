@@ -937,6 +937,10 @@ http://paste.lisp.org/display/135818
 (defun evgeni/open-bookmarks-file ()
   (interactive)
   (evgeni/open-org-file "~/shared/bookmarks.org"))
+
+(defun evgeni/open-notes-file ()
+  (interactive)
+  (evgeni/open-org-file "~/shared/notes.org"))
 #+end_src
 
 ** Keyboard Macros
@@ -1281,6 +1285,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
  ("C-c S" . evgeni/open-secrets-file)
  ("C-c B" . evgeni/open-bookmarks-file)
  ("C-c E" . evgeni/open-init-file)
+ ("C-c N" . evgeni/open-notes-file)
  ("C-c F" . evgeni/show-file-name)
  ("C-c G" . customize-group)
  ("C-c V" . customize-variable))

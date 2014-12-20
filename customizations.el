@@ -129,6 +129,7 @@
  '(minimap-width-fraction 0.15)
  '(org-agenda-files nil)
  '(org-babel-python-command "~/shared/bin/ipython.sh")
+ '(org-default-notes-file "~/shared/notes.org")
  '(org-file-apps
    (quote
     ((auto-mode . emacs)
