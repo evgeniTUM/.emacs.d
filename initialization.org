@@ -920,7 +920,7 @@ http://paste.lisp.org/display/135818
   "Opens an org-mode file and starts header search"
   (interactive "fFile: ")
   (find-file (expand-file-name file))
-  (helm-org-in-buffer-headings))
+  (helm-imenu))
 
 (defun evgeni/open-init-file ()
   (interactive)
@@ -1600,8 +1600,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 
           (lambda () "setup org bindings"   
-            (bind-key "C-z s" 'org-screenshot org-mode-map)
-            (bind-key "C-z h" 'helm-org-in-buffer-headings org-mode-map)))
+            (bind-key "C-z s" 'org-screenshot org-mode-map)))
 #+end_src
 
 *** comint-mode
