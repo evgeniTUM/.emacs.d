@@ -185,6 +185,7 @@
  '(savehist-mode t)
  '(shell-pop-shell-type (quote ("eshell" "*eshell*" (lambda nil (eshell)))))
  '(shift-select-mode nil)
+ '(shr-color-visible-luminance-min 70)
  '(size-indication-mode nil)
  '(smartrep-mode-line-active-bg "#880000")
  '(sublimity-handle-scroll-criteria
