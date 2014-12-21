@@ -729,7 +729,7 @@ https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
 (with-current-buffer ind
   (setq vertical-scroll-bar nil
         truncate-lines t
-        buffer-read-only t
+        buffer-read-only 
         mode-line-format (and mode-line-format "")
         minimap-active-overlay (make-overlay 0 0))
   (overlay-put minimap-active-overlay 
@@ -763,6 +763,12 @@ https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
 #+begin_src emacs-lisp
 (defadvice list-packages (after evgeni/list-packages-advice activate)
   (hl-line-mode 1))
+#+end_src
+
+*** view-mode
+Default mode for all files is read-only (view-mode) ??
+#+begin_src emacs-lisp
+; (add-hook 'find-file-hook (lambda () (setq buffer-read-only t)))
 #+end_src
 
 ** Functions
@@ -1188,8 +1194,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
 
-(setq initial-scratch-message ";; Use the source Luke !!!\n")
-
 (setq browse-url-generic-program (executable-find "conkeror")
 	shr-external-browser 'browse-url-generic)
 #+end_src
@@ -1261,7 +1265,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
  ("C-x t"   . anchored-transpose)
  ("C-h a"   . helm-apropos)
  ("C-x C-b" . helm-buffers-list)
- ("C-x b"   . buffer-menu)
+ ("C-x b"   . ibuffer)
  ("M-x"     . helm-M-x)
  ("C-x C-f" . helm-find-files))
 #+end_src
@@ -1326,7 +1330,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 (bind-keys :prefix "C-c h"
            :prefix-map evgeni/helm-prefix
            ("SPC" . helm-resume)
-           ("8" . helm-ucs))
+           ("8" . helm-ucs)
            ("C-a" . helm-ag-r-from-git-repo)
            ("A" . helm-ag-r)
            ("B" . helm-bibtex)
@@ -1358,7 +1362,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("t" . helm-proc)
            ("w" . helm-spaces)
            ("x" . helm-regexp)
-           ("y" . helm-yas-complete)
+           ("y" . helm-yas-complete))
  #+end_src
  
 *** I - docu searches
@@ -1653,6 +1657,12 @@ remap magit keys because of window-meta-mode
           #'(lambda ()
               (bind-key "f" 'eww-lnum-follow eww-mode-map)
               (bind-key "F" 'eww-lnum-universal eww-mode-map)))
+#+end_src
+
+* Finally
+use this to spot if configuration was correctly read
+#+begin_src emacs-lisp
+(setq initial-scratch-message ";; Use the source Luke !!!\n")
 #+end_src
 
 * Things
