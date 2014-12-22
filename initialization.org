@@ -1153,6 +1153,10 @@ The app is chosen from your OS's preference."
     ) ))
 #+end_src
 
+*** dired-filter-mode
+#+begin_src emacs-lisp
+(add-hook 'dired-mode-hook 'dired-filter-mode)
+#+end_src
 
 *** dired-rainbow
 http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
