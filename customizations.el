@@ -60,14 +60,13 @@
  '(company-auto-complete nil)
  '(company-backends
    (quote
-    (company-anaconda company-elisp company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf
+    (company-anaconda company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-ropemacs company-cmake company-capf
                       (company-dabbrev-code company-gtags company-etags company-keywords)
                       company-oddmuse company-files company-dabbrev)))
  '(company-dabbrev-downcase nil)
- '(company-idle-delay 0.3)
+ '(company-idle-delay 0)
  '(company-minimum-prefix-length 2)
  '(company-show-numbers t)
- '(company-tooltip-flip-when-above t)
  '(company-transformers (quote (company-sort-by-occurrence)))
  '(custom-file "~/.emacs.d/customizations.el")
  '(custom-safe-themes
@@ -118,6 +117,28 @@
  '(history-delete-duplicates t)
  '(hl-paren-colors (quote ("red" "yellow" "green")))
  '(howdoi-display-question nil)
+ '(ibuffer-saved-filter-groups
+   (quote
+    (("dired-mode"
+      ("dired-mode"
+       (derived-mode . dired-mode))))))
+ '(ibuffer-saved-filters
+   (quote
+    (("gnus"
+      ((or
+        (mode . message-mode)
+        (mode . mail-mode)
+        (mode . gnus-group-mode)
+        (mode . gnus-summary-mode)
+        (mode . gnus-article-mode))))
+     ("programming"
+      ((or
+        (mode . emacs-lisp-mode)
+        (mode . cperl-mode)
+        (mode . c-mode)
+        (mode . java-mode)
+        (mode . idl-mode)
+        (mode . lisp-mode)))))))
  '(indicate-buffer-boundaries (quote left))
  '(inhibit-startup-screen t)
  '(jedi:tooltip-method (quote (pos-tip pos-tip)))

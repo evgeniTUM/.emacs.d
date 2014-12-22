@@ -4,7 +4,7 @@ This configuration is optimized with the control key remapped to space! (xcape)
 
 Code snippets were taken from various wikis, blogs and forums.
 For the most part there are no credits and references as this configuration
-is intended for personal use only.
+is (was - if you are reading this) intended for personal use only.
 
 ** Inits
    #+BEGIN_SRC emacs-lisp
@@ -617,8 +617,12 @@ needs link-grammar installed
   (window-number-meta-mode)
 #+end_src
 
+**** deactivate M-0 key (special argument)
+#+begin_src emacs-lisp
+(define-key window-number-meta-mode-map (kbd "M-0") 'nil)
+#+end_src
 
-integrate golden-ration with window-number
+**** integrate golden-ration with window-number
 
 #+begin_src emacs-lisp
 (defadvice window-number-select (after window-number-golden-ration-integration activate)
@@ -936,6 +940,13 @@ http://paste.lisp.org/display/135818
 (defun evgeni/open-notes-file ()
   (interactive)
   (evgeni/open-org-file "~/shared/notes.org"))
+#+end_src
+
+*** switch to scratch
+#+begin_src emacs-lisp
+(defun evgeni/switch-to-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
 #+end_src
 
 ** Keyboard Macros
@@ -1398,7 +1409,8 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 #+begin_src emacs-lisp
 (bind-keys :prefix "C-c j"
            :prefix-map evgeni/jump-prefix
-           ("j" . helm-imenu-anywhere))
+           ("j" . helm-imenu-anywhere)
+           ("s" . evgeni/switch-to-scratch))
 #+end_src
 
 *** m - Mode bindings
