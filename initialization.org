@@ -671,6 +671,11 @@ needs link-grammar installed
   (require 'bm)
 #+end_src
 
+** occur context resize
+#+begin_src emacs-lisp
+(add-hook 'occur-mode-hook 'occur-context-resize-mode)
+#+end_src
+
 * Tools
 ** eshell
 *** Helm directory history
@@ -1375,6 +1380,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("k" . helm-show-kill-ring)
            ("l" . helm-locate)
            ("m" . helm-all-mark-rings)
+           ("n" . list-network-processes)
            ("o" . helm-occur)
            ("p" . helm-projectile)
            ("r" . helm-register)
@@ -1694,6 +1700,11 @@ use this to spot if configuration was correctly read
 #+end_src
 
 * Things
+
+** Packages
+
+*** org-gcal 
+
 ** Completion
 *** Make completion work with aspell
 *** Checkout completion-at-point
