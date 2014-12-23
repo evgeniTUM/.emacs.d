@@ -634,6 +634,11 @@ needs link-grammar installed
 (require 'dedicated)
 #+end_src
 
+*** transpose frame
+#+begin_src emacs-lisp
+(require 'transpose-frame)
+#+end_src
+
 ** Navigation
 *** zap-up-to-char
 #+begin_src emacs-lisp
@@ -1544,7 +1549,8 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 (bind-keys :prefix "C-c w"
            :prefix-map evgeni/window-prefix
            ("m" . evgeni/switch-to-minibuffer-window)
-           ("d" . dedicated-mode))
+           ("d" . dedicated-mode)
+           ("t" . transpose-frame))
 
 (evgeni/add-smartrep-bindings "C-c w" global-map
                           ("w" . 'winner-undo)
