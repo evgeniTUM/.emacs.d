@@ -1515,10 +1515,10 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("a" . auto-revert-mode)
            ("b" . sr-speedbar-toggle)
            ("c" . flycheck-mode)
+           ("f" . hideshowvis-minor-mode)
            ("h" . helm-mode)
            ("l" . scroll-lock-mode)
            ("m" . sublimity-mode)
-           ("o" . hs-minor-mode)
            ("s" . flyspell-mode)
            ("v" . view-mode))
  #+end_src
@@ -1660,6 +1660,12 @@ remap magit keys because of window-meta-mode
              (bind-key "<backtab>" 'hs-toggle-hiding hs-minor-mode-map)
              (bind-key "<S-s-iso-lefttab>" 'evgeni/hs-toggle-all hs-minor-mode-map)))
 #+end_src
+
+*** hideshowvis
+#+begin_src emacs-lisp
+(add-hook 'hideshowvis-minor-mode-hook 'hideshowvis-symbols)
+#+end_src
+
 
 *** drag-stuff
 #+begin_src emacs-lisp
