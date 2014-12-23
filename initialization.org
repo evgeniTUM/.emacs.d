@@ -882,24 +882,6 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
     (hs-show-all)))
 #+end_src
 
-*** narrow-to-region
-http://demonastery.org/2013/04/emacs-narrow-to-region-indirect/
-http://paste.lisp.org/display/135818
-#+begin_src emacs-lisp
-(defun evgeni/narrow-to-region-indirect-buffer (start end)
-  (interactive "r")
-  (deactivate-mark)
-  (with-current-buffer (clone-indirect-buffer 
-                        (generate-new-buffer-name 
-                         (concat (buffer-name) "-indirect-" 
-                                 (number-to-string start) "-" 
-                                 (number-to-string end)))
-                        'display)
-    (narrow-to-region start end)
-    (deactivate-mark)
-    (goto-char (point-min))))
-#+end_src
-
 *** next/previous buffer for same mode
 #+begin_src emacs-lisp
 (defun evgeni/buffer-list-same-mode ()
@@ -1345,7 +1327,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            :prefix-map evgeni/file-prefix
            ("c" . helm-complete-file-name-at-point)
            ("f" . ffap)
-           ("n" . evgeni/narrow-to-region-indirect-buffer)
            ("r" . rename-buffer)
            ("<SPC>" . revert-buffer))
 #+end_src
@@ -1623,6 +1604,12 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 
 #+end_src
 
+*** narrow-indirect
+#+begin_src emacs-lisp
+(define-key ctl-x-4-map "nd" 'ni-narrow-to-defun-indirect-other-window)
+(define-key ctl-x-4-map "nn" 'ni-narrow-to-region-indirect-other-window)
+(define-key ctl-x-4-map "np" 'ni-narrow-to-page-indirect-other-window)
+#+end_src
 
 *** dired
 #+begin_src emacs-lisp
