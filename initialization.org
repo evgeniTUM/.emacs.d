@@ -1171,12 +1171,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 (dired-rainbow-define-chmod executable-unix "Green" "-.*x.*")
 #+end_src
 
-*** dired-async
-#+begin_src emacs-lisp
-(when (require 'dired-aux)
-  (require 'dired-async))
-#+end_src
-
 ** hippie-expand
    #+BEGIN_SRC emacs-lisp
      (setq hippie-expand-try-functions-list '(yas-hippie-try-expand
@@ -1706,3 +1700,9 @@ M-'
 :PROPERTIES:
 :tangle: no
 :END:
+** dired-async
+#+begin_src emacs-lisp
+(when (require 'dired-aux)
+  (require 'dired-async))
+#+end_src
+
