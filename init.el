@@ -1,21 +1,15 @@
-
-(load "~/.emacs.d/customizations.el")
-
-;;; ELPA
+;;; bootstrapping org file
 (setq package-archives 
       '(("gnu" . "http://elpa.gnu.org/packages/")
-	("marmalade" . "http://marmalade-repo.org/packages/")
-	("melpa" . "http://melpa.milkbox.net/packages/")))
+                                        ;	("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
-
-(unless (package-installed-p 'save-packages)
-  (package-install 'save-packages))
-
-; (install-saved-packages)
+(package-install 'org)
 
 ;;; load initializatoin.org file
 (org-babel-load-file "~/.emacs.d/initialization.org")
 
+(load "~/.emacs.d/customizations.el")
 
 ;;; emacs auto settings
 (put 'downcase-region 'disabled nil)

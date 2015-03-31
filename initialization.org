@@ -12,6 +12,29 @@ is (was - if you are reading this) intended for personal use only.
 (require 'cl)
    #+end_src
 
+** Package management
+    #+BEGIN_SRC emacs-lisp
+(package-refresh-contents)
+(package-install 's)
+(package-install 'f)
+(require 's)
+(require 'f)
+
+(defun evgeni/packages-install ()
+  (interactive)
+  (mapcar (lambda (x) (package-install x)) (evgeni/packages-load)))
+
+(defun evgeni/packages-load ()
+  (interactive)
+  (mapcar 'intern (s-split "\n" (f-read "~/.emacs.d/saved-packages") t)))
+
+(defun evgeni/packages-save ()
+  (interactive)
+  (f-write (s-join "\n" (mapcar 'symbol-name package-activated-list)) 'utf-8 "~/.emacs.d/saved-packages"))
+
+(evgeni/packages-install)
+   #+END_SRC
+
 ** Personal settings
    #+begin_src emacs-lisp
 (setq user-full-name "Evgeni Pavlidis")
@@ -653,7 +676,7 @@ needs link-grammar installed
 
 ** save-packages
 #+begin_src emacs-lisp
-(add-hook 'kill-emacs-hook 'save-packages)
+(add-hook 'kill-emacs-hook 'evgeni/packages-save)
 #+end_src
 
 ** midnight
@@ -1681,7 +1704,6 @@ use this to spot if configuration was correctly read
 #+end_src
 
 * Things
-
 ** Packages
 
 *** org-gcal 
