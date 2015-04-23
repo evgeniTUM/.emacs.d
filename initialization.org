@@ -38,7 +38,7 @@ is (was - if you are reading this) intended for personal use only.
 
 (defun evgeni/packages-save ()
   (interactive)
-  (f-write (s-join "\n" (mapcar 'symbol-name package-activated-list)) 'utf-8 "~/.emacs.d/saved-packages"))
+  (f-write (s-join "\n" (mapcar 'symbol-name (delete-dupackage-activated-list))) 'utf-8 "~/.emacs.d/saved-packages"))
 
 (evgeni/packages-install)
    #+END_SRC
