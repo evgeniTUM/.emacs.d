@@ -12,7 +12,15 @@ is (was - if you are reading this) intended for personal use only.
 (require 'cl)
    #+end_src
 
-** Package management
+*** Encoding
+#+begin_src emacs-lisp
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+(set-language-environment "UTF-8")
+(prefer-coding-system 'utf-8)
+#+end_src
+
+*** Package management
     #+BEGIN_SRC emacs-lisp
 (package-refresh-contents)
 (package-install 's)
@@ -46,14 +54,6 @@ is (was - if you are reading this) intended for personal use only.
 (when (string= system-name "evgeni-ThinkPad-X300")
   )
   #+END_SRC
-
-** Encoding
-#+begin_src emacs-lisp
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-(set-language-environment "UTF-8")
-(prefer-coding-system 'utf-8)
-#+end_src
  
 * Gnus
 ** Mail configuration
@@ -131,14 +131,6 @@ is (was - if you are reading this) intended for personal use only.
   (interactive)
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 (add-hook 'org-mode-hook #'evgeni/pcomplete-capf)
-#+end_src
-
-** complete candidate and stay in completion state
-#+begin_src emacs-lisp
-(defun evgeni/company-complete-and-stay ()
-  (interactive)
-  (company-complete-selection)
-  (company-complete))
 #+end_src
 
 * ORG mode
