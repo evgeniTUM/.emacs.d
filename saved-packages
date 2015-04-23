@@ -1,3 +1,4 @@
+ace-jump-mode
 aggressive-fill-paragraph
 aggressive-indent
 alert
@@ -86,7 +87,6 @@ graphviz-dot-mode
 grizzl
 groovy-mode
 guide-key
-hace-jump-mode
 helm
 helm-ag
 helm-ag-r
