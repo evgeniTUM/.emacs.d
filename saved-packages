@@ -73,8 +73,6 @@ flx
 flycheck
 fringe-helper
 fuzzy
-git-commit-mode
-git-rebase-mode
 gntp
 gnuplot
 gnuplot-mode
@@ -150,7 +148,6 @@ nose
 oauth2
 occur-context-resize
 org
-org-screenshot
 ox-reveal
 package-build
 paradox
@@ -180,7 +177,6 @@ shell-pop
 shut-up
 sicp
 simple-call-tree
-simple-call-tree+
 simple-httpd
 skewer-mode
 slime

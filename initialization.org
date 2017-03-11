@@ -42,69 +42,7 @@ is (was - if you are reading this) intended for personal use only.
 
 (evgeni/packages-install)
    #+END_SRC
-
-** Personal settings
-   #+begin_src emacs-lisp
-(setq user-full-name "Evgeni Pavlidis")
-(setq user-mail-address "Evgeni.Pavlidis@gmail.com")
-   #+END_SRC
-
-** Machine specific settings
-  #+BEGIN_SRC emacs-lisp
-(when (string= system-name "evgeni-ThinkPad-X300")
-  )
-  #+END_SRC
  
-* Gnus
-** Mail configuration
-#+begin_src emacs-lisp
- (setq gnus-select-method
-      '(nnimap "gmail"
-               (nnimap-address "imap.gmail.com")
-               (nnimap-server-port 993)
-               (nnir-search-engine imap)
-               (nnimap-stream ssl)))
-
-(setq gnus-secondary-select-methods
-      '((nnimap "mnet"
-                (nnimap-address "imap.mnet-online.de")
-                (nnimap-server-port 143)
-                (nnir-search-engine imap)
-                (nnimap-stream starttls))))
-
-
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials '(("smtp.gmail.com" 587
-                                   "evgeni.pavlidis@gmail.com" nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
-#+end_src
-
-** Date in mail summary
-#+begin_src emacs-lisp
-
-#+end_src
- 
-** Gnus daemon 
-#+begin_src emacs-lisp
-(require 'gnus)
-(gnus-demon-add-handler 'gnus-demon-scan-news 2 2)
-(gnus-demon-init)
-#+end_src
-
-** Gnus notifications
-#+begin_src emacs-lisp
-(add-hook 'gnus-after-getting-new-news-hook 'gnus-notifications)
-#+end_src
-
-** Configuration
-#+begin_src emacs-lisp
- (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-#+end_src
-
 * Company
 #+begin_src emacs-lisp
 (require 'company)
@@ -240,24 +178,6 @@ http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
 (add-to-list 'org-export-before-processing-hook
              'evgeni/export-delete-headlines-tagged-noheading)
 #+end_src
-
-** Babel
-  #+BEGIN_SRC emacs-lisp
-    (org-babel-do-load-languages
-     'org-babel-load-languages
-     '((R . t)
-       (emacs-lisp . t)
-       (python . t)
-       (dot . t)
-       (ditaa . t)
-       (gnuplot . t)
-       (latex . t)
-       (lisp . t)
-       (maxima . t)
-       (octave .t)
-       (sh . t)
-       (plantuml . t)))
-  #+END_SRC
 
 *** Python
 #+begin_src emacs-lisp
@@ -603,12 +523,6 @@ needs link-grammar installed
 
 * Environment
 ** Interface
-*** sublimity
-#+begin_src emacs-lisp
-(require 'sublimity-map)
-(sublimity-map-set-delay 'inf)
-#+end_src
-
 *** anzu
 #+begin_src emacs-lisp
 (require 'anzu)
@@ -745,45 +659,6 @@ https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
 (require 'emms-setup)
 (emms-all)
 (emms-default-players)
-#+end_src
-
-** TODO evgeni/minimap
-#+begin_src emacs-lisp
-(defun evgeni/minimap-create ()
-  (interactive)
-  (let ((base (current-buffer)))
-  (setq ind (make-indirect-buffer
-             base (concat "test"))))
-
-(with-current-buffer ind
-  (setq vertical-scroll-bar nil
-        truncate-lines t
-        buffer-read-only 
-        mode-line-format (and mode-line-format "")
-        minimap-active-overlay (make-overlay 0 0))
-  (overlay-put minimap-active-overlay 
-               'face sublimity-map-active-region)
-  (text-scale-set sublimity-map-text-scale)))
-#+end_src
-
-
-#+begin_src emacs-lisp
-(defun evgeni/minimap-update (&optional window start)
-  "Sync window informations to minimap."
-  (interactive)
-  (let ((basewin (get-buffer-window (current-buffer )))
-        (miniwin (get-buffer-window ind))
-        (minibuf ind))
-    (let ((region-beg (window-start basewin))
-          (region-end (window-end basewin t))
-          (point (point)))
-      (with-selected-window miniwin
-        (set-window-buffer nil minibuf t)
-        (with-current-buffer minibuf
-          (goto-char point)
-          (recenter)
-          (move-overlay minimap-active-overlay
-                         region-beg region-end) )))))
 #+end_src
 
 * Customization
@@ -1519,7 +1394,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("f" . hideshowvis-minor-mode)
            ("h" . helm-mode)
            ("l" . scroll-lock-mode)
-           ("m" . sublimity-mode)
            ("s" . flyspell-mode)
            ("v" . view-mode))
  #+end_src
