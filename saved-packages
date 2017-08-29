@@ -37,6 +37,7 @@ css-eldoc
 ctable
 cyberpunk-theme
 dash
+dash-functional
 dedicated
 deferred
 diff-hl
@@ -154,6 +155,7 @@ narrow-indirect
 nav-flash
 nose
 oauth2
+ob-ipython
 occur-context-resize
 org
 ox-reveal
