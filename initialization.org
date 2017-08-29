@@ -360,7 +360,7 @@ specified in `helm-bibtex-pdf-open-function',"
 *** slime
   #+BEGIN_SRC emacs-lisp
     (setq inferior-lisp-program "/usr/bin/sbcl") 
-    (slime-setup '(slime-fancy slime-asdf))
+    (slime-setup '(slime-fancy slime-asdf slime-company))
     
     (when (file-exists-p (expand-file-name "~/quicklisp/slime-helper.el"))
       (load (expand-file-name "~/quicklisp/slime-helper.el")))

@@ -153,6 +153,7 @@ multiple-cursors
 names
 narrow-indirect
 nav-flash
+nodejs-repl
 nose
 oauth2
 ob-ipython
