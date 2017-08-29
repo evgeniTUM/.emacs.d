@@ -1,6 +1,5 @@
 * Initialization
 ** Notes
-This configuration is optimized with the control key remapped to space! (xcape)
 
 Code snippets were taken from various wikis, blogs and forums.
 For the most part there are no credits and references as this configuration
@@ -107,11 +106,6 @@ is (was - if you are reading this) intended for personal use only.
 #+end_src
 
 ** LaTeX
-*** Preview
-#+begin_src emacs-lisp
-(setq org-format-latex-options (plist-put org-format-latex-options :scale 1.5))
-(setq org-export-latex-hyperref-format "\\ref{%s}")
-#+end_src
 
 *** Xelatex
 http://joat-programmer.blogspot.de/2013/07/org-mode-version-8-and-pdf-export-with.html
@@ -120,20 +114,6 @@ http://orgmode.org/worg/org-faq.html#using-xelatex-for-pdf-export
 
 #+begin_src emacs-lisp
   (require 'ox-latex)
-  (setq org-export-latex-listings t)
-  (setq org-latex-pdf-process 
-        (list "latexmk -bibtex -pdflatex=xelatex -pdf -quiet  -f  %f"))
-
-  (setq org-export-latex-default-packages-alist
-        '(("" "fontspec" t)
-          ("" "xunicode" t)
-          ("" "url" t)
-          ("" "rotating" t)
-          ("american" "babel" t)
-          ("babel" "csquotes" t)
-          ("" "soul" t)
-          ("xetex" "hyperref" nil)
-          ))
 #+end_src
 
 *** RefTex integration
@@ -408,7 +388,6 @@ specified in `helm-bibtex-pdf-open-function',"
 https://github.com/xiaohanyu/oh-evgeni/emacs/blob/master/modules/ome-python.org
 #+BEGIN_SRC emacs-lisp
 (setq
- python-shell-interpreter "~/shared/bin/ipython.sh"
  python-shell-interpreter-args ""
  python-shell-prompt-regexp "In \\[[0-9]+\\]: "
  python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
