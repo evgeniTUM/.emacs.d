@@ -1268,6 +1268,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("l" . linum-mode)
            ("L" . hl-line-mode)
            ("m" . toggle-menu-bar-mode-from-frame)
+           ("M" . minimap-mode)
            ("s" . toggle-scroll-bar)
            ("t" . tabbar-mode)
            ("v" . visual-line-mode)
