@@ -64,7 +64,7 @@
                    (company-dabbrev-code company-gtags company-etags company-keywords)
                    company-oddmuse company-files company-dabbrev)))
  '(company-dabbrev-downcase nil)
- '(company-global-modes (quote (not eshell-mode)))
+ '(company-global-modes (quote (not eshell-mode shell-mode)))
  '(company-idle-delay 0)
  '(company-minimum-prefix-length 2)
  '(company-show-numbers t)
