@@ -1,3 +1,4 @@
+ac-slime
 ace-jump-mode
 aggressive-fill-paragraph
 aggressive-indent
@@ -21,6 +22,7 @@ bm
 bui
 button-lock
 c-eldoc
+cask
 cdlatex
 cider
 clojure-cheatsheet
@@ -29,8 +31,12 @@ cmake-mode
 col-highlight
 color-identifiers-mode
 color-theme
+commander
 company
 company-anaconda
+company-jedi
+company-shell
+company-tern
 concurrent
 conkeror-minor-mode
 css-eldoc
@@ -55,6 +61,7 @@ ecb
 ein
 elfeed
 elisp-slime-nav
+elpy
 emacsql
 emms
 emms-info-mediainfo
@@ -76,6 +83,7 @@ flx
 flycheck
 fringe-helper
 fuzzy
+git
 git-commit
 gntp
 gnuplot
@@ -115,6 +123,7 @@ helm-pydoc
 helm-spaces
 helm-spotify
 helm-themes
+helm-youtube
 hide-lines
 hideshowvis
 highlight
@@ -127,8 +136,13 @@ hydra
 idomenu
 iedit
 imenu-anywhere
+indium
 ivy
+jedi
+jedi-core
+jedi-direx
 js2-mode
+js2-refactor
 json-mode
 json-reformat
 json-rpc
@@ -144,6 +158,7 @@ magit-svn
 makey
 math-symbols
 matlab-mode
+memoize
 minimap
 mode-icons
 monokai-theme
@@ -161,6 +176,8 @@ occur-context-resize
 org
 ox-reveal
 package-build
+pacmacs
+pallet
 paradox
 parsebib
 pcache
@@ -198,6 +215,7 @@ slime-company
 smart-window
 smartparens
 smartrep
+sourcemap
 spaces
 speed-type
 spinner
@@ -211,6 +229,7 @@ synonyms
 tabbar
 tabbar-ruler
 tangotango-theme
+tern
 transpose-frame
 tree-mode
 ucs-utils
@@ -226,6 +245,7 @@ websocket
 windata
 window-number
 with-editor
+xref-js2
 yascroll
 yasnippet
 yaxception

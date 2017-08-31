@@ -42,34 +42,6 @@ is (was - if you are reading this) intended for personal use only.
 (evgeni/packages-install)
    #+END_SRC
  
-* Company
-#+begin_src emacs-lisp
-(require 'company)
-(global-company-mode 1)
-#+end_src
-
-** theme
-#+begin_src emacs-lisp
-(require 'color)
-(defun evgeni/company-setup-theme ()
-  (interactive)
-  (let ((bg (face-attribute 'default :background)))
-    (custom-set-faces
-     `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-     `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-     `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-     `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-     `(company-tooltip-common ((t (:inherit font-lock-constant-face)))))))
-#+end_src
-
-** org-mode
-#+begin_src emacs-lisp
-(defun evgeni/pcomplete-capf ()
-  (interactive)
-  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-(add-hook 'org-mode-hook #'evgeni/pcomplete-capf)
-#+end_src
-
 * ORG mode
 ** General
   #+BEGIN_SRC emacs-lisp
@@ -182,11 +154,6 @@ thing."
 #+end_src
 
 * Helm
-** General
-#+begin_src emacs-lisp
-(helm-mode 1)
-#+end_src
-
 ** helm-ag
 #+begin_src emacs-lisp
 (setq helm-ag-source-type 'file-line)
@@ -253,7 +220,7 @@ specified in `helm-bibtex-pdf-open-function',"
 
 *** JavaScript
 #+begin_src emacs-lisp
-;(evgeni/dash-define-docsets-for-mode 'javascript-mode-hook '("JavaScript"))
+(evgeni/dash-define-docsets-for-mode 'javascript-mode-hook '("JavaScript"))
 #+end_src
 
 * Development
@@ -334,7 +301,6 @@ specified in `helm-bibtex-pdf-open-function',"
 
 *** rainbow-delimiters
 #+begin_src emacs-lisp
-;(global-rainbow-delimiters-mode 1)
 (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
 #+end_src
 
@@ -533,11 +499,6 @@ needs link-grammar installed
 #+begin_src emacs-lisp
   (require 'window-number)
   (window-number-meta-mode)
-#+end_src
-
-**** deactivate M-0 key (special argument)
-#+begin_src emacs-lisp
-(define-key window-number-meta-mode-map (kbd "M-0") 'nil)
 #+end_src
 
 **** integrate golden-ration with window-number
@@ -1509,7 +1470,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 *** eshell
 #+begin_src emacs-lisp
 (add-hook 'eshell-mode-hook 
-          (lambda () "setup eshell bindings"   
+          (lambda () "setup eshell bindings" 
             (bind-key "C-z h" 'helm-eshell-history eshell-mode-map)
             (bind-key "C-z d" 'evgeni/helm-eshell-last-dirs eshell-mode-map)))
 #+end_src
@@ -1570,8 +1531,7 @@ use this to spot if configuration was correctly read
 ** Re-mappings
 C-x C-d
 C-x d
-M-'
-** eshell and company
+M-
 ** eshell tramp
 ** hungry delete
 * Inactive
@@ -1582,5 +1542,13 @@ M-'
 #+begin_src emacs-lisp
 (when (require 'dired-aux)
   (require 'dired-async))
+#+end_src
+
+** org-mode fix for company
+#+begin_src emacs-lisp
+(defun evgeni/pcomplete-capf ()
+  (interactive)
+  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+(add-hook 'org-mode-hook #'evgeni/pcomplete-capf)
 #+end_src
 

@@ -60,15 +60,16 @@
  '(company-auto-complete nil)
  '(company-backends
    (quote
-    (company-anaconda company-bbdb company-nxml company-css company-eclim company-semantic company-clang company-xcode company-cmake company-capf
-                      (company-dabbrev-code company-gtags company-etags company-keywords)
-                      company-oddmuse company-files company-dabbrev)))
+    (company-slime company-tern company-anaconda company-bbdb company-nxml company-css company-semantic company-clang company-xcode company-cmake company-capf
+                   (company-dabbrev-code company-gtags company-etags company-keywords)
+                   company-oddmuse company-files company-dabbrev)))
  '(company-dabbrev-downcase nil)
+ '(company-global-modes (quote (not eshell-mode)))
  '(company-idle-delay 0)
  '(company-minimum-prefix-length 2)
  '(company-show-numbers t)
  '(company-transformers (quote (company-sort-by-occurrence)))
- '(custom-enabled-themes (quote (cyberpunk)))
+ '(custom-enabled-themes (quote (wombat)))
  '(custom-file "~/.emacs.d/customizations.el")
  '(custom-safe-themes
    (quote
@@ -95,6 +96,8 @@
  '(fci-rule-color "#383838")
  '(fill-column 80)
  '(global-auto-complete-mode t)
+ '(global-auto-revert-non-file-buffers t)
+ '(global-company-mode t)
  '(global-hi-lock-mode t)
  '(global-prettify-symbols-mode t)
  '(global-rainbow-delimiters-mode t)
@@ -113,7 +116,7 @@
    (quote
     ("/\\.$" "/\\.\\.$" "\\.o$" "~$" "\\.bin$" "\\.lbin$" "\\.so$" "\\.a$" "\\.ln$" "\\.blg$" "\\.bbl$" "\\.elc$" "\\.lof$" "\\.glo$" "\\.idx$" "\\.lot$" "\\.svn$" "\\.hg$" "\\.git$" "\\.bzr$" "CVS$" "_darcs$" "_MTN$" "\\.fmt$" "\\.tfm$" "\\.class$" "\\.fas$" "\\.lib$" "\\.mem$" "\\.x86f$" "\\.sparcf$" "\\.dfsl$" "\\.pfsl$" "\\.d64fsl$" "\\.p64fsl$" "\\.lx64fsl$" "\\.lx32fsl$" "\\.dx64fsl$" "\\.dx32fsl$" "\\.fx64fsl$" "\\.fx32fsl$" "\\.sx64fsl$" "\\.sx32fsl$" "\\.wx64fsl$" "\\.wx32fsl$" "\\.fasl$" "\\.ufsl$" "\\.fsl$" "\\.dxl$" "\\.lo$" "\\.la$" "\\.gmo$" "\\.mo$" "\\.toc$" "\\.aux$" "\\.cp$" "\\.fn$" "\\.ky$" "\\.pg$" "\\.tp$" "\\.vr$" "\\.cps$" "\\.fns$" "\\.kys$" "\\.pgs$" "\\.tps$" "\\.vrs$" "\\.pyc$" "\\.pyo$")))
  '(helm-exit-idle-delay 0.01)
- '(helm-external-programs-associations (quote (("pdf" . "evince"))))
+ '(helm-external-programs-associations (quote (("doc" . "libreoffice") ("pdf" . "evince"))))
  '(helm-ff-skip-boring-files t)
  '(helm-google-search-function (quote helm-google-api-search))
  '(helm-mode t)
@@ -175,7 +178,7 @@
  '(org-src-window-setup (quote current-window))
  '(package-selected-packages
    (quote
-    (ac-slime nodejs-repl ob-ipython scad-mode scad-preview yasnippet websocket vline undo-tree tabbar spinner spaces slime simple-httpd request queue projectile popwin popup pkg-info persistent-soft pcsv pcache parsebib oauth2 multi makey magit log4e list-utils let-alist json-snatcher json-reformat js2-mode highlight hide-lines helm goto-chg google gntp flycheck finalize esqlite epl emms dired-hacks-utils deferred dash ctable concurrent company clojure-mode cider bm bind-key auctex async anaphora anaconda-mode f s org yaxception yascroll window-number windata web-mode w3m volatile-highlights visual-regexp virtualenv unbound ucs-utils tree-mode transpose-frame tangotango-theme tabbar-ruler syslog-mode synonyms sublimity string-utils sr-speedbar sqlite spray splitter speed-type smartrep smartparens smart-window slime-company skewer-mode simple-call-tree sicp shut-up shell-pop recentf-ext rainbow-mode rainbow-delimiters pyvenv python-info python-environment prosjekt proc-net plantuml-mode pkgbuild-mode pg paradox package-build ox-reveal occur-context-resize nose nav-flash narrow-indirect names multiple-cursors moz monokai-theme minimap matlab-mode math-symbols magit-svn leuven-theme jump-char json-rpc json-mode imenu-anywhere iedit idomenu hungry-delete htmlize howdoi highlight-parentheses highlight-indentation hideshowvis helm-themes helm-spotify helm-spaces helm-pydoc helm-projectile helm-proc helm-package helm-orgcard helm-mode-manager helm-make helm-ls-git helm-gtags helm-google helm-git-grep helm-flycheck helm-descbinds helm-dash helm-company helm-c-yasnippet helm-bm helm-bind-key helm-bibtex helm-ag-r helm-ag guide-key groovy-mode grizzl graphviz-dot-mode google-contacts golden-ratio god-mode gnuplot-mode gnuplot fuzzy fringe-helper flx find-file-in-project fill-column-indicator fancy-narrow expand-region eww-lnum evil eval-sexp-fu esup esqlite-helm epc emms-info-mediainfo emacsql elisp-slime-nav elfeed ein ecb ebib drag-stuff dos discover-my-major direx dired-subtree dired-rainbow dired-open dired-filter diminish diff-hl dedicated cyberpunk-theme css-eldoc conkeror-minor-mode company-anaconda color-theme color-identifiers-mode col-highlight cmake-mode clojure-cheatsheet cdlatex c-eldoc button-lock bash-completion auto-highlight-symbol auto-complete aurel auctex-latexmk anzu android-mode anchored-transpose alert aggressive-indent aggressive-fill-paragraph ace-jump-mode)))
+    (elpy git commander indium ac-slime company-tern tern company-jedi company-shell js2-refactor xref-js2 helm-youtube nodejs-repl ob-ipython scad-mode scad-preview yasnippet websocket vline undo-tree tabbar spinner spaces slime simple-httpd request queue projectile popwin popup pkg-info persistent-soft pcsv pcache parsebib oauth2 multi makey magit log4e list-utils let-alist json-snatcher json-reformat js2-mode highlight hide-lines helm goto-chg google gntp flycheck finalize esqlite epl emms dired-hacks-utils deferred dash ctable concurrent company clojure-mode cider bm bind-key auctex async anaphora anaconda-mode f s org yaxception yascroll window-number windata web-mode w3m volatile-highlights visual-regexp virtualenv unbound ucs-utils tree-mode transpose-frame tangotango-theme tabbar-ruler syslog-mode synonyms string-utils sr-speedbar sqlite spray splitter speed-type smartrep smartparens smart-window slime-company skewer-mode simple-call-tree sicp shut-up shell-pop recentf-ext rainbow-mode rainbow-delimiters pyvenv python-info python-environment prosjekt proc-net plantuml-mode pkgbuild-mode pg paradox package-build ox-reveal occur-context-resize nose nav-flash narrow-indirect names multiple-cursors moz monokai-theme minimap matlab-mode math-symbols magit-svn leuven-theme jump-char json-rpc json-mode imenu-anywhere iedit idomenu hungry-delete htmlize howdoi highlight-parentheses highlight-indentation hideshowvis helm-themes helm-spotify helm-spaces helm-pydoc helm-projectile helm-proc helm-package helm-orgcard helm-mode-manager helm-make helm-ls-git helm-gtags helm-google helm-git-grep helm-flycheck helm-descbinds helm-dash helm-company helm-c-yasnippet helm-bm helm-bind-key helm-bibtex helm-ag-r helm-ag guide-key groovy-mode grizzl graphviz-dot-mode google-contacts golden-ratio god-mode gnuplot-mode gnuplot fuzzy fringe-helper flx find-file-in-project fill-column-indicator fancy-narrow expand-region eww-lnum evil eval-sexp-fu esup esqlite-helm epc emms-info-mediainfo emacsql elisp-slime-nav elfeed ein ecb ebib drag-stuff dos discover-my-major direx dired-subtree dired-rainbow dired-open dired-filter diminish diff-hl dedicated cyberpunk-theme css-eldoc conkeror-minor-mode company-anaconda color-theme color-identifiers-mode col-highlight cmake-mode clojure-cheatsheet cdlatex c-eldoc button-lock bash-completion auto-highlight-symbol auto-complete aurel auctex-latexmk anzu android-mode anchored-transpose alert aggressive-indent aggressive-fill-paragraph ace-jump-mode)))
  '(paradox-github-token t)
  '(plantuml-jar-path "/home/evgeni/.emacs.d/lib/plantuml.jar")
  '(popwin-mode t)
@@ -237,7 +240,7 @@
       (not multiple-cursors-mode))
      (not
       (eq major-mode
-          (quote shell-mode))))))
+          (quote shell-mode))))) t)
  '(sublimity-map-criteria
    (quote
     ((not
