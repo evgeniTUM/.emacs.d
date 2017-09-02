@@ -496,11 +496,6 @@ needs link-grammar installed
 (require 'recentf-ext)
 #+end_src
 
-** save-packages
-#+begin_src emacs-lisp
-(add-hook 'kill-emacs-hook 'evgeni/packages-save)
-#+end_src
-
 ** midnight
 #+begin_src emacs-lisp
 (require 'midnight)
@@ -1297,15 +1292,12 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 #+begin_src emacs-lisp
 (bind-keys :prefix "C-c t"
            :prefix-map evgeni/toggle-prefix
-           ("t" . shell-pop)
            ("a" . auto-revert-mode)
-           ("b" . sr-speedbar-toggle)
            ("c" . flycheck-mode)
            ("f" . hideshowvis-minor-mode)
            ("h" . helm-mode)
            ("l" . scroll-lock-mode)
-           ("s" . flyspell-mode)
-           ("v" . view-mode))
+           ("s" . flyspell-mode))
  #+end_src
  
  
@@ -1534,5 +1526,9 @@ M-
 (require 'ein-loaddefs)
 (require 'ein-notebook)
 (require 'ein-subpackages)
+#+end_src
+** save-packages
+#+begin_src emacs-lisp
+(add-hook 'kill-emacs-hook 'evgeni/packages-save)
 #+end_src
 
