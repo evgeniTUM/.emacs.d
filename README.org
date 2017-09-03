@@ -13,8 +13,5 @@ The main Emacs configuration
 *** customization.el
 File containing all Emacs based custom configurations (customize system)
 
-*** saved-packages
-Saves the installed packages (see: save-packages)
-
 *** snippets directory
 Custom yasnippets

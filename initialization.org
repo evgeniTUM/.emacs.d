@@ -892,6 +892,13 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
                              (hl-line-mode 1)))
 #+end_src
 
+*** Inline subdirs
+#+begin_src emacs-lisp
+(define-key dired-mode-map "i" 'dired-subtree-insert)
+(define-key dired-mode-map "I" 'dired-maybe-insert-subdir)
+(define-key dired-mode-map ";" 'dired-subtree-remove)
+#+end_src
+
 *** dired open files
 http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
 #+begin_src emacs-lisp
