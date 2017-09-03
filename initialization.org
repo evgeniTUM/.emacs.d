@@ -131,6 +131,11 @@ thing."
 #+end_src
 
 * Helm
+** generic
+#+begin_src emacs-lisp
+(define-key minibuffer-local-map (kbd "C-c C-l") 'helm-minibuffer-history)
+#+end_src
+
 ** helm-ag
 #+begin_src emacs-lisp
 (setq helm-ag-source-type 'file-line)
@@ -574,13 +579,6 @@ https://github.com/yveszoundi/emacs.d/blob/master/bootstrap/startup.org
 (defadvice list-packages (after evgeni/list-packages-advice activate)
   (hl-line-mode 1))
 #+end_src
-
-*** view-mode
-Default mode for all files is read-only (view-mode) ??
-#+begin_src emacs-lisp
-; (add-hook 'find-file-hook (lambda () (setq buffer-read-only t)))
-#+end_src
-
 ** Functions
 *** Swap window buffer
 https://gist.github.com/mariusaeriksen/287633
@@ -772,7 +770,6 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(blink-cursor-mode -1)  
 #+END_SRC
 
 ** Mode line
@@ -992,9 +989,6 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
 
 (require 'volatile-highlights)
 (volatile-highlights-mode t)
-
-(setq browse-url-generic-program (executable-find "conkeror")
-	shr-external-browser 'browse-url-generic)
 #+end_src
 
 * Key bindings
@@ -1127,12 +1121,12 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
  #+begin_src emacs-lisp
 (bind-keys :prefix "C-c h"
            :prefix-map evgeni/helm-prefix
-           ("SPC" . helm-resume)
-           ("8" . helm-ucs)
+           ("RET" . helm-resume)
+           ("SPC" . helm-all-mark-rings)
            ("C-a" . helm-ag-r-from-git-repo)
            ("A" . helm-ag-r)
            ("B" . helm-bibtex)
-           ("C" . helm-colors)
+           ("C" . helm-complex-command-history)
            ("F" . helm-find)
            ("G" . helm-git-grep)
            ("L" . helm-locate-library)
@@ -1148,16 +1142,13 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("e" . helm-list-emacs-process)
            ("f" . helm-for-files) 
            ("g" . helm-do-grep)
-           ("h" . helm-complex-command-history)
-           ("i" . helm-imenu)
+           ("h" . helm-semantic-or-imenu) 
            ("k" . helm-show-kill-ring)
            ("l" . helm-locate)
-           ("m" . helm-all-mark-rings)
            ("n" . list-network-processes)
            ("o" . helm-occur)
            ("p" . helm-projectile)
-           ("r" . helm-register)
-           ("s" . helm-semantic)
+           ("r" . helm-register) 
            ("t" . helm-proc)
            ("w" . helm-spaces)
            ("x" . helm-regexp)

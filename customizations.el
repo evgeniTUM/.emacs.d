@@ -169,6 +169,7 @@
  '(jedi:tooltip-method (quote (pos-tip pos-tip)))
  '(jump-char-forward-key ".")
  '(magit-diff-use-overlays nil)
+ '(midnight-mode t)
  '(minimap-dedicated-window t)
  '(minimap-resizes-buffer nil)
  '(minimap-update-delay 0.1)
@@ -194,7 +195,7 @@
  '(org-src-window-setup (quote current-window))
  '(package-selected-packages
    (quote
-    (back-button helm-swoop company-anaconda anaconda-mode py-autopep8 fasd ag imenu-anywhere helm-chrome iedit company-tern tern company-jedi company-shell helm-youtube scad-mode scad-preview yasnippet websocket vline undo-tree tabbar spinner spaces slime request queue projectile oauth2 magit log4e list-utils let-alist json-snatcher json-reformat highlight hide-lines helm goto-chg google flycheck finalize dired-hacks-utils deferred dash ctable concurrent company bm bind-key auctex async f s org yaxception yascroll window-number windata w3m volatile-highlights visual-regexp unbound ucs-utils transpose-frame tangotango-theme tabbar-ruler syslog-mode synonyms string-utils speed-type smartrep smartparens slime-company sicp recentf-ext rainbow-mode rainbow-delimiters proc-net plantuml-mode names multiple-cursors monokai-theme minimap matlab-mode math-symbols magit-svn leuven-theme jump-char json-rpc json-mode hungry-delete htmlize howdoi highlight-parentheses highlight-indentation hideshowvis helm-themes helm-spotify helm-spaces helm-pydoc helm-projectile helm-proc helm-package helm-orgcard helm-mode-manager helm-make helm-ls-git helm-gtags helm-google helm-git-grep helm-flycheck helm-descbinds helm-dash helm-company helm-c-yasnippet helm-bm helm-bind-key helm-bibtex helm-ag-r helm-ag guide-key groovy-mode grizzl graphviz-dot-mode google-contacts golden-ratio god-mode gnuplot-mode gnuplot fill-column-indicator fancy-narrow expand-region eval-sexp-fu epc elisp-slime-nav elfeed ebib dos discover-my-major direx dired-subtree dired-rainbow dired-open dired-filter diminish diff-hl dedicated cyberpunk-theme css-eldoc color-theme color-identifiers-mode cmake-mode cdlatex bash-completion auto-highlight-symbol auctex-latexmk anzu aggressive-indent ace-jump-mode)))
+    (helm-systemd system-packages back-button helm-swoop company-anaconda anaconda-mode py-autopep8 fasd ag imenu-anywhere helm-chrome iedit company-tern tern company-jedi company-shell helm-youtube scad-mode scad-preview yasnippet websocket vline undo-tree tabbar spinner slime request queue projectile oauth2 magit log4e list-utils let-alist json-snatcher json-reformat highlight hide-lines helm goto-chg google flycheck finalize dired-hacks-utils deferred dash ctable concurrent company bm bind-key auctex async f s org yaxception yascroll window-number windata w3m volatile-highlights visual-regexp unbound ucs-utils transpose-frame tangotango-theme tabbar-ruler syslog-mode synonyms string-utils speed-type smartrep smartparens slime-company sicp recentf-ext rainbow-mode rainbow-delimiters proc-net plantuml-mode names multiple-cursors monokai-theme minimap matlab-mode math-symbols magit-svn leuven-theme jump-char json-rpc json-mode hungry-delete htmlize howdoi highlight-parentheses highlight-indentation hideshowvis helm-themes helm-spotify helm-spaces helm-pydoc helm-projectile helm-proc helm-package helm-orgcard helm-mode-manager helm-make helm-ls-git helm-gtags helm-google helm-git-grep helm-flycheck helm-descbinds helm-dash helm-company helm-c-yasnippet helm-bm helm-bind-key helm-bibtex helm-ag-r helm-ag guide-key groovy-mode grizzl graphviz-dot-mode google-contacts golden-ratio god-mode gnuplot-mode gnuplot fill-column-indicator fancy-narrow expand-region eval-sexp-fu epc elisp-slime-nav elfeed ebib dos discover-my-major direx dired-subtree dired-rainbow dired-open dired-filter diminish diff-hl dedicated cyberpunk-theme css-eldoc color-theme color-identifiers-mode cmake-mode cdlatex bash-completion auto-highlight-symbol auctex-latexmk anzu aggressive-indent ace-jump-mode)))
  '(paradox-github-token t)
  '(plantuml-jar-path "/home/evgeni/.emacs.d/lib/plantuml.jar")
  '(popwin-mode t)
@@ -302,6 +303,7 @@
  '(volatile-highlights-mode t)
  '(weechat-color-list
    (unspecified "#272822" "#3C3D37" "#F70057" "#F92672" "#86C30D" "#A6E22E" "#BEB244" "#E6DB74" "#40CAE4" "#66D9EF" "#FB35EA" "#FD5FF0" "#74DBCD" "#A1EFE4" "#F8F8F2" "#F8F8F0"))
+ '(window-number-meta-mode t)
  '(winner-mode t)
  '(yas-fallback-behavior (quote call-other-command))
  '(yas-wrap-around-region t)
