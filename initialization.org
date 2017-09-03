@@ -3,15 +3,15 @@
 
 Code snippets were taken from various wikis, blogs and forums.
 For the most part there are no credits and references as this configuration
-is (was - if you are reading this) intended for personal use only.
+is intended for personal use only.
 
-** Inits
+** Paths
    #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "~/.emacs.d/lisp/")
 (require 'cl)
    #+end_src
 
-*** Encoding
+** Encoding
 #+begin_src emacs-lisp
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
@@ -472,6 +472,8 @@ needs link-grammar installed
 #+begin_src emacs-lisp
 (defadvice window-number-select (after window-number-golden-ration-integration activate)
   (when golden-ratio-mode (golden-ratio)))
+
+(unbind-key "M-0" window-number-meta-mode-map)
 #+end_src
 
 *** dedicated
@@ -836,8 +838,6 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
 
 *** diminish
    #+begin_src emacs-lisp
-(eval-after-load "auto-complete"
-  '(diminish 'auto-complete-mode " A"))
 (eval-after-load "auto-highlight-symbol"
   '(diminish 'auto-highlight-symbol-mode " H"))
 (eval-after-load "eproject"
@@ -857,11 +857,8 @@ http://sachachua.com/blog/2006/10/emacs-hideshow/
 (eval-after-load "smartparens"
   '(diminish 'smartparens-mode))
 
-(eval-after-load "drag-stuff"
-  '(diminish 'drag-stuff-mode))
-
 (eval-after-load "guide-key" 
-  '(diminish 'guide-key-mode))   
+  '(diminish 'guide-key-mode))
 
 (eval-after-load "back-button"
   '(diminish 'back-button-mode))
@@ -1059,8 +1056,8 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
  ("C-x j"   . direx:jump-to-directory-other-window)
  ("C-x t"   . anchored-transpose)
  ("C-h a"   . helm-apropos)
- ("C-x C-b" . helm-buffers-list)
- ("C-x b"   . ibuffer)
+ ("C-x b"   . helm-buffers-list)
+ ("C-x C-b" . ibuffer)
  ("M-x"     . helm-M-x)
  ("C-x C-f" . helm-find-files))
 #+end_src
@@ -1436,12 +1433,6 @@ remap magit keys because of window-meta-mode
 #+end_src
 
 
-*** drag-stuff
-#+begin_src emacs-lisp
-  (setq drag-stuff-modifier '(meta super))
-  (drag-stuff-global-mode t)
-#+end_src
-
 *** eww
 #+begin_src emacs-lisp
 (add-hook 'eww-mode-hook
@@ -1530,5 +1521,11 @@ M-
 ** save-packages
 #+begin_src emacs-lisp
 (add-hook 'kill-emacs-hook 'evgeni/packages-save)
+#+end_src
+
+** drag-stuff
+#+begin_src emacs-lisp
+  (setq drag-stuff-modifier '(meta super))
+  (drag-stuff-global-mode t)
 #+end_src
 

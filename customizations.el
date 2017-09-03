@@ -53,8 +53,10 @@
     ("~/.authinfo" "~/.authinfo.gpg" "~/.netrc" "~/.emacs.d/.authinfo.gpg")))
  '(back-button-local-forward-keystrokes (quote ("C-x <S-SPC>")))
  '(back-button-mode t)
+ '(blink-cursor-mode t)
  '(bm-repository-file "/home/evgeni/.emacs.d/.bm-repository")
  '(browse-url-browser-function (quote eww-browse-url))
+ '(browse-url-generic-program "chromium")
  '(comint-input-ignoredups t)
  '(comint-scroll-to-bottom-on-input t)
  '(company-auto-complete nil)
@@ -75,6 +77,7 @@
  '(custom-safe-themes
    (quote
     ("d6922c974e8a78378eacb01414183ce32bc8dbf2de78aabcc6ad8172547cb074" "38e64ea9b3a5e512ae9547063ee491c20bd717fe59d9c12219a0b1050b439cdd" "90edd91338ebfdfcd52ecd4025f1c7f731aced4c9c49ed28cfbebb3a3654840b" "49e5a7955b853f70d1fe751b2f896921398b273aa62f47bda961a45f80219581" "a31c86c0a9ba5d06480b02bb912ae58753e09f13edeb07af8927d67c3bb94d68" "f0a99f53cbf7b004ba0c1760aa14fd70f2eabafe4e62a2b3cf5cabae8203113b" "75c9f0b0499ecdd0c856939a5de052742d85af81814e84faa666522c2bba7e85" "6fe6ab4abe97a4f13533e47ae59fbba7f2919583f9162b440dd06707b01f7794" "3a727bdc09a7a141e58925258b6e873c65ccf393b2240c51553098ca93957723" "025354235e98db5e7fd9c1a74622ff53ad31b7bde537d290ff68d85665213d85" "8b231ba3e5f61c2bb1bc3a2d84cbd16ea17ca13395653566d4dfbb11feaf8567" "f32dd8e7b3a508874eded03d5be43d2bdfffe81c199eea72de06ce3e653db720" "8eef22cd6c122530722104b7c82bc8cdbb690a4ccdd95c5ceec4f3efa5d654f5" default)))
+ '(dired-auto-revert-buffer t)
  '(dired-filter-saved-filters nil)
  '(dired-listing-switches "-alh --group-directories-first")
  '(dired-open-functions (quote (dired-open-by-extension dired-open-subdir)))
@@ -191,7 +194,7 @@
  '(org-src-window-setup (quote current-window))
  '(package-selected-packages
    (quote
-    (ag imenu-anywhere helm-chrome iedit company-tern tern company-jedi company-shell helm-youtube scad-mode scad-preview yasnippet websocket vline undo-tree tabbar spinner spaces slime request queue projectile oauth2 magit log4e list-utils let-alist json-snatcher json-reformat highlight hide-lines helm goto-chg google flycheck finalize dired-hacks-utils deferred dash ctable concurrent company bm bind-key auctex async f s org yaxception yascroll window-number windata w3m volatile-highlights visual-regexp unbound ucs-utils transpose-frame tangotango-theme tabbar-ruler syslog-mode synonyms string-utils speed-type smartrep smartparens slime-company sicp recentf-ext rainbow-mode rainbow-delimiters proc-net plantuml-mode names multiple-cursors monokai-theme minimap matlab-mode math-symbols magit-svn leuven-theme jump-char json-rpc json-mode hungry-delete htmlize howdoi highlight-parentheses highlight-indentation hideshowvis helm-themes helm-spotify helm-spaces helm-pydoc helm-projectile helm-proc helm-package helm-orgcard helm-mode-manager helm-make helm-ls-git helm-gtags helm-google helm-git-grep helm-flycheck helm-descbinds helm-dash helm-company helm-c-yasnippet helm-bm helm-bind-key helm-bibtex helm-ag-r helm-ag guide-key groovy-mode grizzl graphviz-dot-mode google-contacts golden-ratio god-mode gnuplot-mode gnuplot fill-column-indicator fancy-narrow expand-region eval-sexp-fu epc elisp-slime-nav elfeed ebib drag-stuff dos discover-my-major direx dired-subtree dired-rainbow dired-open dired-filter diminish diff-hl dedicated cyberpunk-theme css-eldoc color-theme color-identifiers-mode cmake-mode cdlatex bash-completion auto-highlight-symbol auctex-latexmk anzu aggressive-indent ace-jump-mode)))
+    (back-button helm-swoop company-anaconda anaconda-mode py-autopep8 fasd ag imenu-anywhere helm-chrome iedit company-tern tern company-jedi company-shell helm-youtube scad-mode scad-preview yasnippet websocket vline undo-tree tabbar spinner spaces slime request queue projectile oauth2 magit log4e list-utils let-alist json-snatcher json-reformat highlight hide-lines helm goto-chg google flycheck finalize dired-hacks-utils deferred dash ctable concurrent company bm bind-key auctex async f s org yaxception yascroll window-number windata w3m volatile-highlights visual-regexp unbound ucs-utils transpose-frame tangotango-theme tabbar-ruler syslog-mode synonyms string-utils speed-type smartrep smartparens slime-company sicp recentf-ext rainbow-mode rainbow-delimiters proc-net plantuml-mode names multiple-cursors monokai-theme minimap matlab-mode math-symbols magit-svn leuven-theme jump-char json-rpc json-mode hungry-delete htmlize howdoi highlight-parentheses highlight-indentation hideshowvis helm-themes helm-spotify helm-spaces helm-pydoc helm-projectile helm-proc helm-package helm-orgcard helm-mode-manager helm-make helm-ls-git helm-gtags helm-google helm-git-grep helm-flycheck helm-descbinds helm-dash helm-company helm-c-yasnippet helm-bm helm-bind-key helm-bibtex helm-ag-r helm-ag guide-key groovy-mode grizzl graphviz-dot-mode google-contacts golden-ratio god-mode gnuplot-mode gnuplot fill-column-indicator fancy-narrow expand-region eval-sexp-fu epc elisp-slime-nav elfeed ebib dos discover-my-major direx dired-subtree dired-rainbow dired-open dired-filter diminish diff-hl dedicated cyberpunk-theme css-eldoc color-theme color-identifiers-mode cmake-mode cdlatex bash-completion auto-highlight-symbol auctex-latexmk anzu aggressive-indent ace-jump-mode)))
  '(paradox-github-token t)
  '(plantuml-jar-path "/home/evgeni/.emacs.d/lib/plantuml.jar")
  '(popwin-mode t)
