@@ -1123,8 +1123,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            :prefix-map evgeni/helm-prefix
            ("RET" . helm-resume)
            ("SPC" . helm-all-mark-rings)
-           ("C-a" . helm-ag-r-from-git-repo)
-           ("A" . helm-ag-r)
+           ("C-a" . helm-ag-r-from-git-repo) 
            ("B" . helm-bibtex)
            ("C" . helm-complex-command-history)
            ("F" . helm-find)
@@ -1141,7 +1140,7 @@ http://truongtx.me/2014/04/13/dired-as-default-file-manager-9-color-and-preview/
            ("d" . helm-dash-at-point)
            ("e" . helm-list-emacs-process)
            ("f" . helm-for-files) 
-           ("g" . helm-do-grep)
+           ("g" . helm-do-grep-ag)
            ("h" . helm-semantic-or-imenu) 
            ("k" . helm-show-kill-ring)
            ("l" . helm-locate)
